@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+var d=app;
 
 //middleware
 app.use(morgan("dev"));
