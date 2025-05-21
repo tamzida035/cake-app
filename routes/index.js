@@ -9,9 +9,9 @@ var router = express.Router();
 
 
 
-// Require our controllers.
+// Require home controllers
 const home_controller = require("../controllers/homeController");
 
-// GET catalog home page.
-router.get("/", home_controller.index);
+// home page
+router.get("/", home_controller.index);//--->Important : update architecture diagam about this route (homepage), controller(homeController)
 module.exports = router;

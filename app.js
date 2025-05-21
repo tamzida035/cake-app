@@ -11,6 +11,7 @@ var logger = require('morgan');
 // user home page logic script
 var homeRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var adminRouter = require('./routes/admin');
 
 var app = express();
 var d=app;
@@ -31,11 +32,13 @@ app.use(cookieParser());
 //After these libraries we also use the express.static middleware, which makes Express serve all the static files in the /public directory in the project root.
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', homeRouter);
 // define the Routes
 /*app.get("/", (req, res) => {
   res.send("Put admin access link in this page");
 });*/
+app.use('/', homeRouter);
+app.use('/admin', adminRouter);
+
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
