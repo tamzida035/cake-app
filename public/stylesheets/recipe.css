@@ -1,0 +1,108 @@
+/*
+Template Name: Foodies
+File: Layout CSS
+Author: TemplatesOnWeb
+Author URI: https://www.templateonweb.com/
+Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
+*/
+
+/*********************recipe****************/
+.popular_2_left2{
+  padding-top:122%;
+ }
+.popular_2_left3 li .span_2{
+  width:35px;
+  height:35px;
+  line-height:38px;
+  transition: 0.3s;
+ }
+ 
+.icon_dt{
+  width:40px;
+  height:40px;
+  line-height:40px;
+ }
+ 
+.course_dt1{
+  width:85%;
+ }
+.progress {
+    display: flex;
+    height: 0.5rem;
+    border-radius:0;
+}
+/*********************recipe_end****************/
+
+
+
+@media screen and (max-width : 767px){
+.course_dt1 {
+  width: 100%;
+}
+.course_dt1_inner1_right{
+  margin-top:15px;
+ }
+.course_dt1_inner1_right_new_right {
+   margin-top:15px!important;
+   text-align:center;
+ }
+.popular_2_left{
+   margin-top:8px;
+   margin-bottom:8px;
+ }
+.recipe_1_right{
+    margin-top:20px;
+ }
+.recipe_dt1 ul li{
+    margin-top:8px;
+    margin-bottom:8px;
+ }
+.recipe_dt2_left{
+   margin-top:8px;
+   margin-bottom:8px;
+ }
+.blog_dt1_inner1_right {
+  margin-top:15px;
+  text-align:left!important;
+ }
+ 
+.course_2_left {
+  margin-top:8px;
+   margin-bottom:8px;
+ }
+ }
+
+
+@media (min-width:576px) and (max-width:767px) {
+
+ }
+ 
+@media (min-width:768px) and (max-width:991px) {
+.course_dt1_inner1_right_new_right .button{
+   padding:25px 40px!important;
+ }
+.course_dt1 {
+  width: 100%;
+}
+.popular_2_left2{
+  padding-top:115%;
+ }
+.recipe_dt1 ul li{
+    margin-top:8px;
+    margin-bottom:8px;
+ }
+ }
+
+@media (min-width:992px) and (max-width:1200px) {
+
+ }
+
+@media (min-width:1201px) and (max-width:1300px) {
+
+ }
+@media screen and (min-width : 1400px){
+
+
+ }
+
+

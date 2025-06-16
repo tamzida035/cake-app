@@ -1,0 +1,28 @@
+doctype html
+// free web template downloaded from website
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title Cake Recipes
+    link(rel="stylesheet", href="../public/stylesheets/bootstrap.min.css")
+    link(rel="stylesheet", href="../public/stylesheets/global.css")
+    link(rel="stylesheet", href="../public/stylesheets/index.css")
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Tilt+Prism&display=swap")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Poppins&display=swap")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Signika:wght@300..700&display=swap")
+
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    // section(id="header") writing this (or any other line) line before block content works as well
+    block content
+    section(id="header")
+      nav(class="navbar navbar-expand-lg navbar-light w-100 pt-2 pb-2")
+        div(class="container-xl")
+          a(class="d-flex logo" href="/")
+           // b(class="fs-1  family_2"><i class="bi-cup-hot col_green"></i>) Foodies 
+            b.fs-1  family_2
+              i.bi-cup-hot col_green 
+              | Foodies

@@ -32,6 +32,7 @@ app.use(cookieParser());
 //After these libraries we also use the express.static middleware, which makes Express serve all the static files in the /public directory in the project root.
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // define the Routes
 /*app.get("/", (req, res) => {
   res.send("Put admin access link in this page");

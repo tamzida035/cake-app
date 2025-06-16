@@ -1,0 +1,164 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    title Foodies
+    link(href="css/bootstrap.min.css", rel="stylesheet")
+    link(href="css/global.css", rel="stylesheet")
+    link(href="css/index.css", rel="stylesheet")
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Tilt+Prism&display=swap", rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Poppins&display=swap", rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Signika:wght@300..700&display=swap", rel="stylesheet")
+  body
+    section#header
+      nav.navbar.navbar-expand-lg.navbar-light.w-100.pt-2.pb-2
+        .container-xl
+          a.d-flex.logo(href="/")
+            b(class="fs-1  family_2")
+              i(class="bi-cup-hot col_green")
+              | Foodies
+          button.navbar-toggler.offcanvas-nav-btn.ms-auto.me-3(type="button")
+            img(src="..public/images/icons-svg/list.svg", width="40", height="40", alt="Open TemplateOnweb website menu")
+          .offcanvas.offcanvas-start.offcanvas-nav(style="width: 20rem")
+            .offcanvas-header.shadow
+              a.d-flex.logo(href="/")
+                b(class="fs-1  family_2")
+                  i(class="bi-cup-hot col_green")
+                  | Foodies
+              img.ms-auto(src="..public/images/icons-svg/x.svg", width="40", height="40", data-bs-dismiss="offcanvas", aria-label="Close", alt="Close TemplateOnweb website menu")
+            .offcanvas-body.pt-0.align-items-center
+              ul.navbar-nav.align-items-lg-center.ms-auto
+                // may replece it with recipe button (not sure)
+                li.nav-item
+                  a.nav-link.dropdown-toggle(href="/", title="Visit home page")
+                    | About Us
+                li(class="nav-item dropdown drop_border")
+                  a#navbarDropdown.nav-link.dropdown-toggle(href="#", role="button", data-bs-toggle="dropdown", aria-expanded="false")
+                    | Recipes
+                    img(src="../public/images/icons-svg/chevron-down.svg", width="15", height="15", alt="Submenu open/close icon")
+                  ul(class="dropdown-menu drop_1 shadow", aria-labelledby="navbarDropdown")
+                    li
+                      a.dropdown-item(href="recipe.html")  All Recipes
+                    li
+                      a.dropdown-item.border-0(href="recipe_detail.html")  My personal recipes
+                    // add another item on this dropdown menu -my public recipes
+              ul(class="navbar-nav align-items-lg-center ms-auto nav_right")
+                li.nav-item.dropdown
+                  a#navbarDropdown(class="dropdown-toggle nav_hide nav-link fs-5", href="#", role="button", data-bs-toggle="dropdown", aria-expanded="false")
+                    i.bi.bi-search
+                  ul(class="dropdown-menu drop_search p-3 shadow", aria-labelledby="navbarDropdown", style=)
+                    form.navbar-form(role="search")
+                      .input-group
+                        input.form-control(type="text", placeholder="Search Keyword")
+                        span.input-group-btn
+                          button(class="btn btn-primary bg_red border-0 rounded-0 p-2 px-3", type="button")
+                            i.bi.bi-search
+                li.nav-item.dropdown
+                  // replace shopping  cart sign with 'my account' sign. clicking on it will logout user. display text 'logout'
+                  a#navbarDropdown(class="nav-link dropdown-toggle drop_togn nav_hide fs-5", href="#", role="button", data-bs-toggle="dropdown", aria-expanded="false")
+                    i.bi.bi-cart
+    section#center(class="center_home")
+      #carouselExampleCaptions.carousel.slide(data-bs-ride="carousel")
+        .carousel-inner
+          .carousel-item
+            img.d-block.img-fluid(src="../public/images/1.jpg", alt="...")
+            .carousel-caption.d-md-block.text-start
+              h5.text-uppercase Latest Recipe
+              h1.mt-3.mb-3 Flat Irons, 
+                br
+                span(class="col_green") Skillet
+                | Food
+              p.w-50
+                | Ac mi duis mollis. Sapiente? Scelerisque quae, penatibus? Suscipit class corporis nostra rem quos 
+                | voluptatibus habitant? Fames, vivamus minim nemo enim, gravida lobortis quasi, eum.
+              ul.mb-0.mt-4
+                li.d-inline-block.me-2
+                  a.button(href="#") View more 
+                    i.fa.fa-long-arrow-right.ms-2
+                li.d-inline-block
+                  a(class="button button_1", href="#") Contact Us 
+                    i.fa.fa-long-arrow-right.ms-2
+          .carousel-item.active
+            img.d-block.img-fluid(src="../public/images/2.jpg", alt="...")
+            .carousel-caption.d-md-block.text-start
+              h5(class="text-uppercase col_light")  Latest Recipe
+              h1.mt-3.mb-3 Cheesecake, 
+                span(class="col_green") New York
+                | style
+              ul.mb-0.mt-4
+                li.d-inline-block.me-2
+                  a.button(href="#") see recipe 
+                    i.fa.fa-long-arrow-right.ms-2
+          .carousel-item
+            img.d-block.img-fluid(src="../public/images/3.jpg", alt="...")
+            .carousel-caption.d-md-block.text-start
+              h5(class="text-uppercase col_light") Latest Recipe
+              h1.mt-3.mb-3
+                span(class="col_green") Red velvet
+                | cake
+              ul.mb-0.mt-4
+                li.d-inline-block.me-2
+                  a.button(href="#") View more 
+                    i.fa.fa-long-arrow-right.ms-2
+        button.carousel-control-prev(type="button", data-bs-target="#carouselExampleCaptions", data-bs-slide="prev")
+          span.carousel-control-prev-icon(aria-hidden="true")
+          span.visually-hidden Previous
+        button.carousel-control-next(type="button", data-bs-target="#carouselExampleCaptions", data-bs-slide="next")
+          span.carousel-control-next-icon(aria-hidden="true")
+          span.visually-hidden Next
+    section#popular.pt-5.pb-5
+      .container-xl
+        div(class="row popular_1 text-center mb-4")
+          .col-md-12
+            h1 My Recipes
+        div(class="row row-cols-1 row-cols-md-2 popular_2")
+          .col.p-0
+            div(class="popular_2_left position-relative")
+              div(class="popular_2_left1")
+                a(href="#")
+                  img.img-fluid(src="../public/images/9.jpg", alt="abc")
+              div(class="popular_2_left2 position-absolute bg_back w-100 h-100 top-0 px-4")
+                h2
+                  a.text-white.link(href="#") Almond Pastry Cookies
+                span(class="text-white font_12") PUBLIC  
+              div(class="popular_2_left3 position-absolute top-0 w-100 pt-3")
+                ul.mb-0.justify-content-between.d-flex
+                  li
+                    span(class="d-inline-block bg-black text-white py-2 px-4 span_1  font_13") March 19, 2020
+                  li.pe-3
+                    span
+                      a(class="d-inline-block bg-white col_red text-center span_2   rounded-circle", href="#")
+                        i.bi-heart-fill
+          .col.p-0
+            div(class="popular_2_left position-relative")
+              div(class="popular_2_left1")
+                a(href="#")
+                  img.img-fluid(src="../public/images/10.jpg", alt="abc")
+              div(class="popular_2_left2 position-absolute bg_back w-100 h-100 top-0 px-4")
+                h2
+                  a.text-white.link(href="#") Rose Syrup Ice Tea
+                span(class="text-white font_12") PERSONAL  
+              div(class="popular_2_left3 position-absolute top-0 w-100 pt-3")
+                ul.mb-0.justify-content-between.d-flex
+                  li
+                    span(class="d-inline-block bg-black text-white py-2 px-4 span_1  font_13") March 21, 2023
+                  li.pe-3
+                    span
+                      a(class="d-inline-block bg-white col_red text-center span_2   rounded-circle", href="#")
+                        i.bi-heart-fill
+    section#footer.pt-5.pb-5.bg-black
+      .container-xl
+        div(class="row footer_2 mt-4 text-center")
+          .col-md-12
+            ul
+              li(class="d-inline-block me-3 font_14")
+                a.text-white-50.link(href="#") ADMIN ACCESS
+            p.mb-0.text-white-50 © 2025 Delicious Recipes. All Rights Reserved | Design by 
+              a(class="col_green", href="http://www.templateonweb.com") TemplateOnWeb
+    script(src="..public/javascripts/bootstrap.bundle.min.js")
+    script(src="..public/javascripts/theme.min.js")
+
+
