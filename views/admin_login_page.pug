@@ -1,6 +1,42 @@
-extends layout
+// extends layout
 
-block content
-  h1= title
-  p Admin Login Panel
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title Admin Login
+    link(rel="stylesheet", href="/stylesheets/bootstrap.min.css")
+    link(rel="stylesheet", href="/stylesheets/global.css")
+    link(rel="stylesheet", href="/stylesheets/index.css")
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Tilt+Prism&display=swap")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Poppins&display=swap")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Signika:wght@300..700&display=swap")
+  body
+    section(id="letter" class="pt-5 pb-5 border-top")
+      div(class="container-xl")
+        div(class="row popular_1 text-center w-50 mx-auto")
+          div(class="col-md-12")
+            h1(class="mb-4")  Admin Access
+          form(action="/admin/login" method="post")
+            div(class="mb-3 row")
+              //input(class="form-control bg-light border-0" placeholder="Email Address" type="text")
+              label(for="inputPassword" class="col-sm-2 col-form-label") Password
+              // password field
+            div(class="col-sm-10")
+                input(type="password" class="form-control" name="adminpassword")
+                h6(class="mb-0 mt-5 text-center")
+                  button(type="submit" class="button b d-block rounded-0") Login
+            div(class="col-sm-6 col_green")
+                if errors
+                  ul
+                    for error in errors
+                      li!= error.msg
+                p(class="col_green") #{msg}
+
+// block content
+  
+  //h1 Admin Login Panel
   

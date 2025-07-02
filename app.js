@@ -7,6 +7,11 @@ var morgan=require("morgan");
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// database connection
+var connectDB=require("./util/database");
+// middleware that parses user input and makes it available through the req.body property.
+const bodyParser = require('body-parser'); 
+
 // These modules/files contain code for handling particular sets of related "routes" (URL paths)
 // user home page logic script
 var homeRouter = require('./routes/index');
@@ -19,6 +24,9 @@ var d=app;
 //middleware
 app.use(morgan("dev"));
 
+//setup database connection
+//connectDB();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -29,6 +37,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+//When working with forms, we use the urlencoded parser because by default, forms send data in URL encoded format.
+app.use(bodyParser.urlencoded({ extended: false }));// set to false, means it uses the QueryString library to parse URL encoded data
+
 //After these libraries we also use the express.static middleware, which makes Express serve all the static files in the /public directory in the project root.
 app.use(express.static(path.join(__dirname, 'public')));
 

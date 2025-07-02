@@ -1,0 +1,53 @@
+doctype html
+html
+head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title Cake Recipes
+    link(rel="stylesheet", href="/stylesheets/bootstrap.min.css")
+    link(rel="stylesheet", href="/stylesheets/global.css")
+    link(rel="stylesheet", href="/stylesheets/index.css")
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Tilt+Prism&display=swap")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Poppins&display=swap")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Signika:wght@300..700&display=swap")
+  
+body
+   section(id="header")
+     nav(class="navbar navbar-expand-lg navbar-light w-100 pt-2 pb-2")
+       div(class="container-xl")
+        a(href="/")
+            //website logo
+            b(class="fs-1  family_2") Delicious cakes (admin)
+        div(class="offcanvas offcanvas-start offcanvas-nav" style="width: 20rem")
+            // menu bar
+            div(class="offcanvas-body pt-0 align-items-center")
+              ul(class="navbar-nav align-items-lg-center ms-auto")
+                li(class="nav-item")
+                  a(class="nav-link dropdown-toggle" href="about.html" title="Visit home page") Add Ingredients
+                li(class="nav-item dropdown drop_border")
+                  a(class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Recipes
+                    img(src="/images/icons-svg/chevron-down.svg" width="15" height="15" alt="Submenu open/close icon")
+                  ul(class="dropdown-menu drop_1 shadow" aria-labelledby="navbarDropdown")
+                    li
+                      a(class="dropdown-item" href="recipe.html") All Recipes
+                    li
+                      a(class="dropdown-item border-0" href="recipe_detail.html") My personal recipes
+              // search bar
+              ul(class="navbar-nav align-items-lg-center ms-auto nav_right")
+                li(class="nav-item dropdown")
+                  a(class="dropdown-toggle nav_hide nav-link fs-5" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+                    i(class="bi bi-search")
+                  ul(class="dropdown-menu drop_search p-3 shadow" aria-labelledby="navbarDropdown" style="")
+                    form(class="navbar-form" role="search")
+                      div(class="input-group")
+                        input(type="text" class="form-control" placeholder="Search recipe")
+                        span(class="input-group-btn")
+                            button(class="btn btn-primary bg_red border-0 rounded-0 p-2 px-3" type="button")
+                              i(class="bi bi-search")
+                // log out button symbol here
+                li(class="nav-item dropdown")
+                  a(class="nav-link dropdown-toggle drop_togn nav_hide fs-5" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+                    i(class="bi bi-cart")
+   block content
