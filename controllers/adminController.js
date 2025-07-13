@@ -7,9 +7,10 @@ const{
 }=require("../models/adminLogin");
 // importing adminLogin class
 const login=require('../models/adminLogin');
+//importing dotenv package to share contents of .env file
+var dotenv=require("dotenv").config();
 
-
-
+const session_name=process.env.SESSIONCOOKIENAME;
 
 const { body, validationResult } = require("express-validator");
 
@@ -125,4 +126,16 @@ exports.home = asyncHandler(async (req, res, next) => {
     res.render("admin_home_page", {});
   }*/
  //res.render("admin_home_page", {});
+});
+
+exports.logOut = asyncHandler(async (req, res, next) => {
+    req.session.destroy(function(err) {
+    if (err) {
+      //res.send('An err occured: ' +err.message);
+      res.render("admin_views/admin_login_page", {error_msg:err.message});
+    } else {
+      var message = 'You have been successfully logged out';
+      res.status(200).clearCookie(session_name).redirect('/');
+    }
+})
 });

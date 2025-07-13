@@ -13,4 +13,7 @@ router.post("/login", admin_controller.authenticateAdmin);
 //admin home page
 router.get("/home",admin_controller.home);
 
+//admin log out
+router.get("/logout",admin_controller.logOut);
+
 module.exports = router;

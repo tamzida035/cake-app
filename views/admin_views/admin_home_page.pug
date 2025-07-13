@@ -48,11 +48,16 @@ body
                              // i(class="bi bi-search")
                 // log out button symbol here
                 li(class="nav-item")
-                  a(class="nav-link fs-5" href="#" id="navbarDropdown" role="button" aria-expanded="false")
+                  a(class="nav-link fs-5" href="/admin/logout" id="logoutButton" role="button" aria-expanded="false")
                     i(class="bi bi-box-arrow-right")
                     
      section(id="welcome_msg")
         div(class="class=row popular_1 text-left mb-4")
           div(class="col-md-12")
-            h3(class="col_green") #{welcome_msg}  
+            h3(class="col_green") #{welcome_msg}
+     section(id="logout_error msg")
+        div(class="class=row popular_1 text-right mb-4")
+          div(class="col-md-12")
+            h3(class="col_red") #{error_msg}
+
    block content

@@ -32,12 +32,14 @@ app.use(morgan("dev"));
 // I used crypto.randomBytes(20).toString('hex') to generate a string. The secret should be constant. If it changes, existing sessions become invalid.
 // It is saved in  .env file
 const secret_key=process.env.SECRET_KEY;
+const session_name=process.env.SESSIONCOOKIENAME;
 //console.log('secret key '+ secret_key);
 //app.use(cookieParser('LKp:OM2C;uO;BIE{`c*^Qg(n'bLY)7'');
 app.use(session({genid: function (req) {
     //This option creates a session ID by using a function of req.We are using the UUID library to call the function uuidv4() and set a random ID.
     return uuidv4();
   },
+  name: session_name,
   secret: secret_key,
   //If true, whether or not the data has changed, the session data is forcibly saved. 
   //Most of the time, you want this set to false to reduce calls to your database.
