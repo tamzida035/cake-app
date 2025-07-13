@@ -16,7 +16,7 @@ const { body, validationResult } = require("express-validator");
 
 // admin login page
 exports.index = asyncHandler(async (req, res, next) => {
-  res.render("admin_login_page", {});
+  res.render("admin_views/admin_login_page", {});
 });
 
 //post function to process admin login
@@ -32,7 +32,7 @@ exports.authenticateAdmin=[
 
         // There are errors. Render the form again with sanitized values/error messages.
         if (!errors.isEmpty()) {
-            res.render("admin_login_page", {errors: errors.array()});
+            res.render("admin_views/admin_login_page", {errors: errors.array()});
             return;
         }
 
@@ -51,7 +51,7 @@ exports.authenticateAdmin=[
                 }
                 else{
                    //const msg="mismatched passwords"
-                   res.render("admin_login_page", {msg: 'You have entered wrong password.'});
+                   res.render("admin_views/admin_login_page", {msg: 'You have entered wrong password.'});
                    //res.status(401).json({error:"mismatched password"});
                    return;
                 }
@@ -59,7 +59,7 @@ exports.authenticateAdmin=[
         }
         catch(err){
             // not yet tested
-            res.render("admin_database_errors", {error: err.message});
+            res.render("admin_views/admin_database_errors", {error: err.message});
            // console.error(`Error while getting Records `, err.message);
             next(err);
         }
@@ -105,7 +105,7 @@ exports.home = asyncHandler(async (req, res, next) => {
   // allow only admin to access admin home page
   if (req.session.data){
     if (req.session.data.role=='admin'){
-        res.render("admin_home_page", {welcome_msg:'Welcome back home, admin!'});
+        res.render("admin_views/admin_home_page", {welcome_msg:'Welcome back home, admin!'});
     }
     else
     {
