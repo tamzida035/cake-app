@@ -46,7 +46,7 @@ app.use(session({genid: function (req) {
   resave: false,
   //If true, new uninitialized sessions get forcibly saved.
   saveUninitialized: true,
-  cookie: { maxAge: 60 * 60 * 1000 } //1 hour (for production,change it to)
+  cookie: { maxAge: 60 * 60 * 1000*2 } //2 hour (for production,change it to 2)
   }));
 
 //setup database connection
