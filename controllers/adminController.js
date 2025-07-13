@@ -10,6 +10,7 @@ const login=require('../models/adminLogin');
 
 
 
+
 const { body, validationResult } = require("express-validator");
 
 
@@ -41,6 +42,10 @@ exports.authenticateAdmin=[
             const db_password=await checkAdminPassword(function(results){
                 if(results[0].password===typed_password)
                 {
+                    // Authenticate the user
+                   // req.session.loggedin = true;
+                    var loggedin_user_data = {role: "admin",status: 'logged-in',firstname: 'admin',lastname: '',};
+                    req.session.data = loggedin_user_data;
                     //load admin home page
                     res.redirect("/admin/home");
                 }
@@ -95,8 +100,29 @@ exports.authenticateAdmin=[
     } 
 });*/
 
-// admin home page
+
 exports.home = asyncHandler(async (req, res, next) => {
-  // verify here that admin has logged in(session var)
-  res.render("admin_home_page", {});
+  // allow only admin to access admin home page
+  if (req.session.data){
+    if (req.session.data.role=='admin'){
+        res.render("admin_home_page", {welcome_msg:'Welcome back home, admin!'});
+    }
+    else
+    {
+        // do not allow logged-in users access
+        res.render("error_views/unauthorized_access", {error_msg:'Only admin is authorized to perform this request !'});
+
+    }
+  }
+  else
+  {
+    res.render("error_views/unauthorized_access", {error_msg:'You are not logged-in. You are not authorized to perform this request !'});
+    
+  }
+
+  /*if (req.session.data.role=='admin')
+  {
+    res.render("admin_home_page", {});
+  }*/
+ //res.render("admin_home_page", {});
 });

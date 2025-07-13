@@ -1,11 +1,15 @@
-//the "real" application entry point: sets up the application with various settings and middleware, 
+//this file is the "real" application entry point: sets up the application with various settings and middleware, 
 var createError = require('http-errors');
 var express = require('express');
+//importing dotenv package to share contents of .env file
 var dotenv=require("dotenv").config();
 var path = require('path');
 var morgan=require("morgan");
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require('express-session'); // express-sessions
+const { v4: uuidv4 } = require('uuid'); // uuid, To call: uuidv4();
+//const key=require("./util/secret_key_generation_admin");
 
 // database connection
 var connectDB=require("./util/database");
@@ -23,6 +27,25 @@ var d=app;
 
 //middleware
 app.use(morgan("dev"));
+// Configure Sessions Middleware
+//The secret key signs the cookie that stores the session ID. It should be a random string that is difficult for a hacker to guess.
+// I used crypto.randomBytes(20).toString('hex') to generate a string. The secret should be constant. If it changes, existing sessions become invalid.
+// It is saved in  .env file
+const secret_key=process.env.SECRET_KEY;
+//console.log('secret key '+ secret_key);
+//app.use(cookieParser('LKp:OM2C;uO;BIE{`c*^Qg(n'bLY)7'');
+app.use(session({genid: function (req) {
+    //This option creates a session ID by using a function of req.We are using the UUID library to call the function uuidv4() and set a random ID.
+    return uuidv4();
+  },
+  secret: secret_key,
+  //If true, whether or not the data has changed, the session data is forcibly saved. 
+  //Most of the time, you want this set to false to reduce calls to your database.
+  resave: false,
+  //If true, new uninitialized sessions get forcibly saved.
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 } //1 hour (for production,change it to)
+  }));
 
 //setup database connection
 //connectDB();

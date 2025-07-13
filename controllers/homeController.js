@@ -3,5 +3,20 @@ const asyncHandler = require("express-async-handler");
 
 exports.index = asyncHandler(async (req, res, next) => {
  // res.send("NOT IMPLEMENTED: Home Page");
-  res.render("index", {});
+ if (req.session.data){
+    if(req.session.data.role=='admin')
+    {
+       res.redirect("/admin/home");
+    }
+    else{
+
+    }
+
+ }
+ else{
+    res.render("index", {});
+
+ }
+
+ // res.render("index", {});
 });
