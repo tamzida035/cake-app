@@ -42,7 +42,7 @@ exports.authenticateAdmin=[
         // Data from loginform is valid.
         const typed_password =req.body.adminpassword;
 
-        console.log("typed_password: "+typed_password);
+        //console.log("typed_password: "+typed_password);
 
         //NOTE: the admin password has been hashed before inserting into db.It has been executed only once and need not be executed further
         /*const salt = await bcrypt.genSalt(10);
@@ -72,10 +72,11 @@ exports.authenticateAdmin=[
                 const passwordMatch = bcrypt.compare(typed_password,results[0].password);
                 if(passwordMatch){
                     // Authenticate the user
-                     var loggedin_user_data = {role: "admin",status: 'logged-in',firstname: 'admin',lastname: '',};
+                     var loggedin_user_data = {role: "admin",status: 'ready-to-login',firstname: 'admin',lastname: '',};
                      req.session.data = loggedin_user_data;
                      //load admin home page
-                      res.redirect("/admin/home");
+                     res.redirect("/admin/home");
+                     //res.render("admin_views/admin_home_page", {welcome_msg:'show login success alert'});
                 }
                 else{
                     res.render("admin_views/admin_login_page", {msg: 'You have entered wrong password.'});
@@ -122,12 +123,22 @@ exports.authenticateAdmin=[
 ];
 
 
-
+//admin home page
 exports.home = asyncHandler(async (req, res, next) => {
   // allow only admin to access admin home page
   if (req.session.data){
     if (req.session.data.role=='admin'){
-        res.render("admin_views/admin_home_page", {welcome_msg:'Welcome back home, admin!'});
+        if(req.session.data.status=='ready-to-login')
+        {
+            req.session.data.status='logged-in';
+            res.render("admin_views/admin_home_page", {welcome_msg:'show login success alert'});
+
+        }
+        else{
+            res.render("admin_views/admin_home_page", {});
+
+        }
+
     }
     else
     {
@@ -141,14 +152,10 @@ exports.home = asyncHandler(async (req, res, next) => {
     res.render("error_views/unauthorized_access", {error_msg:'You are not logged-in. You are not authorized to perform this request !'});
     
   }
-
-  /*if (req.session.data.role=='admin')
-  {
-    res.render("admin_home_page", {});
-  }*/
- //res.render("admin_home_page", {});
 });
 
+
+//admin logout
 exports.logOut = asyncHandler(async (req, res, next) => {
     req.session.destroy(function(err) {
     if (err) {
@@ -159,4 +166,25 @@ exports.logOut = asyncHandler(async (req, res, next) => {
       res.status(200).clearCookie(session_name).redirect('/');
     }
 })
+});
+
+exports.add_Ingredients = asyncHandler(async (req, res, next) => {
+   // allow access to add ingredients page only if admin session is valid
+   if (req.session.data){
+    if (req.session.data.role=='admin'&& req.session.data.status=='logged-in'){
+        res.render("admin_views/admin_add_ingredients", {});
+
+    }
+    else{
+        // do not allow logged-in users access
+        res.render("error_views/unauthorized_access", {error_msg:'Only admin is authorized to perform this request !'});
+    }
+   }
+   else
+  {
+    res.render("error_views/unauthorized_access", {error_msg:'You are not logged-in. You are not authorized to perform this request !'});
+    
+  }
+
+   
 });
