@@ -1,4 +1,140 @@
 extends admin_base
 
 block content
-	p HELLO
+    //breadcrumb
+    section(id="breadcrumb" class="center_o bg-light pt-3 pb-3")
+     div(class="container-xl")
+      div(class="row center_o1")
+       div(class="col-md-12")
+        h6(class="mb-0 col_green")
+          a(href="/") Home
+          span(class="me-2 ms-2")
+           i(class="bi bi-caret-right-fill align-middle text-muted") 
+          Add add Ingredients
+
+    //form
+    div(class="container" id="ingred_form_container")
+     div(class="row justify-content-center")
+        div(class="col-md-6")
+         form(action="/admin/add_ingredients" method="post" id="dynamicForm")
+          div(class="contact_1r shadow p-4")
+           div(class="contact_1ri row")
+            div(class="col-md-4")
+             div(class="form-group")
+              label(for="ingredient_name") 
+               b INGREDIENT
+               //empty space
+               div(class="row mb-3")
+               //ingredient field
+               div(class="contact_1ril")
+                div(class="border_light")
+                 input(type="text" class="form-control border-0" placeholder="name of ingredient" name="ingred_field" id="ingred_field")
+               //span(id="ingred_field_error_msg" name="ingred_field_error_msg")
+               //OPTION 1
+               //div(class="border_light")
+                //if errors
+                 //ul
+                  //li(class="col_green")!=errors[0].msg
+
+
+                 div(class="row mb-3")
+                 div(class="row mb-3")
+            div(class="col-md-auto")
+             div(class="row mb-3")
+              //span(id="ingred_field_error_msg" name="ingred_field_error_msg") (original location)
+               //#{error_ingred_field}
+               //if errors
+                //li(class="col_green")!=e1
+                //ul
+                 //for error in errors
+                  //li(class="col_green")!=error.msg
+             //empty space
+             div(class="row mb-3")
+             div(class="row mb-3")
+             div(class="row mb-3")
+             div(class="row mb-3")
+              span(id="ingred_field_error_msg" name="ingred_field_error_msg")
+               //if errors
+                //p(class="col_green")!=e1
+            div(class="row mb-3")
+               legend(class="col-form-label col-sm-2 pt-0") STATUS
+               //radio buttons
+               div(class="form-check col-md-3")
+                input(class="form-check-input" type="radio" name="options" id="halal" value="halal")
+                label(class="form-check-label" for="halal") Halal
+               div(class="form-check col-md-3")
+                input(class="form-check-input" type="radio" name="options" id="haram" value="haram")
+                label(class="form-check-label" for="haram") Haram
+               div(class="form-check col-md-3")
+                input(class="form-check-input" type="radio" name="options" id="mushbooh" value="mushbooh")
+                label(class="form-check-label" for="mushbooh") Mushbooh
+            div(class="row mb-3")
+             span(id="radio_field_error_msg" name="radio_field_error_msg")
+              //if errors
+               //p(class="col_green")!=e2
+            div(class="row mb" id='tf_and_buttons')
+             if errors
+              for e in errors
+               p(class="col_green")!=e.msg
+             if exist_error_msg
+               p(class="col_green")!=exist_error_msg 
+            div(class="row mb" id='alter_button')
+             span(id="message")
+             //div(class="col-md-10")//ORIGINAL
+             div(class="col-md-auto")
+              h6(class="text-center")
+               button(type="button" class="button b d-block rounded-0 button_medium_size" id="add_dynamic_field") + add alternative halal ingredients
+            //empty space
+            div(class="row mb-3")
+            div(class="row mb-3")
+
+            //div(class="col-md-8")//ORIGINAL
+            div(class="col-md-auto")
+             h6(class="text-center")
+              button(type="submit" class="button b d-block rounded-0") Submit
+             p(class="col_green" style="font-size: x-small;") * Ingredient name can contain alphabets, apostrophe, spaces and '-'. First character can only be alphabet.'-' and apostrophe can be placed only between 2 alphabets
+            div(class="col-md-auto")
+             p(class="col_green")!=add_ingred_msg 
+
+            
+
+            
+
+
+
+
+
+
+
+
+            //DELETE THIS BEFORE SUBMISSION
+            //div(class="row mb")
+            // div(id="dynamic_field_add")
+              //div(class="col-md-8" )
+              //span(id="message")
+             // div(class="col-md-10")
+               //div(class="contact_1ril") (only for dynamic field)
+                //div(class="border_light") (only for dynamic field)
+                  //input(type="text" class="form-control border-0" placeholder="alternative ingredient") (only for dynamic field)
+               //h6(class="text-center")
+               // button(type="button" class="button b d-block rounded-0 button_medium_size" id="add_dynamic_field") + add alternative halal ingredients
+            //TO DO: imitate this design for textfield,remove button
+            //div(class="row mb")
+             //div(class="col-md-6")
+              //input(type="text" class="form-control border-0" placeholder="name of ingredient")
+             //div(class="col-md-3" id="dynamic_field_remove")
+              //h6(class="text-center")
+               //button(type="button" class="button b d-block rounded-0 button_small_size" id="remove_dynamic_field") -
+              
+                
+               
+
+    //tested and found refernce is correct
+    script(src="/javascripts/admin_dynamic_fields.js")
+    //script(src="/javascripts/bootstrap.bundle.min.js")
+    //script(src=".../controllers/adminController.js")
+            
+             
+
+
+

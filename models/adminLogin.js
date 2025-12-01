@@ -3,6 +3,7 @@ const db=require('../util/database');
 // hash the password
 const bcrypt = require("bcryptjs");
 
+//check if admin has entered correct password
 const checkAdminPassword=function(cb){
 	//already done the following through command line Interface
 	//create table AdminPassword (password VARCHAR(255));
@@ -15,11 +16,13 @@ const checkAdminPassword=function(cb){
 		if(err){
 			// TO DO: give pug template here
 			console.error('Error fetching users from the database: ' + err.stack);
+			
 		}
 		else{
 			if(cb){
 				//console.log("admin pass: "+result[0].password);
 				cb(result);	
+				//return true;
 
 			}
 				
@@ -33,7 +36,7 @@ const checkAdminPassword=function(cb){
 const insertHashedPassword=function(hashedPassword){
 	const insert_statement='INSERT INTO AdminPassword (password) VALUES (?)';
 	//const value=[hashedPassword];
-	console.log("problem is here "+ hashedPassword);
+	//console.log("problem is here "+ hashedPassword);
 	//const insert_q = mysql.format(insert_statement,[hashedPassword]);
 	db.query(insert_statement,hashedPassword,function(err){
 		if(err){

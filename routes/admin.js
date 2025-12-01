@@ -16,7 +16,10 @@ router.get("/home",admin_controller.home);
 //admin log out
 router.get("/logout",admin_controller.logOut);
 
-//admin add ingredients
-router.get("/add_ingredients",admin_controller.add_Ingredients);
+//admin add ingredients (get)
+router.get("/add_ingredients",admin_controller.add_Ingredients_Page);
+
+//add-ingredients form validation
+router.post("/add_ingredients",admin_controller.validate_Ingredients);
 
 module.exports = router;

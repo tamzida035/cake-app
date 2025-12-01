@@ -63,6 +63,11 @@ a:focus{
 	text-transform:uppercase;
 }
 
+/* my addition*/
+.button_small_size {font-size: 8px;}
+
+.button_medium_size {font-size: 10px;}
+
 .button:hover{
 	background:var(--green);
 	color:var(--bs-white);
@@ -369,6 +374,7 @@ p{
 	box-shadow:none;
 	border-color: var(--border_light); 
 }
+
 .form-select:focus{
 	box-shadow:none;
 	border-color:var(--border_light);  
@@ -379,6 +385,13 @@ p{
 	border-radius:0;
 	height:45px;
 	font-size:15px;
+}
+/*my addition*/
+.highlight-textfield{
+	/*border: 20px dashed orange;*/
+	/*border-color: var(--green);*/
+	/*background-image: linear-gradient(to right, pink, lightgreen);*/
+	background-color: #e1f5e7;
 }
 .form-select{
 	border-color:var(--border_light); 

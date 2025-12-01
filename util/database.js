@@ -5,7 +5,7 @@ require("dotenv").config();
 const mysql=require('mysql2');
 
 //password for accessing the database which is saved in a private .env file
-const password=process.env.CASUAL_PASS;
+const password=process.env.CASUAL_PASS; // empty string
 
 //configuring db connection
 //already done the following through command line Interface
@@ -25,6 +25,8 @@ connection.connect((err) => {
 	}
 	console.log('Connected to the database as ID ' + connection.threadId);
 });
+
+
 
 module.exports=connection;
 //configuring db connection
