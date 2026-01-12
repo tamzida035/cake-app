@@ -14,7 +14,12 @@ const login=require('../models/adminLogin');
 //const db=require('../util/database');
 
 //import database functions needed for admin adding ingredients to database
-const insertIngredient=require("../models/Ingredients");
+//const insertIngredient=require("../models/Ingredients");//original code
+const {
+    insertIngredient,
+    trialFunc
+}=require("../models/Ingredients");
+
 
 //importing dotenv package to share contents of .env file
 var dotenv=require("dotenv").config();
@@ -84,7 +89,7 @@ exports.authenticateAdmin=[
         // decrypt the password in the database before comparing it with user entered password
         try{
             const db_password=await checkAdminPassword(function(results){
-                bcrypt.compare(typed_password, results[0].password, (err, is_matched) => {
+                bcrypt.compare(typed_password, results[0][0].password, (err, is_matched) => {
                     if(err)
                     {
                         console.error('Error comparing passwords: ' + err);// to do: put error template here
@@ -172,6 +177,7 @@ exports.home = asyncHandler(async (req, res, next) => {
   }
   else
   {
+    //actual
     res.render("error_views/unauthorized_access", {error_msg:'You are not logged-in. You are not authorized to perform this request !'});
     
   }
@@ -190,6 +196,7 @@ exports.logOut = asyncHandler(async (req, res, next) => {
     }
 })
 });
+
 // allow access to add ingredients page only if admin session is valid
 exports.add_Ingredients_Page = asyncHandler(async (req, res, next) => {
    if (req.session.data){
@@ -204,10 +211,25 @@ exports.add_Ingredients_Page = asyncHandler(async (req, res, next) => {
    }
    else
   {
+    //actual 
     res.render("error_views/unauthorized_access", {error_msg:'You are not logged-in. You are not authorized to perform this request !'});
     
   }
    
+});
+
+//test func
+exports.testFunc = asyncHandler(async (req, res, next) => {
+    res.status(200).json({ingred_field: "riyyan"});
+});
+
+//error format for adding ingredients (not used)
+const myValidationResult = validationResult.withDefaults({
+  formatter: (error) => {
+    return {
+      errorMsg: error.msg,
+    };
+  }
 });
 
 //post function to sprocess the add_ingredients form
@@ -221,15 +243,16 @@ exports.validate_Ingredients = [
     body("ingred_field")
     .custom(async value => {
         if(value.trim()=='')
-            throw new Error('Main Ingredient field was empty'); 
-        //console.log("len: "+value.length);
+        { 
+            //console.log("here am");
+            throw new Error('Main Ingredient field was empty'); //original code
+        }
+        
         sanitized_main_ingred="";
         var splitted_words=value.split(/\s+/);
         var pattern = /^[a-zA-Z]+['\-]?[a-zA-Z]{1,}$/;// seems to work correctly
         for (var w=0; w<splitted_words.length;w++)
         {
-         //console.log("w: "+splitted_words[w]);
-         //console.log(splitted_words[w].match(pattern));
          if(splitted_words[w]=='')
             continue;
          if(!splitted_words[w].match(pattern))
@@ -265,9 +288,9 @@ exports.validate_Ingredients = [
     }),// the radio button field
     body("options")
     .custom(async value2 => {
+        //console.log(value2);
         if(value2==undefined)
         {
-            //error_option_field='main ingredients status was not selected';
             throw new Error('main ingredients status was not selected');
         }
     }),
@@ -279,14 +302,14 @@ exports.validate_Ingredients = [
         {
             throw new Error('Alternative Ingredient 1: field was empty');
         }
-        console.log("value: "+value);
+        //console.log("value: "+value);
         sanitized_dyn_field1="";
         var splitted_words=value.split(/\s+/);
         var pattern = /^[a-zA-Z]+['\-]?[a-zA-Z]{1,}$/;// seems to work correctly
         for (var w=0; w<splitted_words.length;w++)
         {
-         console.log("w: "+splitted_words[w]);
-         console.log(splitted_words[w].match(pattern));
+         //console.log("w: "+splitted_words[w]);
+         //console.log(splitted_words[w].match(pattern));
          if(splitted_words[w]=='')
             continue;
          if(!splitted_words[w].match(pattern))
@@ -310,7 +333,6 @@ exports.validate_Ingredients = [
             }
             else
             {
-                console.log("I am here "+w);
                 if(w==0) sanitized_dyn_field1+=splitted_words[w];
                 else sanitized_dyn_field1+=(" "+splitted_words[w]);
             }
@@ -405,27 +427,34 @@ exports.validate_Ingredients = [
     
 
     // Process request after validation and sanitization.
-    asyncHandler(async(req,res)=>{
+    asyncHandler(async(req,res,next)=>{
         
-        // Extract the validation errors from a request.
-        const errors = validationResult(req);
+        //Extract the validation errors from a request.
+        const result = validationResult(req);//original code
+        //const errors = result.array();
+        //const errors = myValidationResult(req).array();
+        const result2 = result.formatWith(error => error.msg);
+        const errors2 = result2.array();
+       //console.log("errors: "+result2);
 
         // There are errors. Render the form again with sanitized values/error messages.
-        if (!errors.isEmpty()) {
-            //res.render("admin_views/admin_add_ingredients", {errors: errors.array(), e1: error_ingred_field, e2: error_option_field, e3:error_dyn_field1 });
-            res.render("admin_views/admin_add_ingredients", {errors: errors.array(), });
+        if (!result.isEmpty()) {
+            
+            //for testing purpose only
+            res.status(500).json(errors2);
+            res.render("admin_views/admin_add_ingredients", {errors: result.array(), }); //original code
             return;
         }
         // Data from add ingred form is valid.
         //const main_ingredient =req.body.ingred_field;//req.assert('name',"Valid name is required!").optional().isName();
         const main_ingredient =sanitized_main_ingred;
-        console.log("main: "+main_ingredient);
+        
         const main_ingred_status=req.body.options;
         let alt_ingred_1=req.body.dynamicField1;
         if(alt_ingred_1!=undefined)
         {
           alt_ingred_1=sanitized_dyn_field1;
-          console.log("alt ingred 1: "+alt_ingred_1);
+          
         }
         let alt_ingred_2=req.body.dynamicField2;
         if(alt_ingred_2!=undefined)
@@ -455,7 +484,6 @@ exports.validate_Ingredients = [
                 const alt_ingred_list={alternative_ingredient_1: alt_ingred_3};
                 const json_list=JSON.stringify(alt_ingred_list);
                 alt_list=json_list;
-                //console.log(json_list);
              }
 
            }
@@ -467,7 +495,6 @@ exports.validate_Ingredients = [
                 const alt_ingred_list={alternative_ingredient_1: alt_ingred_2};
                 const json_list=JSON.stringify(alt_ingred_list);
                 alt_list=json_list;
-                //console.log(json_list);
 
              }
              else
@@ -476,8 +503,6 @@ exports.validate_Ingredients = [
                 const alt_ingred_list={alternative_ingredient_1: alt_ingred_2,alternative_ingredient_2: alt_ingred_3};
                 const json_list=JSON.stringify(alt_ingred_list);
                 alt_list=json_list;
-                //console.log(json_list);
-
              }
            }
         }
@@ -490,7 +515,6 @@ exports.validate_Ingredients = [
                const alt_ingred_list={alternative_ingredient_1: alt_ingred_1,alternative_ingredient_2: alt_ingred_2,alternative_ingredient_3: alt_ingred_3};
                const json_list=JSON.stringify(alt_ingred_list);
                alt_list=json_list;
-               //console.log(json_list);
 
              }
              else{
@@ -498,7 +522,6 @@ exports.validate_Ingredients = [
                 const alt_ingred_list={alternative_ingredient_1: alt_ingred_1,alternative_ingredient_2: alt_ingred_2};
                 const json_list=JSON.stringify(alt_ingred_list);
                 alt_list=json_list;
-                //console.log(json_list);
              }
            } 
            else{
@@ -508,7 +531,6 @@ exports.validate_Ingredients = [
                 const alt_ingred_list={alternative_ingredient_1: alt_ingred_1,alternative_ingredient_2: alt_ingred_3};
                 const json_list=JSON.stringify(alt_ingred_list);
                 alt_list=json_list;
-                //console.log(json_list);
 
             }
             else{
@@ -516,24 +538,52 @@ exports.validate_Ingredients = [
                 const alt_ingred_list={alternative_ingredient_1: alt_ingred_1};
                 const json_list=JSON.stringify(alt_ingred_list);
                 alt_list=json_list;
-                //console.log(json_list);
-
+            
             }
 
            }
         }
         try{
             
-            const inserted_data= await insertIngredient(main_ingredient,main_ingred_status,alt_list);// works fine
-            console.log("inserted_data "+inserted_data);
-            res.render("admin_views/admin_add_ingredients", {add_ingred_msg:"Ingredient(s) has been successfully added to database."});
+            //const inserted_data_msg= await insertIngredient(main_ingredient,main_ingred_status,alt_list,cb);// works fine (original code)
+            //console.log("inserted_data "+cb);
+            await insertIngredient(main_ingredient,main_ingred_status,alt_list,function(results){
+                // distinguise between successful insertion and error
+                console.log("results "+results);
+                let msg;
+                if(results=='successful data insertion')
+                {
+                    msg="Ingredient has been successfully added to database.";
+
+                }
+                else if(results=="ER_DUP_ENTRY")
+                {
+                    msg="main ingredient already exists in database.";
+
+                }
+                else{
+
+                    msg="Failed to connect to database";
+                }
+
+                //for testing purpose only
+                res.status(500).json(msg);
+                res.render("admin_views/admin_add_ingredients", {add_ingred_msg:msg});
+                 
+            });
             
         }
         catch(err){
-            //res.render("admin_views/admin_add_ingredients", {add_ingred_msg:err.message});
-            res.render("admin_views/admin_add_ingredients", {add_ingred_msg:"main Ingredient already exists in database."});//usethis
+            console.log("not here");
+            //for testing purpose only
+            //res.status(500).json(err.messsage);
+            res.render("admin_views/admin_add_ingredients", {add_ingred_msg:err.message});
+            next(err);   
+            
         }
         
     }),
 
 ];
+
+

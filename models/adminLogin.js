@@ -1,5 +1,6 @@
 // importing our database connection configuration
-const db=require('../util/database');
+const db=require('../util/database');//originial code
+
 // hash the password
 const bcrypt = require("bcryptjs");
 
@@ -11,8 +12,32 @@ const checkAdminPassword=function(cb){
 	//const hash='$2b$10$hYKYgFBeTY.r2vPPxAYpdO0WQQhxgc4hgLN9GukMOiIf9QPZld4Fy';
 	//const select_q=('SELECT password FROM AdminPassword WHERE password=?');
 	//db.query(select_q,hash,function(err,result)
+    // code 3: works correctly
 	const q=('SELECT password FROM AdminPassword');
-	db.query(q,function(err,result){
+    db.getConnection().then( conn => {
+         conn.query(q)
+         .then(r => {
+                conn.release();
+                console.log(r[0][0]);
+                if(cb)
+                {
+					cb(r);
+				}
+            })
+         .catch(err => {
+                conn.release();
+                console.log('Error fetching users from the database: ' + err.stack);
+                if(cb){
+				  cb(err);
+			    }
+			
+            });
+ 	});
+    
+	/*//originial code 2 (actual code)
+	const promise = db.promise();
+
+	db.execute(q,function(err,result){
 		if(err){
 			// TO DO: give pug template here
 			console.error('Error fetching users from the database: ' + err.stack);
@@ -20,16 +45,33 @@ const checkAdminPassword=function(cb){
 		}
 		else{
 			if(cb){
-				//console.log("admin pass: "+result[0].password);
 				cb(result);	
-				//return true;
-
 			}
-				
-					
+						
 		}
 
-	});
+	});*/
+
+	//originial code 1(not needed)
+	/*db.query(q,function(err,result){
+		if(err){
+			// TO DO: give pug template here
+			console.error('Error fetching users from the database: ' + err.stack);
+			db.destroy();
+			
+		}
+		else{
+			if(cb){
+				//console.log("admin pass: "+result[0].password);
+				//db.destroy();
+				cb(result);	
+				db.destroy();
+				//return true;
+			}
+						
+		}
+
+	});*/
 }
 
 //NOTE:this func insert hashed admin password into the db. It has been executed only once and need not be executed further

@@ -86,7 +86,7 @@ function find_second_free_dyn_field()
 
 
 var yet_dyn_field_removed=false;
-//document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
   
   document.getElementById('add_dynamic_field').addEventListener('click', function() {
     field_count++;
@@ -264,7 +264,7 @@ var yet_dyn_field_removed=false;
     }
     
   });
-//});
+});
 
 //check if character 'code' is alphabet
 //returns true if so 

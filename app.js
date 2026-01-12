@@ -4,6 +4,8 @@ var express = require('express');
 //importing dotenv package to share contents of .env file
 var dotenv=require("dotenv").config();
 var path = require('path');
+// explain reason for using it
+const cors = require('cors');
 var morgan=require("morgan");
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -24,6 +26,7 @@ var adminRouter = require('./routes/admin');
 
 var app = express();
 var d=app;
+app.use(cors());
 
 //middleware
 app.use(morgan("dev"));

@@ -22,4 +22,8 @@ router.get("/add_ingredients",admin_controller.add_Ingredients_Page);
 //add-ingredients form validation
 router.post("/add_ingredients",admin_controller.validate_Ingredients);
 
+//testFunc
+//router.post("/add_ingredients",admin_controller.testFunc);
+
+
 module.exports = router;
