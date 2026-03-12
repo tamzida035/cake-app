@@ -14,14 +14,14 @@ const { v4: uuidv4 } = require('uuid'); // uuid, To call: uuidv4();
 //const key=require("./util/secret_key_generation_admin");
 
 // database connection
-var connectDB=require("./util/database");
+var connectDB=require("./config/database");
 // middleware that parses user input and makes it available through the req.body property.
 const bodyParser = require('body-parser'); 
 
 // These modules/files contain code for handling particular sets of related "routes" (URL paths)
 // user home page logic script
-var homeRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var allUsersRouter = require('./routes/allUsers');
+var registeredUserRouter = require('./routes/registeredUser');
 var adminRouter = require('./routes/admin');
 
 var app = express();
@@ -40,7 +40,7 @@ const session_name=process.env.SESSIONCOOKIENAME;
 //app.use(cookieParser('LKp:OM2C;uO;BIE{`c*^Qg(n'bLY)7'');
 app.use(session({genid: function (req) {
     //This option creates a session ID by using a function of req.We are using the UUID library to call the function uuidv4() and set a random ID.
-    return uuidv4();
+    return uuidv4();//accessible by req.session.id
   },
   name: session_name,
   secret: secret_key,
@@ -76,10 +76,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 /*app.get("/", (req, res) => {
   res.send("Put admin access link in this page");
 });*/
-app.use('/', homeRouter);
+app.use('/', allUsersRouter);
 app.use('/admin', adminRouter);
 
-app.use('/users', usersRouter);
+app.use('/users', registeredUserRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

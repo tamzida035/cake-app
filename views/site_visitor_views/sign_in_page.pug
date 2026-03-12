@@ -1,0 +1,10 @@
+extends base_layout_with_logo
+block content
+ //sign up access
+ section(id="letter" class="pt-5 pb-5 border-top")
+  div(class="container-xl")
+   div(class="row popular_1 text-center w-50 mx-auto")
+    if !msg
+     div(class="col-md-12" id="sign_up_page_link")
+      a(href="/user_sign_up") create new account
+

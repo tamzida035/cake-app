@@ -1,22 +1,22 @@
 var express = require('express');
 var router = express.Router();
 
-// Require admin controllers
+// Require admin controller
 const admin_controller = require("../controllers/adminController");
 
 // admin login page load
-router.get("/login", admin_controller.index);
+router.get("/login", admin_controller.signIn_ui);
 
 //admin login page authentication
-router.post("/login", admin_controller.authenticateAdmin);
+router.post("/login", admin_controller.signIn);
 
-//admin home page
-router.get("/home",admin_controller.home);
+//admin home page load
+router.get("/home",admin_controller.home_ui);
 
 //admin log out
-router.get("/logout",admin_controller.logOut);
+router.get("/logout",admin_controller.signOut);
 
-//admin add ingredients (get)
+//admin add ingredients page load
 router.get("/add_ingredients",admin_controller.add_Ingredients_Page);
 
 //add-ingredients form validation

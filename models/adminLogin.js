@@ -1,81 +1,32 @@
 // importing our database connection configuration
-const db=require('../util/database');//originial code
+const db=require('../config/database');//original code(not needed)
 
-// hash the password
-const bcrypt = require("bcryptjs");
+const{
+    checkAdminPasswordExists,
+	insertRecord,
+	createTable
+}=require("../utils/sql_functions");
 
-//check if admin has entered correct password
-const checkAdminPassword=function(cb){
-	//already done the following through command line Interface
-	//create table AdminPassword (password VARCHAR(255));
 
-	//const hash='$2b$10$hYKYgFBeTY.r2vPPxAYpdO0WQQhxgc4hgLN9GukMOiIf9QPZld4Fy';
-	//const select_q=('SELECT password FROM AdminPassword WHERE password=?');
-	//db.query(select_q,hash,function(err,result)
-    // code 3: works correctly
-	const q=('SELECT password FROM AdminPassword');
-    db.getConnection().then( conn => {
-         conn.query(q)
-         .then(r => {
-                conn.release();
-                console.log(r[0][0]);
-                if(cb)
-                {
-					cb(r);
-				}
-            })
-         .catch(err => {
-                conn.release();
-                console.log('Error fetching users from the database: ' + err.stack);
-                if(cb){
-				  cb(err);
-			    }
-			
-            });
- 	});
-    
-	/*//originial code 2 (actual code)
-	const promise = db.promise();
 
-	db.execute(q,function(err,result){
-		if(err){
-			// TO DO: give pug template here
-			console.error('Error fetching users from the database: ' + err.stack);
-			
-		}
-		else{
-			if(cb){
-				cb(result);	
-			}
-						
-		}
+// admin password table schema
+const adminSchema ="CREATE TABLE IF NOT EXISTS AdminPassword (password VARCHAR(255))";
 
-	});*/
-
-	//originial code 1(not needed)
-	/*db.query(q,function(err,result){
-		if(err){
-			// TO DO: give pug template here
-			console.error('Error fetching users from the database: ' + err.stack);
-			db.destroy();
-			
-		}
-		else{
-			if(cb){
-				//console.log("admin pass: "+result[0].password);
-				//db.destroy();
-				cb(result);	
-				db.destroy();
-				//return true;
-			}
-						
-		}
-
-	});*/
+//check if AdminPassword table exists in database. If not,create it
+const checkAdminPasswordTableExists=function(cb){
+ createTable(adminSchema,cb);
 }
 
+//function retrieving admin password from database
+//cb: callback function
+//return: retrieved password
+const checkAdminPasswordInDB=function(cb){
+	const q=('SELECT password FROM AdminPassword');
+	checkAdminPasswordExists(q,cb);
+
+}
 //NOTE:this func insert hashed admin password into the db. It has been executed only once and need not be executed further
-const insertHashedPassword=function(hashedPassword){
+/*const insertHashedPassword=function(hashedPassword){
 	const insert_statement='INSERT INTO AdminPassword (password) VALUES (?)';
 	//const value=[hashedPassword];
 	//console.log("problem is here "+ hashedPassword);
@@ -110,9 +61,8 @@ const deletePassword=function(){
 		}
 
 	});
-}
+}*/
 module.exports={
-	checkAdminPassword,
-	insertHashedPassword,
-	deletePassword,
+	checkAdminPasswordInDB,
+	checkAdminPasswordTableExists
 };

@@ -1,13 +1,30 @@
 // importing our database connection configuration
-const db=require('../util/database');//originial code
+//const db=require('../config/database');//originial code
 
-//check if ingredient already exists in table
+const{
+    checkAdminPasswordExists,
+    insertRecord,
+    createTable
+}=require("../utils/sql_functions");
 
-// insert new ingredient into 'Ingredients' table of database. Note: 1st create this table
-const insertIngredient= function(name,status,alt_ingred_list,cb){
+
+// ingredient table schema
+const IngredientSchema ="CREATE TABLE IF NOT EXISTS Ingredients (name VARCHAR(255) NOT NULL, status ENUM('Halal','Haram','Mushbooh'), alternative_ingredients JSON,PRIMARY KEY (name))";
+
+//check if Ingredients table exists in database. If not,create it
+const checkIngredientTableExists=function(cb){
+ createTable(IngredientSchema,cb);
+}
+//this function inserts new ingredient into 'Ingredients' table of database.
+//name: main ingredient name
+//status: main ingredient status
+//alt_ingred_list: a json object containing the alternative ingredients names
+//cb: callback function
+const insertIngredientInDB= function(name,status,alt_ingred_list,cb){
  //already created 'Ingredients' table by executing the following statement through command line Interface
  //CREATE TABLE Ingredients (name VARCHAR(255), status ENUM("Halal","Haram","Mushbooh"), alternative_ingredients JSON);// name column is primary key
  const insert_statement='INSERT INTO Ingredients (name,status,alternative_ingredients) VALUES (?,?,?)';
+ insertRecord(insert_statement,[name,status,alt_ingred_list],cb);
  //prev code
  /*return new Promise((resolve, reject) => {
  	
@@ -30,26 +47,26 @@ const insertIngredient= function(name,status,alt_ingred_list,cb){
 });*/
  	 
  	//(works successfully)
- 	db.getConnection().then( conn => {
+ 	/*db.getConnection().then( conn => {
          conn.execute(insert_statement,[name,status,alt_ingred_list])
          .then(r => {
                 conn.release();
                 //console.log(r[0]);
                 if(cb)
                 {
-					cb("successful data insertion");
-				}
+		    cb("successful data insertion");
+		  }
             })
          .catch(err => {
                 conn.release();
-                conn.release();
+                //conn.release();
                 //console.log(err.code);
                 if(cb){
-				  cb(err.code);
-			    }
+		    cb(err.code);
+		  }
 			
             });
- 	});
+ 	});*/
 
 }
 
@@ -63,6 +80,6 @@ const trialFunc= function(){
 
 //module.exports=insertIngredient;//original code
 module.exports={
-	insertIngredient,
-	trialFunc,
+	insertIngredientInDB,
+    checkIngredientTableExists,
 };

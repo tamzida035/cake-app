@@ -1,10 +1,10 @@
 // purpose: provides a wrapper to catch exceptions thrown in route handler functions.
 const asyncHandler = require("express-async-handler");
 // hash the password
-const bcrypt = require("bcryptjs");
+//const bcrypt = require("bcryptjs");
 //import database functions needed for admin login
 const{
-    checkAdminPassword,
+    //checkAdminPassword,
     insertHashedPassword,
     deletePassword
 }=require("../models/adminLogin");
@@ -15,10 +15,35 @@ const login=require('../models/adminLogin');
 
 //import database functions needed for admin adding ingredients to database
 //const insertIngredient=require("../models/Ingredients");//original code
+/*const {
+    insertIngredient
+}=require("../models/Ingredients");*/
+
 const {
-    insertIngredient,
-    trialFunc
-}=require("../models/Ingredients");
+    authenticate,
+}=require("../services/adminServices/adminAuthentication");
+
+const {
+    logOut,
+}=require("../services/adminServices/adminSignOut");
+
+//import utility functions
+/*const{
+    MIN_INGREDIENT_INPUT_LENGTH,
+}=require("../parameters/admin_parameters");*/
+
+const{
+    validateAndSanitizeIngredient
+}=require("../validators/IngredientFieldValidator");
+
+const{
+    organizeAltIngredients,
+    getAltIngredient
+}=require("../utils/OrganizeIngredients");
+
+const {
+    addIngredients,
+}=require("../services/adminServices/addIngredients");
 
 
 //importing dotenv package to share contents of .env file
@@ -28,20 +53,19 @@ const session_name=process.env.SESSIONCOOKIENAME;
 
 const { body, check, validationResult } = require("express-validator");
 
-//import utility functions
-const{
-    invalidApostrophe,
-    MIN_INGREDIENT_INPUT_LENGTH,
-}=require("../util/functions");
 
 
-// admin login page
-exports.index = asyncHandler(async (req, res, next) => {
+// admin login page(not shown in archi diagram (view))
+exports.signIn_ui = asyncHandler(async (req, res, next) => {
+    //to do:middleware check: if admin prev session has been saved and yet available, redirect admin to his dashboard
   res.render("admin_views/admin_login_page", {});
 });
 
+
+
+
 //post function to process admin login
-exports.authenticateAdmin=[
+exports.signIn=[
     // Validate and sanitize the adminpassword field.
     body("adminpassword", "Password field cannot be empty")
     .trim()
@@ -62,7 +86,24 @@ exports.authenticateAdmin=[
         // Data from loginform is valid.
         const typed_password =req.body.adminpassword;
 
-        //console.log("typed_password: "+typed_password);
+        //authenticate admin
+        const is_matched=await authenticate(res,typed_password);
+        console.log("is_matched: "+is_matched);
+        if(is_matched==true)
+        {
+            //Authenticate the user
+            let loggedin_user_data = {role: "admin",status: 'ready-to-login',firstname: 'admin',};
+            req.session.data = loggedin_user_data;
+            //session id accessible by req.session.id
+            console.log(req.session.data);
+
+            //load admin home page
+            res.redirect("/admin/home");
+        }
+        else{
+            res.render("admin_views/admin_database_errors", {error: is_matched});
+        }
+
 
         //NOTE: the admin password has been hashed before inserting into db.It has been executed only once and need not be executed further
         /*const salt = await bcrypt.genSalt(10);
@@ -86,41 +127,7 @@ exports.authenticateAdmin=[
         catch(err){
 
         }*/
-        // decrypt the password in the database before comparing it with user entered password
-        try{
-            const db_password=await checkAdminPassword(function(results){
-                bcrypt.compare(typed_password, results[0][0].password, (err, is_matched) => {
-                    if(err)
-                    {
-                        console.error('Error comparing passwords: ' + err);// to do: put error template here
-                    }
-                    else if(is_matched)
-                    {
-                        //console.log('Password is correct');
-                        // Authenticate the user
-                         var loggedin_user_data = {role: "admin",status: 'ready-to-login',firstname: 'admin',lastname: '',};
-                         req.session.data = loggedin_user_data;
-                         //load admin home page
-                         res.redirect("/admin/home");
-
-                    }
-                    else{
-                        //console.log('Password is incorrect');
-                        res.render("admin_views/admin_login_page", {msg: 'You have entered wrong password.'});
-                        return;
-
-                    }
-                });
-                 
-            });
-        }
-        catch(err){
-            // not yet tested
-           // res.render("admin_views/admin_database_errors", {error: err.message});--> TO DO: CORRECT INDENTATION ERROR present here
-            console.error(`Error while getting Records `, err.message);
-            next(err);
-        }
-
+        //previous working code
         /*try{
             const db_password=await checkAdminPassword(function(results){
                 if(results[0].password===typed_password)
@@ -151,9 +158,10 @@ exports.authenticateAdmin=[
 ];
 
 
-//admin home page
-exports.home = asyncHandler(async (req, res, next) => {
+//admin home page(not shown in archi diagram (view))
+exports.home_ui = asyncHandler(async (req, res, next) => {
   // allow only admin to access admin home page
+  // to do: move this authenti middleware to a separate new file 'authMiddleware' inside (by creating) folder 'middleware'
   if (req.session.data){
     if (req.session.data.role=='admin'){
         if(req.session.data.status=='ready-to-login')
@@ -184,9 +192,12 @@ exports.home = asyncHandler(async (req, res, next) => {
 });
 
 
-//admin logout
-exports.logOut = asyncHandler(async (req, res, next) => {
-    req.session.destroy(function(err) {
+//admin logout(not shown in archi diagram)
+// to do: move this authenti middleware to a separate new file 'authMiddleware/logoutMiddleware' inside (by creating) folder 'middleware'
+exports.signOut = asyncHandler(async (req, res, next) => {
+    logOut(req,res,session_name);
+    //original code
+    /*req.session.destroy(function(err) {
     if (err) {
       //res.send('An err occured: ' +err.message);
       res.render("admin_views/admin_login_page", {error_msg:err.message});
@@ -194,10 +205,11 @@ exports.logOut = asyncHandler(async (req, res, next) => {
       var message = 'You have been successfully logged out';
       res.status(200).clearCookie(session_name).redirect('/');
     }
-})
+})*/
 });
 
-// allow access to add ingredients page only if admin session is valid
+// allow access to add ingredients page directly on admin clicking 'admin access' button on all user home page only if admin session is valid(dont think it needs to be shown in archi diagram)
+// to do: move this authenti middleware to a separate new file 'authMiddleware' inside (by creating) folder 'middleware'
 exports.add_Ingredients_Page = asyncHandler(async (req, res, next) => {
    if (req.session.data){
     if (req.session.data.role=='admin'&& req.session.data.status=='logged-in'){
@@ -206,7 +218,7 @@ exports.add_Ingredients_Page = asyncHandler(async (req, res, next) => {
     }
     else{
         // do not allow logged-in users access
-        res.render("error_views/unauthorized_access", {error_msg:'Only admin is authorized to perform this request !'});
+        res.render("error_views/unauthorized_access", {error_msg:'Only admin is authorized to perform this request!'});
     }
    }
    else
@@ -218,21 +230,9 @@ exports.add_Ingredients_Page = asyncHandler(async (req, res, next) => {
    
 });
 
-//test func
-exports.testFunc = asyncHandler(async (req, res, next) => {
-    res.status(200).json({ingred_field: "riyyan"});
-});
 
-//error format for adding ingredients (not used)
-const myValidationResult = validationResult.withDefaults({
-  formatter: (error) => {
-    return {
-      errorMsg: error.msg,
-    };
-  }
-});
 
-//post function to sprocess the add_ingredients form
+//post function to process the add_ingredients form
 let sanitized_main_ingred;
 let sanitized_dyn_field1;
 let sanitized_dyn_field2;
@@ -242,190 +242,34 @@ exports.validate_Ingredients = [
     //the main ingredient field
     body("ingred_field")
     .custom(async value => {
-        if(value.trim()=='')
-        { 
-            //console.log("here am");
-            throw new Error('Main Ingredient field was empty'); //original code
-        }
-        
-        sanitized_main_ingred="";
-        var splitted_words=value.split(/\s+/);
-        var pattern = /^[a-zA-Z]+['\-]?[a-zA-Z]{1,}$/;// seems to work correctly
-        for (var w=0; w<splitted_words.length;w++)
-        {
-         if(splitted_words[w]=='')
-            continue;
-         if(!splitted_words[w].match(pattern))
-         {
-          if(value.length<MIN_INGREDIENT_INPUT_LENGTH)
-          {
-            var input='Main ingredient: '+value+' did not meet input requirements and length was too short';
-            throw new Error(input);
-          }
-          else
-          {
-            
-            var input='Main ingredient: '+value+' did not meet input requirements';
-            throw new Error(input);
-          }
-         }
-         else
-         {
-            if(value.length<MIN_INGREDIENT_INPUT_LENGTH)
-            {
-                var input='Main ingredient: '+value+' length was too short';
-                throw new Error(input);
-            }
-            else
-            {
-                if(w==0) sanitized_main_ingred+=splitted_words[w];
-                else sanitized_main_ingred+=(" "+splitted_words[w]);
-            }
-
-
-         }
-        }
+        sanitized_main_ingred=validateAndSanitizeIngredient("Main Ingredient","",value);
     }),// the radio button field
     body("options")
     .custom(async value2 => {
-        //console.log(value2);
         if(value2==undefined)
         {
-            throw new Error('main ingredients status was not selected');
+            throw new Error('Main Ingredients status was not selected');
         }
     }),
-
     body("dynamicField1")// dynamic field 1
     .optional()
     .custom(async value => {
-        if(value.trim()=='')
-        {
-            throw new Error('Alternative Ingredient 1: field was empty');
-        }
-        //console.log("value: "+value);
-        sanitized_dyn_field1="";
-        var splitted_words=value.split(/\s+/);
-        var pattern = /^[a-zA-Z]+['\-]?[a-zA-Z]{1,}$/;// seems to work correctly
-        for (var w=0; w<splitted_words.length;w++)
-        {
-         //console.log("w: "+splitted_words[w]);
-         //console.log(splitted_words[w].match(pattern));
-         if(splitted_words[w]=='')
-            continue;
-         if(!splitted_words[w].match(pattern))
-         {
-          if(value.length<MIN_INGREDIENT_INPUT_LENGTH)
-          {
-            var input='Alternative Ingredient 1: '+value+' did not meet input requirements and length was too short';
-            throw new Error(input);
-          }
-          else{
-            var input='Alternative Ingredient 1: '+value+' did not meet input requirements';
-            throw new Error(input);
-           }
-         }
-         else
-         {
-            if(value.length<MIN_INGREDIENT_INPUT_LENGTH)
-            {
-                var input='Alternative Ingredient 1: '+value+' length was too short';
-                throw new Error(input);
-            }
-            else
-            {
-                if(w==0) sanitized_dyn_field1+=splitted_words[w];
-                else sanitized_dyn_field1+=(" "+splitted_words[w]);
-            }
-
-         }
-        }
+        sanitized_dyn_field1=validateAndSanitizeIngredient("Alternative Ingredient 1","",value);
         
     }),
      body("dynamicField2")// dynamic field 2
     .optional()
     .custom(async value => {
-        if(value.trim()=='')
-            throw new Error('Alternative Ingredient 2: field was empty');
-        sanitized_dyn_field2="";
-        var splitted_words=value.split(/\s+/);
-        var pattern = /^[a-zA-Z]+['\-]?[a-zA-Z]{1,}$/;// seems to work correctly
-        for (var w=0; w<splitted_words.length;w++)
-        {
-         if(splitted_words[w]=='')
-            continue;
-         if(!splitted_words[w].match(pattern)){
-          if(value.length<MIN_INGREDIENT_INPUT_LENGTH)
-          {
-            var input='Alternative Ingredient 2: '+value+' did not meet input requirements and length was too short';
-            throw new Error(input);
-          }
-          else
-          {
-            var input='Alternative Ingredient 2: '+value+' did not meet input requirements';
-            throw new Error(input);
-            
-          }
-         }
-         else
-         {
-            if(value.length<MIN_INGREDIENT_INPUT_LENGTH){
-               var input='Alternative Ingredient 2: '+value+' length was too short';
-               throw new Error(input);
-            }
-            else
-            {
-                if(w==0) sanitized_dyn_field2+=splitted_words[w];
-                else sanitized_dyn_field2+=(" "+splitted_words[w]);
-            }
-
-
-         }
-
-        }
+        sanitized_dyn_field2=validateAndSanitizeIngredient("Alternative Ingredient 2","",value);
         
     }),
      body("dynamicField3")// dynamic field 3
     .optional()
     .custom(async value => {
-        if(value.trim()=='')
-            throw new Error('Alternative Ingredient 3: field was empty');
-        sanitized_dyn_field3="";
-        var splitted_words=value.split(/\s+/);
-        var pattern = /^[a-zA-Z]+['\-]?[a-zA-Z]{1,}$/;// seems to work correctly
-        for (var w=0; w<splitted_words.length;w++)
-        {
-         if(splitted_words[w]=='')
-            continue;
-         if(!splitted_words[w].match(pattern)){
-          if(value.length<MIN_INGREDIENT_INPUT_LENGTH){
-            var input='Alternative Ingredient 3: '+value+' did not meet input requirements and length was too short';
-            throw new Error(input);
-          }
-          else{
-             var input='Alternative Ingredient 3: '+value+' did not meet input requirements';
-             throw new Error(input);
-
-          }
-         }
-         else
-         {
-            if(value.length<MIN_INGREDIENT_INPUT_LENGTH){
-                var input='Alternative Ingredient 3: '+value+' length was too short';
-                throw new Error(input);
-            }
-            else
-            {
-                if(w==0) sanitized_dyn_field3+=splitted_words[w];
-                else sanitized_dyn_field3+=(" "+splitted_words[w]);
-            }
-
-         }
-    
-        }
+        sanitized_dyn_field3=validateAndSanitizeIngredient("Alternative Ingredient 3","",value);
         
     }),
     
-
     // Process request after validation and sanitization.
     asyncHandler(async(req,res,next)=>{
         
@@ -441,146 +285,31 @@ exports.validate_Ingredients = [
         if (!result.isEmpty()) {
             
             //for testing purpose only
-            res.status(500).json(errors2);
+            //res.status(500).json(errors2);
             res.render("admin_views/admin_add_ingredients", {errors: result.array(), }); //original code
             return;
         }
         // Data from add ingred form is valid.
         //const main_ingredient =req.body.ingred_field;//req.assert('name',"Valid name is required!").optional().isName();
         const main_ingredient =sanitized_main_ingred;
-        
         const main_ingred_status=req.body.options;
-        let alt_ingred_1=req.body.dynamicField1;
-        if(alt_ingred_1!=undefined)
-        {
-          alt_ingred_1=sanitized_dyn_field1;
-          
-        }
-        let alt_ingred_2=req.body.dynamicField2;
-        if(alt_ingred_2!=undefined)
-          alt_ingred_2=sanitized_dyn_field2;
-        let alt_ingred_3=req.body.dynamicField3;
-        if(alt_ingred_3!=undefined)
-          alt_ingred_3=sanitized_dyn_field3;
-        //console.log(main_ingredient+" "+main_ingred_status+" "+alt_ingred_1+" "+alt_ingred_2+" "+alt_ingred_3);
-        let alt_list;
+        
+        let alt_ingred_1=getAltIngredient(req.body.dynamicField1,sanitized_dyn_field1);
+        let alt_ingred_2=getAltIngredient(req.body.dynamicField2,sanitized_dyn_field2);
+        let alt_ingred_3=getAltIngredient(req.body.dynamicField3,sanitized_dyn_field3);;
+        
         //check if alternative ingredients are given and even if so, the order may be random eg dynamicfield3 has valid input but other dynfields have been deleted
         //in that case convert the valid alternative const alt_ingred_1=ingredients into json object in correct order
-        if(alt_ingred_1==undefined)
-        {
-           if(alt_ingred_2==undefined)
-           {
-             if(alt_ingred_3==undefined)
-             {
-                //set json object to null
-                const alt_ingred_list={alternative_ingredient_1: null};
-                const json_list=JSON.stringify(alt_ingred_list);
-                alt_list=json_list;
-                //console.log(json_list);
+        let alt_list=organizeAltIngredients(alt_ingred_1,alt_ingred_2,alt_ingred_3);
 
-             }
-             else{
-                //only dynamicField3 has valid input
-                const alt_ingred_list={alternative_ingredient_1: alt_ingred_3};
-                const json_list=JSON.stringify(alt_ingred_list);
-                alt_list=json_list;
-             }
 
-           }
-           else
-           {
-             if(alt_ingred_3==undefined)
-             {
-                //only dynamicField2 has valid input
-                const alt_ingred_list={alternative_ingredient_1: alt_ingred_2};
-                const json_list=JSON.stringify(alt_ingred_list);
-                alt_list=json_list;
+        //insert data into database
+        const msg=await addIngredients(main_ingredient,main_ingred_status,alt_list); 
+        res.render("admin_views/admin_add_ingredients", {add_ingred_msg:msg});
 
-             }
-             else
-             {
-                //dynamicField2,dynamicField3 have valid inputs
-                const alt_ingred_list={alternative_ingredient_1: alt_ingred_2,alternative_ingredient_2: alt_ingred_3};
-                const json_list=JSON.stringify(alt_ingred_list);
-                alt_list=json_list;
-             }
-           }
-        }
-        else{
-           if(alt_ingred_2!=undefined)
-           {
-             if(alt_ingred_3!=undefined)
-             {
-               //all dynamicFIELDS have valid inputs
-               const alt_ingred_list={alternative_ingredient_1: alt_ingred_1,alternative_ingredient_2: alt_ingred_2,alternative_ingredient_3: alt_ingred_3};
-               const json_list=JSON.stringify(alt_ingred_list);
-               alt_list=json_list;
+        //for testing purpose only
+        //res.status(500).json(msg);
 
-             }
-             else{
-                //dynamicField2,dynamicField1 have valid inputs
-                const alt_ingred_list={alternative_ingredient_1: alt_ingred_1,alternative_ingredient_2: alt_ingred_2};
-                const json_list=JSON.stringify(alt_ingred_list);
-                alt_list=json_list;
-             }
-           } 
-           else{
-            if(alt_ingred_3!=undefined)
-            {
-                //dynamicField1,dynamicField3 have valid inputs
-                const alt_ingred_list={alternative_ingredient_1: alt_ingred_1,alternative_ingredient_2: alt_ingred_3};
-                const json_list=JSON.stringify(alt_ingred_list);
-                alt_list=json_list;
-
-            }
-            else{
-                //only dynamicField1 has valid input
-                const alt_ingred_list={alternative_ingredient_1: alt_ingred_1};
-                const json_list=JSON.stringify(alt_ingred_list);
-                alt_list=json_list;
-            
-            }
-
-           }
-        }
-        try{
-            
-            //const inserted_data_msg= await insertIngredient(main_ingredient,main_ingred_status,alt_list,cb);// works fine (original code)
-            //console.log("inserted_data "+cb);
-            await insertIngredient(main_ingredient,main_ingred_status,alt_list,function(results){
-                // distinguise between successful insertion and error
-                console.log("results "+results);
-                let msg;
-                if(results=='successful data insertion')
-                {
-                    msg="Ingredient has been successfully added to database.";
-
-                }
-                else if(results=="ER_DUP_ENTRY")
-                {
-                    msg="main ingredient already exists in database.";
-
-                }
-                else{
-
-                    msg="Failed to connect to database";
-                }
-
-                //for testing purpose only
-                res.status(500).json(msg);
-                res.render("admin_views/admin_add_ingredients", {add_ingred_msg:msg});
-                 
-            });
-            
-        }
-        catch(err){
-            console.log("not here");
-            //for testing purpose only
-            //res.status(500).json(err.messsage);
-            res.render("admin_views/admin_add_ingredients", {add_ingred_msg:err.message});
-            next(err);   
-            
-        }
         
     }),
 

@@ -1,4 +1,4 @@
-
+// this file contains code to add dynamic input fields and client side validation for admin adding new ingredients
 
 //code to add text fields for alternative ingredients dynamically
 var field_count=0;
@@ -278,20 +278,20 @@ function isAlpha(code){
 //output: returns true if input matches the regular expression
 function validateRegExp(text){
   //var condition = /^[a-zA-Z][a-zA-Z' ]*[a-zA-Z ]$/; //CORRECTED
-  var condition = /^[a-zA-Z]+[']?[a-zA-Z ]*$/;
+  let condition = /^[a-zA-Z]+['|\-]?[a-zA-Z]{1,}$/; //ok. because valid user input may have whitepaces in the end
   if (!text.match(condition)) {
     return false;
   }
-  var len=text.length;
-  //apostrophe should be present only between 2 alphabets
-  for (var x=0;x<len;x++)
+  let len=text.length;
+  //apostrophe and - should be present only between 2 alphabets
+  for (let x=0;x<len;x++)
   {
-    var code = text.charCodeAt(x);
-    if(code==39)
+    let code = text.charCodeAt(x);
+    if(code==39|| code==45)
     { 
       if(x-1>=0)
       {
-        var prev_code = text.charCodeAt(x-1);
+        let prev_code = text.charCodeAt(x-1);
         if(!isAlpha(prev_code))
         {
           return false;
@@ -302,7 +302,7 @@ function validateRegExp(text){
       }
       if(x+1<len)
       {
-        var next_code = text.charCodeAt(x+1);
+        let next_code = text.charCodeAt(x+1);
         if(!isAlpha(next_code))
         {
           return false;
@@ -327,9 +327,9 @@ function validateRegExp(text){
 function printErrorMsg(isDynField,x,msg,input,error_type)
 {
    //document.getElementById('message').innerHTML="outside err 2: "+isDynField+" "+x+" "+msg+" "+input+" "+error_type;
-   var error_field_name="";
-   var error_msg="";
-   var field_name="";
+   let error_field_name="";
+   let error_msg="";
+   let field_name="";
    //document.getElementById('message').innerHTML="outside err 2: "+isDynField+" "+x+" "+msg+" "+input+" "+error_type;
   if(isDynField==true)
   {
@@ -363,7 +363,7 @@ function printErrorMsg(isDynField,x,msg,input,error_type)
 //return: true if this input field is empty 
 function checkEmptyInput(input,isDynField)
 {
-   var isValid=true;
+   let isValid=true;
   // document.getElementById('message').innerHTML="is input bvalid "+isValid;
    //if input field is empty
    if(input.value.trim() === '')
@@ -372,8 +372,8 @@ function checkEmptyInput(input,isDynField)
      //if its  dynamic field,find its no
      if(isDynField==true)
      {
-      for (var x of input.name){
-        var possibleNum = parseInt(x);
+      for (let x of input.name){
+        let possibleNum = parseInt(x);
         if (!Number.isNaN(possibleNum))
         {
           printErrorMsg(isDynField,x," cannot be empty. Please write, eg egg",input,1);
@@ -389,8 +389,8 @@ function checkEmptyInput(input,isDynField)
     //if its  dynamic field,find its no
      if(isDynField==true)
      {
-       for (var x of input.name){
-        var possibleNum = parseInt(x);
+       for (let x of input.name){
+        let possibleNum = parseInt(x);
         if (!Number.isNaN(possibleNum)){
           printErrorMsg(isDynField,x,"",input,0);
         }
@@ -410,7 +410,8 @@ function checkEmptyInput(input,isDynField)
 function checkValidInputLength(input)
 {
   var isValid=true;
-  if(input.value.length<MIN_INPUT_LENGTH){
+  let trimmed_length=input.value.trim();
+  if(trimmed_length.length<MIN_INPUT_LENGTH){
     isValid=false;
   }
    return isValid;
@@ -418,12 +419,13 @@ function checkValidInputLength(input)
 
 //input: input field selected by query selector
 //isDynField: true if this input field is dynamically created.
+//isValidLength: if this input has valid length
 //return: true if this input is valid 
 function checkValidInput(input,isDynField,isValidLength)
 {
   var isValid=true;
   //document.getElementById('message').innerHTML="value of reg exp: "+validateRegExp(input.value);
-  if(!validateRegExp(input.value))
+  if(!validateRegExp(input.value.trim()))
   {
     isValid=false;
      //if its  dynamic field,find its no
@@ -493,20 +495,20 @@ function checkValidInput(input,isDynField,isValidLength)
 function validateNonDynamicField()
 {
    //document.getElementById('message').innerHTML="validaenOnDyn "+g;
-   var input = document.querySelector('#dynamicForm input[name="ingred_field"]');
+   let input = document.querySelector('#dynamicForm input[name="ingred_field"]');
    
 
    //case 1: check that input textfield is non-empty
-   var g=checkEmptyInput(input,false);
+   let g=checkEmptyInput(input,false);
    if(g)// if input is non-empty
    {
      //check if input length is less than min value set for this field
-     var f=checkValidInputLength(input);
+     let f=checkValidInputLength(input);
 
      //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression can start with alphabets, apostrophe 
      //but not with space and can have space in between the alphabets
      
-     var h=checkValidInput(input,false,f);
+     let h=checkValidInput(input,false,f);
      return h;
 
    }
@@ -519,19 +521,19 @@ function validateNonDynamicField()
 //return true if input in any or all(if exists) of these fields are valid (TO BE DELETED)
 function validateDynamicFields() {
       
-      var inputs = document.querySelectorAll('#dynamicForm input[name^="dynamicField"]');
+      let inputs = document.querySelectorAll('#dynamicForm input[name^="dynamicField"]');
       
       inputs.forEach(function(input) {
         // case 1: check that input textfields are non-empty
-        var g=checkEmptyInput(input,true);
+        let g=checkEmptyInput(input,true);
         if(g)// if input is non-empty
         {
           //check if input length is less than min value set for this field
-          var f=checkValidInputLength(input);
+          let f=checkValidInputLength(input);
 
           //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression can start with alphabets, apostrophe 
           //but not with space and can have space in between the alphabets
-          var h=checkValidInput(input,true,f);
+          let h=checkValidInput(input,true,f);
           return h;
           
         }
@@ -544,15 +546,15 @@ function validateDynamicFields() {
 //check if an option is selected on radio button.If not, show error message 
 function checkRadioButton()
 {
-  var options=document.querySelectorAll('#dynamicForm input[name="options"]');// works fine
+  let options=document.querySelectorAll('#dynamicForm input[name="options"]');// works fine
   //var isSelected=false;
-  var error_msg=document.getElementById("radio_field_error_msg");
+  let error_msg=document.getElementById("radio_field_error_msg");
   error_msg.style.color="green";
   for(const opt of options)
   {
     if(opt.checked)
     {
-      var value=opt.value;
+      let value=opt.value;
       error_msg.innerHTML="";
       return value;
     }
@@ -561,8 +563,9 @@ function checkRadioButton()
   return "";
 }
 
-//const form = document.getElementById('dynamicForm');// works with client side validation only
-const form1 = document.querySelector("dynamicForm");//  works with server side validation only
+const form = document.getElementById('dynamicForm');// works with client side validation only
+//const form1 = document.querySelector("dynamicForm");//  works with server side validation only
+console.log("form1: "+form1);
 //submit form to server (TO BE DELETED) (NOT NEEDED)
 async function sendData() {
   //construct a formdata object for the form
@@ -600,13 +603,12 @@ document.addEventListener('DOMContentLoaded', function() {
   //trial ( work only for server side)
   form1.addEventListener('submit', function(event) {
     event.preventDefault();
-    var a=validateDynamicFields();
-    var b=validateNonDynamicField();
-    var c=checkRadioButton();
+    let a=validateDynamicFields();
+    let b=validateNonDynamicField();
+    let c=checkRadioButton();
     //if any of the inputs are invalid, do not submit the form
     if(!a||(!b)||c=="")
       return;
-    //sendData();
   });
   //original (works wit client side validation)
   /*form.addEventListener('submit', function(event) {

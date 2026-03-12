@@ -66,6 +66,12 @@ a:focus{
 /* my addition*/
 .button_small_size {font-size: 8px;}
 
+/* my addition (does not work)*/
+.input:invalid {
+     border: 2px dashed red;
+     background-color: #e1f5e7;
+}
+
 .button_medium_size {font-size: 10px;}
 
 .button:hover{
@@ -391,7 +397,9 @@ p{
 	/*border: 20px dashed orange;*/
 	/*border-color: var(--green);*/
 	/*background-image: linear-gradient(to right, pink, lightgreen);*/
-	background-color: #e1f5e7;
+	/*background-color: #e1f5e7;*/
+    background-color: ivory;
+	outline: 2px solid red;
 }
 .form-select{
 	border-color:var(--border_light); 

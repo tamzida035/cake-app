@@ -1,0 +1,71 @@
+extends base_layout_with_logo
+block content
+ section(id="letter" class="pt-5 pb-5 border-top")
+   div(class="container-xl")
+     div(class="row popular_1 text-center w-50 mx-auto")
+       div(class="col-md-12")
+         h1(class="mb-4")  NEW USER SIGN UP
+     div(class="row justify-content-center")
+      div(class="col-md-10")
+       form(action="/user_sign_up" method="post" id="UserRegisForm")
+        div(class="row" id="display_part")
+         div(class="col")
+          div(class="contact_1r shadow p-4")
+           div(class="contact_1ri row")
+            
+             div(class="form-group" id="form")
+              //first row of input fields
+              div(class="row")
+               //display name field & error
+               div(class="col-md-4")
+                label(for="display_name")
+                 b DISPLAY YOUR NAME
+                 div(class="contact_1ril")
+                  div(class="border_light")
+                   input(type="text" class="form-control border-0" placeholder="riyyan" name="name_field" id="name_field")
+                 //display name error field
+                 div(class="col" id="display_name_error")
+                  span(id="name_field_error_msg" name="name_field_error_msg") display name error
+               //empty space between columns
+               div(class="col-md-2")
+               //display email field & error
+               div(class="col-md-4")
+                label(for="email_name")
+                 b EMAIL
+                 div(class="contact_1ril")
+                  div(class="border_light")
+                   input(type="text" class="form-control border-0" name="email_field" id="email_field")
+                 //display email error field
+                 div(class="col" id="email_error")
+                  span(id="email_field_error_msg" name="email_field_error_msg") email error
+              //empty space between rows (correct it)
+              div(class="row mb-3")
+              div(class="row mb-3")
+              //second row of input fields
+              div(class="row")
+               //display password field 
+               div(class="col-md-4")
+                label(for="password")
+                 b PASSWORD
+                 div(class="contact_1ril")
+                  div(class="border_light")
+                   input(type="password" class="form-control border-0" name="password_field" id="password_field")
+                 //display password error field
+                 div(class="col" id="password_error")
+                  span(id="password_error_msg" name="password_error_msg") password error
+               //empty space between columns
+               div(class="col-md-2")
+               //display confirm password field
+               div(class="col-md-4")
+                label(for="password")
+                 b CONFIRM PASSWORD
+                 div(class="contact_1ril")
+                  div(class="border_light")
+                   input(type="password" class="form-control border-0" name="confirm_password_field" id="confirm_password_field")
+              //submit button
+              div(class="row")
+               //empty column
+               div(class="col-md-4")
+               div(class="col-md-4")
+                h6(class="mb-0 mt-5 text-center")
+                 button(type="submit" class="button b d-block rounded-0") Create new account
