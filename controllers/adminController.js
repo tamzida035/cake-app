@@ -89,11 +89,11 @@ exports.signIn=[
         //authenticate admin
         const is_matched=await authenticate(res,typed_password);
         console.log("is_matched: "+is_matched);
-        if(is_matched==true)
+        if(is_matched==true) // to do: if req.session.data===undefined
         {
-            //Authenticate the user
-            let loggedin_user_data = {role: "admin",status: 'ready-to-login',firstname: 'admin',};
-            req.session.data = loggedin_user_data;
+            //Authenticate admin
+            let loggedin_admin_data = {role: "admin",status: 'ready-to-login',firstname: 'admin',};
+            req.session.data = loggedin_admin_data;
             //session id accessible by req.session.id
             console.log(req.session.data);
 

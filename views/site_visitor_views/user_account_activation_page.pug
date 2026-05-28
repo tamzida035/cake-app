@@ -2,6 +2,9 @@ extends base_layout_with_logo
 block content
  section(id="letter" class="pt-5 pb-5 border-top")
    div(class="container-xl")
-     div(class="row popular_1 text-left w-50 mx-auto")
-       div(class="col-md-12")
-         h1(class="mb-4")  ACTIVATE YOUR USER ACCOUNT
+     div(class="row d-flex logo")
+      if msg==='Email address successfully verified'
+       p Your email address has been successfully verified. Now you can 
+        a(href="https://localhost:443/user_login") log in to your account
+      else
+       p #{msg}

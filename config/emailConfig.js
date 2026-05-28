@@ -1,6 +1,6 @@
-// @filename: config.js
+
 //importing dotenv package to share contents of .env file
-var dotenv=require("dotenv").config();
+let dotenv=require("dotenv").config();
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({

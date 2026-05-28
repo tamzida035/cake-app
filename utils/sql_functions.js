@@ -52,37 +52,43 @@ const checkAdminPasswordExists = (q,cb) => {
 };
 
 //function performs query 'q' to look for 'value' in database table
+//q: query
+//value: value to be checked
 //cb: callback function
-//return: string "this value is not in database" if value not found else return string "this value already is in database."
+//return: if is_resend_email is false, "this value is not in database" if value not found else return string "this value already is in database." else return the retrieved value
 const checkRecordExists = (q,value,cb) => {
   //const q = `SELECT * FROM ${tableName} WHERE ${column} = ?`;
   db.getConnection().then( conn => {
          conn.query(q,[value])
          .then(r => {
                 conn.release();
-                //console.log(r[0][0]);
+                console.log("selected value ");
+                //console.log(JSON.stringify(r[0][0].email));
+                //let obj=JSON.parse(r[0][0]);
                 if(r[0][0]==undefined)
                 {
 
                   if(cb)
                   {
-			        cb("this value is not in database");
-		          }
+			               cb("this value is not in database");
+		              }
 
                 }
                 else{
                   if(cb)
                   {
-			        cb("this value already is in database.");
-		          }
+                     
+			               cb("this value is already in database");
+		              }
                 }
             })
          .catch(err => {
                 conn.release();
                 console.log('Error fetching record from the database: ' + err.stack);
                 if(cb){
-		      cb(err.code);
-	         }
+		             //cb(err.code);
+                  cb(err);
+	              }
 			
             });
  	});
@@ -115,9 +121,83 @@ const insertRecord = (query, record,cb) => {
  	});
 };
 
+
+//function to get a record from the database
+//cb: callback function
+//value: value to be checked
+//return: "this value is not in database" if value not found  else return the retrieved value
+const getRecord = (q,value,cb) => {
+  //const q = `SELECT * FROM ${tableName} WHERE ${column} = ?`;
+  db.getConnection().then( conn => {
+         conn.query(q,[value])
+         .then(r => {
+                conn.release();
+                console.log("selected value ");
+                //console.log(JSON.stringify(r[0][0].email));// works correctly
+                //let obj=JSON.parse(r[0][0]);
+                if(r[0][0]==undefined)
+                {
+
+                  if(cb)
+                  {
+                     cb("this value is not in database");
+                  }
+
+                }
+                else{
+                  if(cb)
+                  {
+                     console.log(r[0][0]);
+                     cb(r[0][0]);
+                  }
+                }
+            })
+         .catch(err => {
+                conn.release();
+                console.log('Error fetching record from the database: ' + err.stack);
+                if(cb){
+                 //cb(err.code);
+                  cb(err);
+                }
+      
+            });
+  });
+};
+
+//function to update a record from the database
+//cb:callback function
+//values: value to be updated and found respectively
+//return: promise if update is successful else error
+const updateRecord = (q,value,cb) => {
+  //const q = `SELECT * FROM ${tableName} WHERE ${column} = ?`;
+  db.getConnection().then( conn => {
+         conn.query(q,[value])
+         .then(r => {
+                conn.release();
+                console.log("selected value ");
+                if(cb)
+                {
+                     cb("successful data update");
+                }
+                
+            })
+         .catch(err => {
+                conn.release();
+                console.log('Error fetching record from the database: ' + err.stack);
+                if(cb){
+                 //cb(err.code);
+                  cb(err);
+                }
+      
+            });
+  });
+};
+
 module.exports={
 	checkRecordExists,
 	insertRecord,
 	createTable,
-	checkAdminPasswordExists
+	checkAdminPasswordExists,
+  getRecord,
+  updateRecord,
 };

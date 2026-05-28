@@ -10,6 +10,8 @@ var appl = require('../app');
 var debug = require('debug')('temp-cake:server');
 var https = require('https');
 var fs = require('fs');
+//importing dotenv package to share contents of .env file
+var dotenv=require("dotenv").config();
 
 
 
@@ -18,7 +20,8 @@ var fs = require('fs');
  * set up https port
  */
 
-var port = normalizePort(process.env.PORT || '443');
+//var port = normalizePort(process.env.PORT || '443');
+let port = normalizePort(process.env.PORT);
 appl.app.set('port', port);
 
 // Read SSL certificate and key files

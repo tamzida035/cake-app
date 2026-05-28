@@ -1,0 +1,38 @@
+// unused file (does not work)
+extends logo_layout
+block content
+  div(class="offcanvas offcanvas-start offcanvas-nav" style="width: 20rem")
+    // menu bar
+    div(class="offcanvas-body pt-0 align-items-center")
+      ul(class="navbar-nav align-items-lg-center ms-auto")
+        li(class="nav-item")
+          a(class="nav-link dropdown-toggle" href="about.html" title="Visit home page") About Me
+        li(class="nav-item dropdown drop_border")
+          a(class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Recipes
+            img(src="/images/icons-svg/chevron-down.svg" width="15" height="15" alt="Submenu open/close icon")
+          ul(class="dropdown-menu drop_1 shadow" aria-labelledby="navbarDropdown")
+           li
+            a(class="dropdown-item" href="recipe.html") All Recipes
+           li
+            a(class="dropdown-item border-0" href="recipe_detail.html") My personal recipes
+      //search bar
+      ul(class="navbar-nav align-items-lg-center ms-auto nav_right")
+        li(class="nav-item dropdown")
+          a(class="dropdown-toggle nav_hide nav-link fs-5" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
+            i(class="bi bi-search")
+          ul(class="dropdown-menu drop_search p-3 shadow" aria-labelledby="navbarDropdown" style="")
+           form(class="navbar-form" role="search")
+             div(class="input-group")
+               input(type="text" class="form-control" placeholder="Search recipe")
+               span(class="input-group-btn")
+                button(class="btn btn-primary bg_red border-0 rounded-0 p-2 px-3" type="button")
+                  i(class="bi bi-search")
+        //block content1
+        //block logButton
+        // log in button symbol here
+        li(class="nav-item")
+          a(class="nav-link nav_hide fs-5" href="/user_login" id="navbarDropdown" role="button" aria-expanded="false")
+            i(class="bi bi-box-arrow-left" data-toggle="tooltip" data-placement="top" title="sign-in")
+        //block content
+    
+  block content

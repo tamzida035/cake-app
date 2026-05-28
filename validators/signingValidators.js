@@ -14,10 +14,10 @@ let MIN_PASSWORD_LENGTH=8;// MINM length of password
 //return: true if name is correct or throw error if error occurs
 const validateName= function(field_name,value){
 	//case 1: check that input field is non-empty
-	let is_input_empty=isInputNonEmpty(value,field_name);
+	let is_input_not_empty=isInputNonEmpty(value,field_name);
 	//if input is non-empty
 	let h;
-    if(is_input_empty)
+    if(is_input_not_empty)
     {
       //check if input length is less than min value set for this field
       let f=isInputLengthValid(value,MIN_DISPLAY_NAME_LENGTH);
@@ -37,15 +37,17 @@ const validateName= function(field_name,value){
 //return: true if email is correct or throw error if error occurs
 const validateEmail=function(field_name,value){
 	//case 1: check that input field is non-empty
-	let is_input_empty=isInputNonEmpty(value,field_name);
+	let is_input_non_empty=isInputNonEmpty(value,field_name);
 	//if input is non-empty
 	let h;
-    if(is_input_empty)
+    if(is_input_non_empty)
     {
       let f=true;
       //case 2: check that email id format is ok
-      let condition = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/,"gm");
-      h=isInputValid(value,condition,field_name,f);
+      //let condition=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/; //(another email regex)(does not work)
+      //let condition = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/,"gm");
+      let condition = /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+\.[a-zA-Z]{2,}$/;
+      h=isInputValid(value.trim(),condition,field_name,f);
     }
     return h;
 
@@ -57,18 +59,23 @@ const validateEmail=function(field_name,value){
 //return: true if password is correct or throw error if error occurs
 const validatePassword=function(field_name,value){
 	//case 1: check that input field is non-empty
-	let is_input_empty=isInputNonEmpty(value,field_name);
+  //console.log("i am here: ");
+	let is_input_non_empty=isInputNonEmpty(value,field_name);
+  //console.log("after empty: "+is_input_non_empty);
 	//if input is non-empty
-	let h;
-    if(is_input_empty)
-    {
+	let h=false;
+  if(is_input_non_empty)
+  {
       //check if input length is less than min value set for this field
       let f=isInputLengthValid(value,MIN_PASSWORD_LENGTH);
+      //console.log("f: "+f);
       //Regular expression contains at least 2 alphabets and at least one number, underscore, or ‘?’
-      let condition = /[a-zA-Z]{2,}[_0-9?]+|[_0-9?][a-zA-Z]{2,}$/;
+      let condition = /[a-zA-Z]{2,}[_0-9?]+|[_0-9?]+[a-zA-Z]{2,}$/;
+      //console.log("just before ");//works
       h=isInputValid(value,condition,field_name,f);
-    }
-    return h;
+  }
+  //console.log("h: "+h);
+  return h;
 
 }
 
@@ -84,13 +91,12 @@ const validateConfirmPassword=function(pwd,value,field_name){
     if(is_input_non_empty)
     {
       //check if pasword and confir mpassword match
-      //console.log("I am inside confirm pass");
-      if(pwd!=value){
-      	console.log('passwords do not match');
+      if(pwd!==value){
+        /*console.log("1st password: "+pwd);
+        console.log("2nd password: "+value);
+      	console.log('passwords do not match');*/
       	throw new Error('passwords do not match');
-
       } 
-      
     }
     return true;
 

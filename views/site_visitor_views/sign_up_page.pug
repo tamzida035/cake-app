@@ -2,7 +2,7 @@ extends base_layout_with_logo
 block content
  section(id="letter" class="pt-5 pb-5 border-top")
    div(class="container-xl")
-     div(class="row popular_1 text-center w-50 mx-auto")
+     div(class="row popular_1 text-start w-50 mx-auto")
        div(class="col-md-12")
          h1(class="mb-4")  NEW USER SIGN UP
      div(class="row justify-content-center")
@@ -89,7 +89,8 @@ block content
                div(class="col-md-4")
                 h6(class="mb-0 mt-5 text-center")
                  button(type="submit" class="button b d-block rounded-0") Create new account
-                 span(class="col_green" id="registration_error_msg" name="registration_error_msg") #{registration_error} 
+                span(class="col_green" id="registration_error_msg" name="registration_error_msg") #{registration_error} 
+                a(href="/resend_verification") Did not receive email? resend email
      script(src="/javascripts/new_user_sign_up.js") //original code
      //script(src="../util/new_user_sign_up.js")
      

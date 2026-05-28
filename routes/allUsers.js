@@ -12,13 +12,23 @@ router.get("/", site_visitor_controller.home_ui);//--->Important : update archit
 //user sign up page load
 router.get("/user_sign_up", site_visitor_controller.signUpPage); // update archi diagram
 
-//user sign up 
+//user signing up 
 router.post("/user_sign_up", site_visitor_controller.signUp); // update archi diagram
 
 // user login page load
 router.get("/user_login", site_visitor_controller.signInPage); // update archi diagram
 
+//user loging in
+router.post("/user_login", site_visitor_controller.signIn); // update archi diagram
 
+//route to verify new user email address
+router.get("/new-user/:userid/verify-email",site_visitor_controller.verifyNewUser); // update archi diagram
+
+//resend verification email
+router.post("/resend_verification", site_visitor_controller.resendVerficationEmail); // update archi diagram
+
+//resend verification email page
+router.get("/resend_verification", site_visitor_controller.resendVerficationEmailPage); // update archi diagram
 
 //user login page authentication
 //router.post("/login", admin_controller.authenticateAdmin);

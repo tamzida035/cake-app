@@ -1,10 +1,36 @@
 extends base_layout_with_logo
 block content
- //sign up access
  section(id="letter" class="pt-5 pb-5 border-top")
   div(class="container-xl")
    div(class="row popular_1 text-center w-50 mx-auto")
+    div(class="col-md-12")
+     h1(class="mb-4") USER LOGIN
+    form(action="/user_login" method="post")
+     //email field
+     div(class="mb row")
+      label(for="emailaddress" class="col-sm-3 col-form-label") email address
+     div(class="col-sm-10")
+      input(type="text" class="form-control" name="email_field" id="email_field")
+     //email error field
+     div(class="mb row" id="email_error")
+      span(class="col_green col-sm-5 col-form-label" id="email_field_error_msg" name="email_field_error_msg") #{email_field_error}
+     //div(class="col-sm-6" id="email_error")
+      //span(class="col_green" id="email_field_error_msg" name="email_field_error_msg") #{email_field_error}
+     //password field
+     div(class="mb row")
+      label(for="pwd" class="col-sm-2 col-form-label") password
+     div(class="col-sm-10")
+      input(type="password" class="form-control" name="password_field" id="password_field")
+     //password error field
+     div(class="mb row" id="password_error")
+      span(class="col_green col-sm-6 col-form-label" id="password_field_error_msg" name="password_field_error_msg") #{password_field_error}
+     //div(class="col-sm-6" id="password_error")
+      //span(class="col_green" id="password_error_msg" name="password_error_msg") #{password_field_error}
+     h6(class="mb-0 mt-5 text-center")
+       button(type="submit" class="button b d-block rounded-0") login
+     span(class="col_green" id="login_error_msg" name="login_error_msg") #{login_error}
     if !msg
-     div(class="col-md-12" id="sign_up_page_link")
-      a(href="/user_sign_up") create new account
+     div(class="mb row" id="sign_up_page_link") 
+      div(class="col")
+       a(href="/user_sign_up") create new account
 

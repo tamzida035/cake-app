@@ -3,14 +3,13 @@
 //checks if a given input matches valid regular expression 
 //text: input string
 //format: regular expression for this input
+//flag: if true, perform regex match in reverse order
 //output: returns true if input matches the regular expression
-function validateRegExp(text,format){
-  //var condition = /^[a-zA-Z][a-zA-Z' ]*[a-zA-Z ]$/; //CORRECTED
-  //let condition = /^[_a-zA-Z0-9]+[]*[a-zA-Z0-9]*$/;
-  if (!text.match(format)) {
-    return false;
-  }
-  return true;
+function validateRegExp(text,format,flag){
+  let is_matched;
+  is_matched=text.match(format);//works
+  //is_matched=format.match(text);// does not work
+  return is_matched;
 }
 
 //throws error
@@ -39,8 +38,8 @@ function errorType(num,field_name,value="")
 	{
 		input+=" is too short";
 	}
-	console.log("Error: "+input);
-    throw new Error(input);
+	//console.log("Error: "+input);
+  throw new Error(input);
 }
 
 //checks if input field is nonempty
@@ -79,18 +78,23 @@ function isInputLengthValid(value,minm_length)
 //format: regular expression for this input
 //isValidLength: if this input has valid length
 //field_name: name of input field
+//flag: if true, perform regex match in reverse order
 //return: true if this input is valid 
 function isInputValid(value,format,field_name,isValidLength)
 {
   let isValid=true;
   //document.getElementById('message').innerHTML="value of reg exp: "+validateRegExp(input.value);
+  let m=validateRegExp(value,format);
+  //console.log("eva: ");
   if(!validateRegExp(value,format))
   {
     isValid=false;
     if(isValidLength){
+      //console.log("Inside validlength 1");
     	errorType(2,field_name);
     }
     else {
+      //console.log("Inside error invalidlength 1");
       errorType(3,field_name);
     }
   }
@@ -99,6 +103,7 @@ function isInputValid(value,format,field_name,isValidLength)
     {
       // only input length is incorrect
       isValid=false;
+      //console.log("Inside error invalidlength 2");
       errorType(4,field_name);
       
     }

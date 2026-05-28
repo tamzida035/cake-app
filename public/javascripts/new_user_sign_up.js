@@ -160,9 +160,10 @@ function validateEmail()
   { 
      let f=true;
      //case 2: check that email id format is ok
-     //let condition = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/.;
-     const condition = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/,"gm");
-     let h=isInputValid(input,condition,"Email address",f,error_field_name);
+     //let condition=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/; //(another email regex)(not verified)(does not work)
+     //const condition = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/,"gm");
+     let condition = /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+\.[a-zA-Z]{2,}$/;
+     let h=isInputValid(input.value.trim(),condition,"Email address",f,error_field_name);
      return h;
   }
   return g;
@@ -185,7 +186,7 @@ function validateAndMatchPasswords()
      let f=isInputLengthValid(pwd,MIN_PASSWORD_LENGTH);
 
      //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression contains at least 2 alphabets and at least one number, underscore, or ‘?’
-     let condition = /[a-zA-Z]{2,}[_0-9?]+|[_0-9?][a-zA-Z]{2,}$/;
+     let condition = /[a-zA-Z]{2,}[_0-9?]+|[_0-9?]+[a-zA-Z]{2,}$/;
      h=isInputValid(pwd,condition,"Password",f,pwd_error_field_name);
      //return h;
   }
@@ -212,7 +213,7 @@ function validateAndMatchPasswords()
 
 
 //const form1 = document.getElementById('UserRegisForm');// works with client side validation only
-const form1 = document.querySelector("UserRegisForm");//  works with server side validation only
+const form1 = document.querySelector("UserRegisForm");//works with server side validation only
 //eventlistener on clicking submit button 
 //error_msg_field.innerHTML=document.readystate;
 document.addEventListener('DOMContentLoaded', function() {

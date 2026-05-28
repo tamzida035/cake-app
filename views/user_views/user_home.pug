@@ -1,0 +1,22 @@
+extends user_base
+block content
+    //display welcome message on user login
+    if(welcome_msg)
+      div(class="container")
+        div(class="row justify-content-end")
+         div(class="col-sm-3")
+            div(class="alert alert-success")
+                a(href="#" class="close" data-dismiss="alert" aria-label="close") &times;
+                strong Welcome,#{user}!
+            
+    section(id="image_with_button" class="center_home")
+     div(class="container")
+      div(class="row justify-content-center")
+       div(class="carousel slide" data-bs-ride="carousel")
+        div(class="carousel-inner")
+         div(class="carousel-item active")
+          img(src="/images/1.jpg" class="d-block img-fluid" alt="...")
+          div(class="carousel-caption d-none d-md-block")
+           ul(class="mx-auto" style="width: 300px;transform: translate(0%, 270%);;")
+             li(class="d-inline-block")
+              a(class="button" href="/admin/add_ingredients") Add Ingredients
