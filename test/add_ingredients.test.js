@@ -1,4 +1,4 @@
-//rrun this file frrom cmd line: npm run test
+//runs all trst files in test folder: npm run test
 const admin_controller = require("../controllers/adminController");
 const request = require("supertest");// Using Supertest, we can test endpoints and routes on HTTP servers. (original code)
 const appl = require("../app").app;//that is where our application starts.
@@ -10,7 +10,7 @@ require("dotenv").config();//to load environment variables
   const promise = db.promise();
 });*/
 
-describe('unit tests: show errors for different fields', () => {
+describe('unit tests for adding ingredients: show errors for different fields if error occurs or show success message', () => {
   //main ingredient field error(empty input)
   it.only('should show error for empty main ingredient field ', async () => {
     // this code is 100% correct

@@ -21,10 +21,8 @@ const validateName= function(field_name,value){
     {
       //check if input length is less than min value set for this field
       let f=isInputLengthValid(value,MIN_DISPLAY_NAME_LENGTH);
-
-      //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression must start with 4 alphabets,then followed by alphabets,numbers,_ and contain whitespaces as intermediate characters   
-      //followed by alphabets,_,numbers
-      let condition = /^[a-zA-Z]{4}[_a-zA-Z0-9 ]*$/;
+      //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression must start with 4 alphabets,then followed by alphabets,numbers,_   
+      let condition = /^[a-zA-Z]{4}[_a-zA-Z0-9]{2,}$/;
       h=isInputValid(value,condition,field_name,f);
     }
     return h;
@@ -68,13 +66,11 @@ const validatePassword=function(field_name,value){
   {
       //check if input length is less than min value set for this field
       let f=isInputLengthValid(value,MIN_PASSWORD_LENGTH);
-      //console.log("f: "+f);
-      //Regular expression contains at least 2 alphabets and at least one number, underscore, or ‘?’
-      let condition = /[a-zA-Z]{2,}[_0-9?]+|[_0-9?]+[a-zA-Z]{2,}$/;
+      //Regular expression contains at least 1 one uppercase English letter,At least one lowercase English letter,At least one special character and At least one digit.
+      let condition = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
       //console.log("just before ");//works
       h=isInputValid(value,condition,field_name,f);
   }
-  //console.log("h: "+h);
   return h;
 
 }
@@ -90,12 +86,16 @@ const validateConfirmPassword=function(pwd,value,field_name){
 	//if input is non-empty
     if(is_input_non_empty)
     {
+      if(pwd===undefined) 
+      {
+        throw new Error('Password in password field is invalid');
+      }
       //check if pasword and confir mpassword match
       if(pwd!==value){
         /*console.log("1st password: "+pwd);
         console.log("2nd password: "+value);
       	console.log('passwords do not match');*/
-      	throw new Error('passwords do not match');
+      	throw new Error('Passwords do not match');
       } 
     }
     return true;

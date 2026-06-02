@@ -224,10 +224,7 @@ exports.signUp = [
             
             //for testing purpose only
             //res.status(500).json(errors2);
-            console.log("inside error");
             let errors=result.array();
-            /*if(errors[0].msg=='display name field was empty')
-               console.log("yes");*/
             let e1,e2,e3,e4;
             e1="";
             e2="";
@@ -245,7 +242,7 @@ exports.signUp = [
                 e4=x.msg;
             }
             res.render("site_visitor_views/sign_up_page", {errors: result.array(),name_field_error:e1,email_field_error:e2,password_field_error:e3,confirm_password_field_error:e4 }); //original code
-            //return;
+            
         } 
         else
         {
@@ -313,8 +310,7 @@ exports.signUp = [
             console.log(result1);
           }
 
-
-        }  
+        }
         
     }),
 
