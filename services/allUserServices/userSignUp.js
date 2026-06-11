@@ -33,7 +33,8 @@ const checkUsername= function(res,username){
         checkUsernameInDB(username,function(results){
             if(results==="this value is already in database")
             {
-                
+                //for testing purpose only
+                res.status(500).json(results);
                 res.render("site_visitor_views/sign_up_page", {name_field_error: 'This username already exists. Try a new username.'});
 
             }
@@ -69,7 +70,12 @@ const checkUserEmail= function(res,email,is_resend_email){
                 {
                     resolve("email address is in database");
                 }
-                else res.render("site_visitor_views/sign_up_page", {email_field_error: 'This username already exists. Try a new username.'});
+                else
+                {
+                    //for testing purpose only
+                    res.status(500).json(results);
+                    res.render("site_visitor_views/sign_up_page", {email_field_error: 'This username already exists. Try a new username.'});
+                }
 
             }
             else if(results=="this value is not in database")//correct it
@@ -105,10 +111,10 @@ const checkUserEmail= function(res,email,is_resend_email){
 const registerNewUser= function(userid,username,email,hashedPassword,is_verified_user,token){
     return new Promise((resolve, reject) => {
         insertNewUserInDB(userid,username,email,hashedPassword,is_verified_user,token,function(results){
-        	console.log("results: "+results);
+        	//console.log("results: "+results);
             if(results=='successful data insertion')
             {
-                resolve("new user has been successfully added to database");
+                resolve("new user has been successfully added to database after sending email");
 
             }
             else
@@ -168,14 +174,14 @@ const getUserData=function(res,email,is_resend_email){
 const updateUserVerificationToken=function(res,email,token){
     return new Promise((resolve, reject) => { 
         updateUserVerificationTokenInDB(email,token,function(results){
-            //console.log("outside result: "+results.email);
+            //data cannot be inserted due to error
             if(results instanceof Error){
                 //console.log("Wrong!");
-                res.render("site_visitor_views/resend_verification_email", {registration_error:results, });
+                res.render("site_visitor_views/resend_verification_email", {registration_error:results,});
 
             }
             else{
-                //console.log(results.isEmailVerified);
+                //successful data insertion
                 resolve(results);
             }
         });
@@ -189,14 +195,14 @@ const updateUserVerificationToken=function(res,email,token){
 const verifyNewUser=function(res,email){
     return new Promise((resolve, reject) => { 
         updateUserVerificationDataInDB(email,function(results){
-            //console.log("outside result: "+results.email);
+            //data cannot be inserted due to error
             if(results instanceof Error){
                 res.render("site_visitor_views/user_account_activation_page", {msg:'Failed to verify user email. Try again later.'});
                 //res.render("site_visitor_views/resend_verification_email", {registration_error:results, });
 
             }
             else{
-                //console.log(results.isEmailVerified);
+                //successful data insertion
                 resolve(results);
             }
         });

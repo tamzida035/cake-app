@@ -4,6 +4,7 @@ const{
     checkRecordExists,
     getRecord,
     updateRecord,
+    updateRecord2,
 }=require("../utils/sql_functions");
 
 // user table schema
@@ -58,22 +59,26 @@ const getUserDataInDB= function(email,cb){
 }
 
 //function to update user verification token of a given email id
-//email: user email address to be verified
+//email2: user email address to be verified
 //token: token generated for email verification link
 //cb: callback function
-const updateUserVerificationTokenInDB= function(email,token,cb){
- const query='UPDATE Users SET verificationToken=(?) WHERE email=(?)';
+const updateUserVerificationTokenInDB= function(email2,token,cb){
+ //const query='UPDATE Users SET verificationToken=(?) WHERE email=(?)';//previously worked
+ const query='UPDATE Users SET verificationToken =? WHERE email=?';
  //performs query in database table
- updateRecord(query,[token,email],cb);
+ updateRecord(query,[token,email2],cb);//orgiginl
+ //updateRecord2(query,token,email2,cb);//(works)
 }
 
 //function to update user verification daata of a given email id
 //email: user email address to be verified
 //cb: callback function
 const updateUserVerificationDataInDB= function(email,cb){
- const query='UPDATE Users SET verificationToken=NULL,isEmailVerified=1 WHERE email=(?)';
+ //const query='UPDATE Users SET verificationToken=NULL,isEmailVerified=1 WHERE email=(?)';//orgiginl
+ const query='UPDATE Users SET verificationToken=NULL,isEmailVerified=1 WHERE email=?';
  //performs query in database table
- updateRecord(query,[email],cb);
+ updateRecord(query,[email],cb);//orgiginl
+ //updateRecord(query,email,cb);
 }
 
 

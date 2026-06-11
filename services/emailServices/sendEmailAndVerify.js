@@ -14,7 +14,7 @@ const path = require('path');
 //hashedPassword: bycrypted user password
 const generateVerificationToken = (userid,username,email,hashedPassword) => {
   return jwt.sign({ id: userid, name:username,emailid: email,pwd:hashedPassword }, process.env.JWT_SECRET_KEY, {
-    expiresIn: '1h',
+    expiresIn: '5m',// 1d
   })
 }
 
@@ -26,6 +26,7 @@ const generateVerificationToken = (userid,username,email,hashedPassword) => {
 const constructNewEmail=function(userid,username,email,emailToken){
   // token link
   const link ='https://localhost:443/new-user/'+userid+'/verify-email?token='+emailToken;
+  //console.log("link: "+link);
   const emailData = {name: username,verificationLink:link,};
   //__dirname: current directory
   const emailViewPath = path.join(__dirname, "../../views/site_visitor_views/email_verification.pug");
@@ -33,19 +34,9 @@ const constructNewEmail=function(userid,username,email,emailToken){
   const compiledFunction = pug.compileFile(emailViewPath);
   // Render the function
   const emailHTML = compiledFunction(emailData);
-  console.log("just before sending email");
+  //console.log("just before sending email");
   const mailDetails = {from: process.env.EMAIL_SENDER,to:email,subject: 'Verify Your Email Address',html:emailHTML,};
   return mailDetails;
-  // Send verification email
-  /*return new Promise((resolve, reject) => {
-     transporter.sendMail(mailDetails,(error, info)=>{
-        if (error) {
-          reject(error);
-        } else {
-          //console.log("Info: "+info.response);
-          resolve(emailToken);
-  }});
-   });*/
 
 }
 //function to verify new user email
@@ -53,13 +44,22 @@ const constructNewEmail=function(userid,username,email,emailToken){
 //userid: user id 
 //username: user display name
 //hashedPassword: bycrypted user password
-const sendEmailToNewUser= function(userid,username,email,hashedPassword){
+//IsPrevTokenInvalid: true, if previous token is non-existent or become invalid
+//prev_token: null (if no prev token exists) or send previous token
+const sendEmailToNewUser= function(userid,username,email,hashedPassword,prev_token,IsPrevTokenInvalid){
     return new Promise((resolve, reject) => { 
     	// Generate verification token and send email
-    	const emailToken = generateVerificationToken(userid,username,email,hashedPassword);
-    	console.log("token: "+emailToken);
+    	let emailToken;
+      //generate new token if prev token does not exist or has expired
+      if(IsPrevTokenInvalid)
+      {
+        emailToken = generateVerificationToken(userid,username,email,hashedPassword);
+        console.log("newly generted token for resend: "+emailToken);
+      } 
+      else emailToken=prev_token;
+    	/*console.log("token: "+emailToken);
       console.log("token length: "+emailToken.length);
-      console.log("userId: "+userid);
+      console.log("userId: "+userid);*/
     	//const link ='https://localhost:443/new-user/'+userid+'/verify-email?token='+emailToken;
 
       let mailDetails=constructNewEmail(userid,username,email,emailToken);
@@ -67,31 +67,14 @@ const sendEmailToNewUser= function(userid,username,email,hashedPassword){
       transporter.sendMail(mailDetails,(error, info)=>{
         if (error) {
           reject(error);
-        } else {
-          //console.log("Info: "+info.response);
+        } 
+        else{
+        //console.log("Info: "+info.response);
+        //console.log("Info: "+info);
         resolve(emailToken);
       }});
-
-
-    	/*const emailData = {name: username,verificationLink:link,};
-    	//__dirname: current directory
-    	const emailViewPath = path.join(__dirname, "../../views/site_visitor_views/email_verification.pug");
-    	// Compile a Pug template from a file to a function
-      const compiledFunction = pug.compileFile(emailViewPath);
-      // Render the function
-      const emailHTML = compiledFunction(emailData);
-      //console.log("just before sending email");
-      const mailDetails = {from: process.env.EMAIL_USER,to:email,subject: 'Verify Your Email Address',html:emailHTML,};
-        // Send verification email
-        transporter.sendMail(mailDetails,(error, info)=>{
-        if (error) {
-        	reject(error);
-      	} else {
-      		//console.log("Info: "+info.response);
-        	resolve(emailToken);
-        }});*/
     });
-};
+}
 
 /**
  * Verify a JWT token.
@@ -101,10 +84,11 @@ const sendEmailToNewUser= function(userid,username,email,hashedPassword){
 const verifyToken = (token) => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
-      if (err) {
-        //if(err.name==='TokenExpiredError')
-          //return reject(err.message);// returns 'jwt expired'
+      if (err) {//err.name === 'JsonWebTokenError' or err.name==='TokenExpiredError'
+        console.log("err: "+err);
         reject(err);
+        //reject(err);
+          //return reject(err.message);// returns 'jwt expired'
       } else {
         console.log("after decoded: "+decoded.id);
         resolve(decoded);
@@ -115,64 +99,7 @@ const verifyToken = (token) => {
 
 
 
-//function to resend email to new user 
-//email: user email address to verify
-//userid: user id 
-//username: user display name
-//hashedPassword: bycrypted user password
-//token: token generated for email verification link
-const resendEmailToNewUser= function(userid,username,email,hashedPassword,token){
-    return new Promise((resolve, reject) => { 
-       let emailToken;
-      // verify if previous token is still valid
-      try {
-        const decoded = verifyToken(token);
-        emailToken=token;
-      }
-      catch (error) {
-        if(error.message==='jwt expired'){
-          // Generate verification token and send email
-          emailToken = generateVerificationToken(userid,username,email,hashedPassword);
-
-        }
-        
-      }
-      //console.log("not called");
-      let mailDetails=constructNewEmail(userid,username,email,emailToken);
-      // Send verification email
-      transporter.sendMail(mailDetails,(error, info)=>{
-        if (error) {
-          reject(error);
-        } else {
-          //console.log("Info: "+info.response);
-        resolve(emailToken);
-      }});
-      //console.log(r);
-      
-      
-      /*const link ='https://localhost:443/new-user/'+userid+'/verify-email?token='+emailToken;
-
-      const emailData = {name: username,verificationLink:link,};
-      //__dirname: current directory
-      const emailViewPath = path.join(__dirname, "../../views/site_visitor_views/email_verification.pug");
-      // Compile a Pug template from a file to a function
-      const compiledFunction = pug.compileFile(emailViewPath);
-      // Render the function
-      const emailHTML = compiledFunction(emailData);
-      //console.log("just before sending email");
-      const mailDetails = {from: process.env.EMAIL_USER,to:email,subject: 'Verify Your Email Address',html:emailHTML,};
-        // Send verification email
-        transporter.sendMail(mailDetails,(error, info)=>{
-        if (error) {
-          reject(error);
-        } else {
-          //console.log("Info: "+info.response);
-          resolve(emailToken);
-        }});*/
-    });
-};
 module.exports={
 	sendEmailToNewUser,
 	verifyToken,
-  resendEmailToNewUser,
 };

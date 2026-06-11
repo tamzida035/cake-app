@@ -36,7 +36,6 @@ const {
 const{
   sendEmailToNewUser,
   verifyToken,
-  resendEmailToNewUser,
 }=require("../services/emailServices/sendEmailAndVerify");
 
 
@@ -130,11 +129,9 @@ exports.signIn=[
     if (!result.isEmpty()) {
             
       //for testing purpose only
-      //res.status(500).json(errors2);
-      //console.log("inside error");
+      res.status(500).json(errors2);
+      
       let errors=result.array();
-      /*if(errors[0].msg=='display name field was empty')
-      console.log("yes");*/
       let e1,e2;
       e1="";
       e2="";
@@ -200,12 +197,12 @@ exports.signUp = [
     body("password_field")
     .custom(async value => {
         is_pwd_valid=validatePassword("Password",value);
-        console.log("Password valid: "+is_pwd_valid);
+        //console.log("Password valid: "+is_pwd_valid);
         if(is_pwd_valid) pwd=value;
      }),
     body("confirm_password_field")
     .custom(async value => {
-        console.log("collected Password: "+pwd);
+        //console.log("collected Password: "+pwd);
         let h=validateConfirmPassword(pwd,value,"Confirm password");
         //console.log("after collected Password: "+h);
      }),
@@ -276,7 +273,7 @@ exports.signUp = [
                 
                 //console.log("just before calling sending email function");
                 //verify the user's email address 
-                let token=await sendEmailToNewUser(userid,username,email,hashedPassword);
+                let token=await sendEmailToNewUser(userid,username,email,hashedPassword,null,true);
 
 
                 if(token instanceof Error)
@@ -289,10 +286,10 @@ exports.signUp = [
                   let is_user_verified=false;
                   const msg=await registerNewUser(userid,username,email,hashedPassword,is_user_verified,token); 
                   //console.log(msg);
-                  if(msg=="new user has been successfully added to database")
+                  if(msg=="new user has been successfully added to database after sending email")
                   {
-                     //redirect user to his personal homepage/dashboard
-                     //res.render("site_visitor_views/sign_up_page", {registration_error:msg});
+                     //for testing purpose only
+                     //res.status(500).json(msg);
                      res.render("site_visitor_views/sign_up_page", {registration_error:'verification email sent to your email address. Please check it.'});
 
                   }
@@ -322,14 +319,16 @@ exports.verifyNewUser=asyncHandler(async (req, res, next) => {
    //res.render("site_visitor_views/sign_up_page", {}); //original page
   const { token } = req.query;
   //const userId = req.params.userid;
-  //console.log("token in verify "+token);
+  console.log("token in verify "+token);
   //console.log(token);
   if(!token)  res.render("site_visitor_views/user_account_activation_page", {msg:'Token is required'});
+  
   try {
     const decoded = await verifyToken(token);
     //verify new user
     let r=await verifyNewUser(res,decoded.emailid);
-
+    console.log("reslt of verUser: "+r);
+    //printObject("new user updted");
     //render page
     res.render("site_visitor_views/user_account_activation_page", {msg:'Email address successfully verified'});
     
@@ -382,7 +381,7 @@ exports.resendVerficationEmail=[
         {
           //Data from form is valid.
           let email=req.body.email_address.trim();
-          console.log(email+" "+email.length);
+          //console.log(email+" "+email.length);
           //check if email is already in database
           const result3=await checkUserEmail(res,email,true);//(irrelevant)
           //if yes, check its verification status
@@ -391,33 +390,55 @@ exports.resendVerficationEmail=[
               //check if user email has already been verified
               //console.log(result3);
               let user_data=await getUserData(res,email,true);
+              //console.log("verifi status: "+user_data.isEmailVerified);
               if(user_data.isEmailVerified===0)//not yet verified
               {
-                //get userid,username,hashedpassword,token corresponding to this user email
-                //resend email to user
-                let token=await resendEmailToNewUser(user_data.userId,user_data.username,email,user_data.password,user_data.verificationToken);
-                
-                if(token instanceof Error)
+                let new_token;
+                let case1;
+                try{
+                  let decoded = await verifyToken(user_data.verificationToken);
+                  case1=1;
+                  //new_token=await sendEmailToNewUser(user_data.userid,user_data.username,email,user_data.password,user_data.verificationToken,false);
+                }
+                catch(err)//if prev token has expired or malformed
                 {
-                  res.render("site_visitor_views/resend_verification_email", {registration_error:token});
+                  
+                  console.log(err+" case 2");
+                  case1=2;
+                  //new_token=await sendEmailToNewUser(user_data.userid,user_data.username,email,user_data.password,null,true);
+                }
+                
+                try{
+                  if(case1==1)
+                  {
+                     new_token=await sendEmailToNewUser(user_data.userId,user_data.username,email,user_data.password,user_data.verificationToken,false);
+                  }
+                  else if(case1===2)
+                  {
+                    //printObject("genertee new token: "+user_data.userId);
+                    new_token=await sendEmailToNewUser(user_data.userId,user_data.username,email,user_data.password,null,true);
+                 }
 
+                }
+                catch(err)// if email cannot be send to user due to error
+                {
+                  res.render("site_visitor_views/resend_verification_email", {registration_error:'Error sending email. Please try again later.', });
                 }
                 //update token in db
-                if(token!==user_data.verificationToken)
+                if(new_token!==user_data.verificationToken)
                 {
                   //verify that it works
-                  await updateUserVerificationToken(res,email,token);
+                  await updateUserVerificationToken(res,email,new_token);
                 }
-                else printObject("equal");
-
+                //else printObject("equal");
+                res.render("site_visitor_views/resend_verification_email", {registration_error:'verification email sent to your email address. Please check it.', });
 
               }
-              else if(is_user_verified===1)// user email already verified
+              else// user email already verified
               {
                 res.render("site_visitor_views/resend_verification_email", {registration_error:'This user has already been verified', });
               }
-              res.render("site_visitor_views/resend_verification_email", {registration_error:'verification email sent to your email address. Please check it.', });
-              //console.log("user status: "+is_user_verified);
+              
 
           }
           else if(result3=="email address not in database")
@@ -425,7 +446,6 @@ exports.resendVerficationEmail=[
             res.render("site_visitor_views/resend_verification_email", {registration_error:'Invalid credentials', });
 
           }
-          
           
           
         }

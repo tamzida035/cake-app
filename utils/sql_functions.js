@@ -62,7 +62,7 @@ const checkRecordExists = (q,value,cb) => {
          conn.query(q,[value])
          .then(r => {
                 conn.release();
-                console.log("selected value ");
+                //console.log("selected value ");
                 //console.log(JSON.stringify(r[0][0].email));
                 //let obj=JSON.parse(r[0][0]);
                 if(r[0][0]==undefined)
@@ -132,7 +132,7 @@ const getRecord = (q,value,cb) => {
          conn.query(q,[value])
          .then(r => {
                 conn.release();
-                console.log("selected value ");
+                //console.log("selected value ");
                 //console.log(JSON.stringify(r[0][0].email));// works correctly
                 //let obj=JSON.parse(r[0][0]);
                 if(r[0][0]==undefined)
@@ -166,12 +166,64 @@ const getRecord = (q,value,cb) => {
 
 //function to update a record from the database
 //cb:callback function
-//values: value to be updated and found respectively
+//values: values to be updated and found respectively
 //return: promise if update is successful else error
-const updateRecord = (q,value,cb) => {
-  //const q = `SELECT * FROM ${tableName} WHERE ${column} = ?`;
-  db.getConnection().then( conn => {
-         conn.query(q,[value])
+const updateRecord = (q,values,cb) => {
+  //original code(works, sometimes gives errors) 
+  /*db.getConnection().then( conn => {
+         conn.query(q,[values])
+         .then(r => {
+                conn.release();
+                console.log("r value "+JSON.stringify(r[0]));
+                //console.log("selected value");
+                if(cb)
+                {
+                     cb("successful data update");
+                }
+                
+            })
+         .catch(err => {
+                conn.release();
+                console.log('Error fetching record from the database: ' + err.stack);
+                if(cb){
+                 //cb(err.code);
+                  cb(err);
+                }
+      
+            });
+  });*/
+  //way 2(works)
+  db.execute(q,values)
+   //db.execute(q,[values])
+   .then(r => {
+                console.log("r value "+JSON.stringify(r[0]));
+                
+                if(cb)
+                {
+                     cb("successful data update");
+                }
+                
+    })
+    .catch(err => {
+                console.log('Error fetching record from the database: ' + err.stack);
+                if(cb){
+                 //cb(err.code);
+                  cb(err);
+                }
+      
+    });
+};
+
+//function to update a new user record from the database (NO MORE NEEDED)
+//cb:callback function
+//email: user email address to be verified
+//token: token generated for email verification link
+//return: promise if update is successful else error
+const updateRecord2 = (q,token,email,cb) => {
+  //original code (works)
+  /*db.getConnection().then( conn => {
+         //conn.query(q,[values])
+         conn.execute(q,[token,email])
          .then(r => {
                 conn.release();
                 console.log("selected value ");
@@ -190,7 +242,27 @@ const updateRecord = (q,value,cb) => {
                 }
       
             });
-  });
+  });*/
+  //wy 2(works)
+   db.execute(q,[token, email])
+   .then(r => {
+                
+                console.log("selected value ");
+                if(cb)
+                {
+                     cb("successful data update");
+                }
+                
+    })
+    .catch(err => {
+                //conn.release();
+                console.log('Error fetching record from the database: ' + err.stack);
+                if(cb){
+                 //cb(err.code);
+                  cb(err);
+                }
+      
+    });
 };
 
 module.exports={
@@ -200,4 +272,5 @@ module.exports={
 	checkAdminPasswordExists,
   getRecord,
   updateRecord,
+  updateRecord2,
 };
