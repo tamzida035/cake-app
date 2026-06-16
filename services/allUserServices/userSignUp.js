@@ -1,10 +1,9 @@
 const {
-    checkTableExistsInDB,
+    checkUserTableExistsInDB,
     checkUsernameInDB,
     checkUserEmailInDB,
     insertNewUserInDB,
     getUserDataInDB,
-    checkUserIdInDB,
     updateUserVerificationTokenInDB,
     updateUserVerificationDataInDB,
 }=require("../../models/Users");
@@ -12,14 +11,13 @@ const {
 //function checks that user table already exists.If not, create the table
 const doesUserTableExist= function(){
 	return new Promise((resolve, reject) => {
-	 checkTableExistsInDB(function(results){
+	 checkUserTableExistsInDB(function(results){
           //console.log("results: "+results);
           if(results=="table exists"){
           	resolve("user table exists");
 
           }
           else{
-            //console.log("usersign: "+results);
           	reject(results);
           }
         });
@@ -36,7 +34,7 @@ const checkUsername= function(res,username){
             if(results==="this value is already in database")
             {
                 //for testing purpose only
-                //res.status(500).json(results);
+                res.status(500).json(results);
                 res.render("site_visitor_views/sign_up_page", {name_field_error: 'This username already exists. Try a new username.'});
 
             }
@@ -75,7 +73,7 @@ const checkUserEmail= function(res,email,is_resend_email){
                 else
                 {
                     //for testing purpose only
-                    //res.status(500).json(results);
+                    res.status(500).json(results);
                     res.render("site_visitor_views/sign_up_page", {email_field_error: 'This username already exists. Try a new username.'});
                 }
 
@@ -130,36 +128,13 @@ const registerNewUser= function(userid,username,email,hashedPassword,is_verified
 
 };
 
-//function checks if given user id exists in user table. If so, gives error message
-//res: response object
-//userid: user id
-const checkUserId= function(userid){
+//function to verify new user email
+//email: user email address to verify
+//userid: user id 
+//username: user display name
+//hashedPassword: bycrypted user password
+const verifyUserEmailId= function(userid,username,email,hashedPassword){
     return new Promise((resolve, reject) => { 
-         checkUserIdInDB(userid,function(results){
-            //console.log("userid in checkUserId: "+userid);
-            console.log("WHY get wrong res: "+results);
-            if(results==="this value is already in database")
-            {
-                
-                //for testing purpose only
-                //res.status(500).json(results);
-                //res.render("site_visitor_views/sign_up_page", {name_field_error: 'This username already exists. Try a new username.'});
-                resolve(results);
-
-            }
-            else if(results==="this value is not in database")//correct it
-            {
-                let e=new Error("this userid no longer exists");
-                reject(e);
-                //throw new Error("this userid no longer exists");
-            }
-            else{
-                //other type of error occurred
-                let e=new Error(results);
-                reject(e);
-
-            }
-        });
     	
     });
 
@@ -170,7 +145,7 @@ const checkUserId= function(userid){
 //res: response object
 //is_resend_email: true for resending verfication email else false
 // return: promise returning user verification status or if error occurs displays error
-const getUserDataByEmail=function(res,email,is_resend_email){
+const getUserData=function(res,email,is_resend_email){
     return new Promise((resolve, reject) => { 
         getUserDataInDB(email,function(results){
             //console.log("outside result: "+results.email);
@@ -213,20 +188,16 @@ const updateUserVerificationToken=function(res,email,token){
     });
 };
 
-// function to verify new user with given user id
-//userid: user id to verify
+// function to verify new user 
+//email: user email address to verify
 //res: response object
 //return: promise returning succesful data update if error occurs displays error
-const verifyNewUser=function(res,userid){
+const verifyNewUser=function(res,email){
     return new Promise((resolve, reject) => { 
-        updateUserVerificationDataInDB(userid,function(results){
-            //resolve(results);
+        updateUserVerificationDataInDB(email,function(results){
             //data cannot be inserted due to error
             if(results instanceof Error){
-
-                let e=new Error('Failed to verify user email.Try again later.');
-                reject(e);
-                //res.render("site_visitor_views/user_account_activation_page", {msg:'Failed to verify user email. Try again later.'});
+                res.render("site_visitor_views/user_account_activation_page", {msg:'Failed to verify user email. Try again later.'});
                 //res.render("site_visitor_views/resend_verification_email", {registration_error:results, });
 
             }
@@ -243,8 +214,7 @@ module.exports={
     doesUserTableExist,
     checkUserEmail,
     registerNewUser,
-    getUserDataByEmail,
+    getUserData,
     updateUserVerificationToken,
-    checkUserId,
     verifyNewUser,
 };

@@ -1,11 +1,10 @@
 // importing our database connection configuration
 const db=require('../config/database');//original code
-let util = require('util');
+
 //function creates table in database using 'schema'
 //cb: callback function
 const createTable = (schema,cb) => {
-  //way 1
-    /*db.getConnection().then( conn => {
+    db.getConnection().then( conn => {
          conn.execute(schema)
          .then(r => {
                 conn.release();
@@ -24,48 +23,7 @@ const createTable = (schema,cb) => {
 		  }
 			
             });
- 	});*/
-  db.query(schema)
-   //db.execute(q,[values])
-   .then(r => {
-                console.log("r value "+JSON.stringify(r[0]));
-                //console.log("r[0]1: "+JSON.stringify(r[0]));
-                //console.log("r[0][0]1: "+JSON.stringify(r[0][0]));
-
-                if(r[0]==undefined)
-                {
-
-                  if(cb)
-                  {
-                     cb("table does not exist");
-                  }
-
-                }
-                else{
-                  if(cb)
-                  {
-                     console.log("r value in check "+JSON.stringify(r));
-                     cb("table exists");
-                  }
-                }
-                
-                /*if(cb)
-                {
-                     cb("successful data update");
-                }*/
-                
-    })
-    .catch(err => {
-                console.log('Error fetching record from the database: ' + err.stack);
-                if(cb){
-                 //cb(err.code);
-                 //console.log("q: "+q+" "+typeof(q));
-                 //console.log("values: "+JSON.stringify(values)+" "+typeof(values));
-                 cb(err);
-                }
-      
-    });
-
+ 	});
 };
 //function checks if even admin password exists in db
 //q: query
@@ -95,21 +53,17 @@ const checkAdminPasswordExists = (q,cb) => {
 
 //function performs query 'q' to look for 'value' in database table
 //q: query
-//value: values to be checked
+//value: value to be checked
 //cb: callback function
 //return: if is_resend_email is false, "this value is not in database" if value not found else return string "this value already is in database." else return the retrieved value
-const checkRecordExists = (q,values,cb) => {
+const checkRecordExists = (q,value,cb) => {
   //const q = `SELECT * FROM ${tableName} WHERE ${column} = ?`;
-  console.log(values+" in checkRecordExists");
-  //wy 1
-  /*db.getConnection().then( conn => {
+  db.getConnection().then( conn => {
          conn.query(q,[value])
          .then(r => {
                 conn.release();
                 //console.log("selected value ");
-                console.log("r: "+JSON.stringify(r));
-                console.log("r[0]1: "+JSON.stringify(r[0]));
-                console.log("r[0][0]1: "+JSON.stringify(r[0][0]));
+                //console.log(JSON.stringify(r[0][0].email));
                 //let obj=JSON.parse(r[0][0]);
                 if(r[0][0]==undefined)
                 {
@@ -123,7 +77,7 @@ const checkRecordExists = (q,values,cb) => {
                 else{
                   if(cb)
                   {
-                     console.log("r value in check "+JSON.stringify(r[0][0]));
+                     
 			               cb("this value is already in database");
 		              }
                 }
@@ -137,133 +91,7 @@ const checkRecordExists = (q,values,cb) => {
 	              }
 			
             });
- 	});*/
-  //way 2
-  db.execute(q,values)
-   //db.execute(q,[values])
-   .then(r => {
-                console.log("r value "+JSON.stringify(r[0]));
-                console.log("r[0]1: "+JSON.stringify(r[0]));
-                console.log("r[0][0]1: "+JSON.stringify(r[0][0]));
-
-                if(r[0][0]==undefined)
-                {
-
-                  if(cb)
-                  {
-                     cb("this value is not in database");
-                  }
-
-                }
-                else{
-                  if(cb)
-                  {
-                     console.log("r value in check "+JSON.stringify(r[0][0]));
-                     cb("this value is already in database");
-                  }
-                }
-                
-                /*if(cb)
-                {
-                     cb("successful data update");
-                }*/
-                
-    })
-    .catch(err => {
-                console.log('Error fetching record from the database: ' + err.stack);
-                if(cb){
-                 //cb(err.code);
-                 console.log("q: "+q+" "+typeof(q));
-                 //console.log("values: "+JSON.stringify(values)+" "+typeof(values));
-                 cb(err);
-                }
-      
-    });
-};
-
-const checkRecordExists2 = (q,values,cb) => {
-  //const q = `SELECT * FROM ${tableName} WHERE ${column} = ?`;
-  console.log(values+" in checkRecordExists 2");
-  //wy 1
-  /*db.getConnection().then( conn => {
-         conn.query(q,[value])
-         .then(r => {
-                conn.release();
-                //console.log("selected value ");
-                console.log("r: "+JSON.stringify(r));
-                console.log("r[0]1: "+JSON.stringify(r[0]));
-                console.log("r[0][0]1: "+JSON.stringify(r[0][0]));
-                //let obj=JSON.parse(r[0][0]);
-                if(r[0][0]==undefined)
-                {
-
-                  if(cb)
-                  {
-                     cb("this value is not in database");
-                  }
-
-                }
-                else{
-                  if(cb)
-                  {
-                     console.log("r value in check "+JSON.stringify(r[0][0]));
-                     cb("this value is already in database");
-                  }
-                }
-            })
-         .catch(err => {
-                conn.release();
-                console.log('Error fetching record from the database: ' + err.stack);
-                if(cb){
-                 //cb(err.code);
-                  cb(err);
-                }
-      
-            });
-  });*/
-  //way 2
-  db.execute(q,[values])
-   //db.execute(q,[values])
-   .then(r => {
-                console.log("r value "+JSON.stringify(r[0]));
-                console.log("r[0]1: "+JSON.stringify(r[0]));
-                console.log("r[0][0]1: "+JSON.stringify(r[0][0]));
-
-                if(r[0][0]==undefined)
-                {
-
-                  if(cb)
-                  {
-                     cb("this value is not in database");
-                  }
-
-                }
-                else{
-                  if(cb)
-                  {
-                     console.log("r value in check "+JSON.stringify(r[0][0]));
-
-                     cb("this value is already in database");
-                  }
-                }
-                
-                /*if(cb)
-                {
-                     cb("successful data update");
-                }*/
-                
-    })
-    .catch(err => {
-                console.log('Error fetching record from the database: ' + err.stack);
-                if(cb){
-                 //cb(err.code);
-                 console.log("q: "+q+" "+typeof(q));
-                 //console.log(util.inspect(values));
-                 //console.log("values: "+JSON.stringify(values)+" "+typeof(values));
-                 cb(err);
-                }
-      
-    });
+ 	});
 };
 
 //function performs 'query' to insert 'record' in database table
@@ -319,8 +147,7 @@ const getRecord = (q,value,cb) => {
                 else{
                   if(cb)
                   {
-                     //console.log(r[0][0]);
-                     console.log("r value "+JSON.stringify(r[0][0]));
+                     console.log(r[0][0]);
                      cb(r[0][0]);
                   }
                 }
@@ -445,6 +272,5 @@ module.exports={
 	checkAdminPasswordExists,
   getRecord,
   updateRecord,
-  checkRecordExists2,
   updateRecord2,
 };

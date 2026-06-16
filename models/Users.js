@@ -4,14 +4,14 @@ const{
     checkRecordExists,
     getRecord,
     updateRecord,
-    checkRecordExists2,
+    updateRecord2,
 }=require("../utils/sql_functions");
 
 // user table schema
 const UserSchema ="CREATE TABLE IF NOT EXISTS Users (userId VARCHAR(255) NOT NULL,username VARCHAR(255) UNIQUE NOT NULL,email VARCHAR(255) UNIQUE NOT NULL,password VARCHAR(255) NOT NULL,isEmailVerified BOOLEAN DEFAULT FALSE,verificationToken VARCHAR(400), PRIMARY KEY (userId))";
 
 //function checks if Users table exists in database. If not,create it
-const checkTableExistsInDB=function(cb){
+const checkUserTableExistsInDB=function(cb){
  createTable(UserSchema,cb);
 }
 
@@ -19,10 +19,9 @@ const checkTableExistsInDB=function(cb){
 //name: display name of user
 //cb: callback function(irrelevant)
 const checkUsernameInDB= function(name,cb){
- //const query='SELECT username FROM Users WHERE username=(?)';//orginl
- const query='SELECT username FROM Users WHERE username=?';
+ const query='SELECT username FROM Users WHERE username=(?)';
  //performs query in database table
- checkRecordExists(query,[name],cb);//orginal
+ checkRecordExists(query,[name],cb);
 }
 
 
@@ -30,23 +29,9 @@ const checkUsernameInDB= function(name,cb){
 //email: user email address
 //cb: callback function
 const checkUserEmailInDB= function(email,cb){
- //const query='SELECT email FROM Users WHERE email=(?)';//orginl
- const query='SELECT email FROM Users WHERE email=?';
+ const query='SELECT email FROM Users WHERE email=(?)';
  //performs query in database table
- checkRecordExists(query,[email],cb);//orginl
-}
-
-//function checks if given user id exists in user table Of database
-//userid: given user id
-//cb: callback function
-const checkUserIdInDB= function(userid,cb){
- //const query='SELECT userId FROM Users WHERE userId=(?)';//orginl
- const query='SELECT userId FROM Users WHERE userId=?';
- //performs query in database table
- checkRecordExists(query,[userid],cb);//orginl
- //console.log("userid in checkUserIdInDB: "+userid)
- //checkRecordExists2(query,userid,cb);
-   
+ checkRecordExists(query,[email],cb);
 }
 
 //function inserts new user in user table Of database
@@ -63,7 +48,6 @@ const insertNewUserInDB= function(userid,username,email,hashedPassword,is_verifi
   //performs query in database table
  insertRecord(query,[userid,username,email,hashedPassword,is_verified_user,token],cb);
 }
-
 
 //function to retrieve user verification status of a given email id
 //email: user email address to be verified
@@ -86,25 +70,24 @@ const updateUserVerificationTokenInDB= function(email2,token,cb){
  //updateRecord2(query,token,email2,cb);//(works)
 }
 
-//function to update user verification daata of a given user id
-//userid: user id to be verified
+//function to update user verification daata of a given email id
+//email: user email address to be verified
 //cb: callback function
-const updateUserVerificationDataInDB= function(userid,cb){
+const updateUserVerificationDataInDB= function(email,cb){
  //const query='UPDATE Users SET verificationToken=NULL,isEmailVerified=1 WHERE email=(?)';//orgiginl
- const query='UPDATE Users SET verificationToken=NULL,isEmailVerified=1 WHERE userId=?';
+ const query='UPDATE Users SET verificationToken=NULL,isEmailVerified=1 WHERE email=?';
  //performs query in database table
- updateRecord(query,[userid],cb);//orgiginl
+ updateRecord(query,[email],cb);//orgiginl
  //updateRecord(query,email,cb);
 }
 
 
 module.exports={
-    checkTableExistsInDB,
+    checkUserTableExistsInDB,
     checkUsernameInDB,
     checkUserEmailInDB,
     insertNewUserInDB,
     getUserDataInDB,
-    checkUserIdInDB,
     updateUserVerificationTokenInDB,
     updateUserVerificationDataInDB,
 };

@@ -14,7 +14,7 @@ const path = require('path');
 //hashedPassword: bycrypted user password
 const generateVerificationToken = (userid,username,email,hashedPassword) => {
   return jwt.sign({ id: userid, name:username,emailid: email,pwd:hashedPassword }, process.env.JWT_SECRET_KEY, {
-    expiresIn: '1d',// 1d,5m
+    expiresIn: '5m',// 1d
   })
 }
 
@@ -54,7 +54,7 @@ const sendEmailToNewUser= function(userid,username,email,hashedPassword,prev_tok
       if(IsPrevTokenInvalid)
       {
         emailToken = generateVerificationToken(userid,username,email,hashedPassword);
-        //console.log("newly generted token for resend: "+emailToken);
+        console.log("newly generted token for resend: "+emailToken);
       } 
       else emailToken=prev_token;
     	/*console.log("token: "+emailToken);
@@ -69,6 +69,8 @@ const sendEmailToNewUser= function(userid,username,email,hashedPassword,prev_tok
           reject(error);
         } 
         else{
+        //console.log("Info: "+info.response);
+        //console.log("Info: "+info);
         resolve(emailToken);
       }});
     });
