@@ -23,9 +23,10 @@ const {
     doesUserTableExist,
     checkUserEmail,
     registerNewUser,
-    getUserData,
+    getUserDataByEmail,
     updateUserVerificationToken,
     verifyNewUser,
+    checkUserId,
 }=require("../services/allUserServices/userSignUp");
 
 const {
@@ -154,7 +155,7 @@ exports.signIn=[
         let pwd=req.body.password_field;
 
         //authenticate the user
-        const user_data=await  getUserData(res,email,false);
+        const user_data=await  getUserDataByEmail(res,email,false);
         let is_user_authenticated=await authenticate(user_data,pwd);
         console.log("awaiting return");
         let id=user_data.userId;
@@ -197,14 +198,11 @@ exports.signUp = [
     body("password_field")
     .custom(async value => {
         is_pwd_valid=validatePassword("Password",value);
-        //console.log("Password valid: "+is_pwd_valid);
         if(is_pwd_valid) pwd=value;
      }),
     body("confirm_password_field")
     .custom(async value => {
-        //console.log("collected Password: "+pwd);
         let h=validateConfirmPassword(pwd,value,"Confirm password");
-        //console.log("after collected Password: "+h);
      }),
 
     // Process request after validation and sanitization.
@@ -246,9 +244,7 @@ exports.signUp = [
           //Data from add ingred form is valid.
           let username=req.body.name_field.trim();
           let email=req.body.email_field.trim();
-          //console.log("just before table");
-          //checks that user table already exists.If not, create the table
-          //console.log("length of email: "+email.length);
+          
           const result1=await doesUserTableExist();
           
           if(result1=="user table exists")
@@ -271,7 +267,6 @@ exports.signUp = [
                 //generate id for new user
                 let userid=uuidv4();
                 
-                //console.log("just before calling sending email function");
                 //verify the user's email address 
                 let token=await sendEmailToNewUser(userid,username,email,hashedPassword,null,true);
 
@@ -289,7 +284,7 @@ exports.signUp = [
                   if(msg=="new user has been successfully added to database after sending email")
                   {
                      //for testing purpose only
-                     //res.status(500).json(msg);
+                     res.status(500).json(msg);
                      res.render("site_visitor_views/sign_up_page", {registration_error:'verification email sent to your email address. Please check it.'});
 
                   }
@@ -304,7 +299,8 @@ exports.signUp = [
 
           }
           else{
-            console.log(result1);
+            //console.log(result1);
+            res.render("site_visitor_views/sign_up_page", {registration_error:result1});
           }
 
         }
@@ -314,7 +310,7 @@ exports.signUp = [
 ];
 
 
-//verify user token
+//verify user token(UPDTE, use GET if u SELECT and then UPDATE)
 exports.verifyNewUser=asyncHandler(async (req, res, next) => {
    //res.render("site_visitor_views/sign_up_page", {}); //original page
   const { token } = req.query;
@@ -325,15 +321,23 @@ exports.verifyNewUser=asyncHandler(async (req, res, next) => {
   
   try {
     const decoded = await verifyToken(token);
-    //verify new user
-    let r=await verifyNewUser(res,decoded.emailid);
-    console.log("reslt of verUser: "+r);
-    //printObject("new user updted");
+    console.log("user id and its typeof: "+decoded.id+" "+typeof(decoded.id));
+    //verify that new user still exists
+    let user_id_exists=await checkUserId(decoded.id);//now works
+
+    //update new user
+    let r=await verifyNewUser(res,decoded.id);
+
+    console.log("reslt of verUser: "+r);//successful data update
+    //for testing purpose only
+    res.status(500).json(r);
     //render page
     res.render("site_visitor_views/user_account_activation_page", {msg:'Email address successfully verified'});
     
   } catch (error) {
-    //res.status(401).json({ error: "Invalid or expired token" });
+    //for testing purpose only
+    //res.status(500).json(error);
+    //console.log("ERRR: "+error);
     res.render("site_visitor_views/user_account_activation_page", {msg:error});
   }
    
@@ -389,7 +393,7 @@ exports.resendVerficationEmail=[
           {
               //check if user email has already been verified
               //console.log(result3);
-              let user_data=await getUserData(res,email,true);
+              let user_data=await getUserDataByEmail(res,email,true);
               //console.log("verifi status: "+user_data.isEmailVerified);
               if(user_data.isEmailVerified===0)//not yet verified
               {
