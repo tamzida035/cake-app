@@ -116,7 +116,7 @@ exports.signIn=[
     //the email field
     body("password_field")
     .custom(async value => {
-        validatePassword("password",value);
+        validatePassword("password",value,true);
      }),
     
   asyncHandler(async (req, res, next) => {
@@ -156,7 +156,7 @@ exports.signIn=[
 
         //authenticate the user
         const user_data=await  getUserDataByEmail(res,email,false);
-        let is_user_authenticated=await authenticate(user_data,pwd);
+        let is_user_authenticated=await authenticate(res,user_data,pwd);
         console.log("awaiting return");
         let id=user_data.userId;
         printObject("req: "+req.session.data);
@@ -170,7 +170,9 @@ exports.signIn=[
               console.log(req.session.data);
 
             }
-            
+            //for testing purpose only
+            res.status(500).json("successfully logged in");
+
             //load user profile home page
             res.redirect("/users/profile/"+id);
         }
@@ -313,6 +315,8 @@ exports.signUp = [
 //verify user token(UPDTE, use GET if u SELECT and then UPDATE)
 exports.verifyNewUser=asyncHandler(async (req, res, next) => {
    //res.render("site_visitor_views/sign_up_page", {}); //original page
+  //const { userId, token } = req.body;
+  //const userId=req.body.userid;// used for POST
   const { token } = req.query;
   //const userId = req.params.userid;
   console.log("token in verify "+token);
@@ -337,6 +341,7 @@ exports.verifyNewUser=asyncHandler(async (req, res, next) => {
   } catch (error) {
     //for testing purpose only
     //res.status(500).json(error);
+    res.status(500).json("TokenExpiredError: jwt expired");
     //console.log("ERRR: "+error);
     res.render("site_visitor_views/user_account_activation_page", {msg:error});
   }

@@ -22,8 +22,8 @@ router.get("/user_login", site_visitor_controller.signInPage); // update archi d
 router.post("/user_login", site_visitor_controller.signIn); // update archi diagram
 
 //route to verify new user email address
-//router.get("/new-user/:userid/verify-email",site_visitor_controller.verifyNewUser); // update archi diagram (SHOULD be here on in registeredUser file?)
-router.get("/new-user/:userid/verify-email",site_visitor_controller.verifyNewUser);//OK
+router.get("/new-user/:userid/verify-email",site_visitor_controller.verifyNewUser);//ok // update archi diagram (SHOULD be here on in registeredUser file?)
+//router.post("/new-user/:userid/verify-email",site_visitor_controller.verifyNewUser);//OK works
 //resend verification email
 router.post("/resend_verification", site_visitor_controller.resendVerficationEmail); //OK, update archi diagram
 

@@ -54,11 +54,13 @@ const validateEmail=function(field_name,value){
 //function to validate password field
 //field_name: name of password-field
 //value: value in password field
-//return: true if password is correct or throw error if error occurs
-const validatePassword=function(field_name,value){
+//isLogin: true if password validation is done for user login, false for user sign up
+//return: for user sign up, return true if password is correct or throw error if error occurs. for user login, return true if pssword is non-empty, else return false;
+const validatePassword=function(field_name,value,isLogin=false){
 	//case 1: check that input field is non-empty
   //console.log("i am here: ");
 	let is_input_non_empty=isInputNonEmpty(value,field_name);
+  if(isLogin) return is_input_non_empty;
   //console.log("after empty: "+is_input_non_empty);
 	//if input is non-empty
 	let h=false;

@@ -10,7 +10,7 @@ const bcrypt = require("bcryptjs");
 //typed_password: password entered by user
 //user_credentials: promise containing user credentials
 //return: promise
-const authenticate= function(user_credentials,typed_password){
+const authenticate= function(res,user_credentials,typed_password){
  
  return new Promise((resolve, reject) => {
         
@@ -18,7 +18,9 @@ const authenticate= function(user_credentials,typed_password){
         console.log("inside auth: "+user_credentials);
         if(user_credentials==="this value is not in database")
         {
-          res.render("site_visitor_views/sign_in_page", {errors: result.array(),email_field_error:'This email id does not exist', });
+          //for testing purpose only
+          res.status(500).json("This email id does not exist");
+          //res.render("site_visitor_views/sign_in_page", {errors: result.array(),email_field_error:'This email id does not exist', });
         }
         else{
         	
@@ -38,9 +40,11 @@ const authenticate= function(user_credentials,typed_password){
 
             }
             else 
-            {
+            { 
+               //for testing purpose only
+               res.status(500).json("incorrect email/password");
 
-                  res.render("site_visitor_views/sign_in_page", {password_field_error:'incorrect password', });
+               res.render("site_visitor_views/sign_in_page", {password_field_error:'incorrect email/password', });
                   //res.render("site_visitor_views/sign_in_page", {errors: result.array(),password_field_error:'incorrect password', });
             }
 

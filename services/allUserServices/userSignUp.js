@@ -75,7 +75,7 @@ const checkUserEmail= function(res,email,is_resend_email){
                 else
                 {
                     //for testing purpose only
-                    //res.status(500).json(results);
+                    res.status(500).json(results);
                     res.render("site_visitor_views/sign_up_page", {email_field_error: 'This username already exists. Try a new username.'});
                 }
 
