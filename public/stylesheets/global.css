@@ -64,7 +64,37 @@ a:focus{
 }
 
 /* my addition*/
+.note_font_weight{
+	font-weight: 800;
+}
+
+/* my addition*/
+.confirm_button_color{
+	background:#FF4500;
+}
+
+/* my addition*/
+.cancel_button_color{
+	background:var(--black_light);
+}
+
+/* my addition*/
 .button_small_size {font-size: 8px;}
+
+
+/* my addition*/
+#modal_header{
+	background-color: #00FF7F;
+}
+
+/* my addition*/
+#modal_title{
+	font-size: 22px;
+}
+
+#confirm_modal{
+	display: none;
+}
 
 /* my addition (does not work)*/
 .input:invalid {
@@ -72,6 +102,7 @@ a:focus{
      background-color: #e1f5e7;
 }
 
+/* my addition*/
 .button_medium_size {font-size: 10px;}
 
 .button:hover{
@@ -117,6 +148,10 @@ a:focus{
  }
 .bg_back {
     background: var(--bg_back)!important;
+}
+
+.note_color{
+	color:#A52A2A;
 }
 
 .border_light{

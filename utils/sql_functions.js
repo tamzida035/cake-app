@@ -298,10 +298,11 @@ const insertRecord = (query, record,cb) => {
 //cb: callback function
 //value: value to be checked
 //return: "this value is not in database" if value not found  else return the retrieved value
-const getRecord = (q,value,cb) => {
+const getRecord = (q,values,cb) => {
   //const q = `SELECT * FROM ${tableName} WHERE ${column} = ?`;
-  db.getConnection().then( conn => {
-         conn.query(q,[value])
+  //original
+  /*db.getConnection().then( conn => {
+         conn.query(q,[values])
          .then(r => {
                 conn.release();
                 //console.log("selected value ");
@@ -334,7 +335,40 @@ const getRecord = (q,value,cb) => {
                 }
       
             });
-  });
+  });*/
+  //way 2(works)
+   db.execute(q,values)
+   //db.execute(q,[values])
+   .then(r => {
+                console.log("r value "+JSON.stringify(r[0]));
+                
+                if(r[0][0]==undefined)
+                {
+
+                  if(cb)
+                  {
+                     cb("this value is not in database");
+                  }
+
+                }
+                else{
+                  if(cb)
+                  {
+                     //console.log(r[0][0]);
+                     console.log("r value "+JSON.stringify(r[0][0]));
+                     cb(r[0][0]);
+                  }
+                }
+                
+    })
+    .catch(err => {
+                console.log('Error fetching record from the database: ' + err.stack);
+                if(cb){
+                 //cb(err.code);
+                  cb(err);
+                }
+      
+    });
 };
 
 //function to update a record from the database

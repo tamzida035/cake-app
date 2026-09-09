@@ -75,7 +75,7 @@ const checkUserEmail= function(res,email,is_resend_email){
                 else
                 {
                     //for testing purpose only
-                    res.status(500).json(results);
+                    //res.status(500).json(results);
                     res.render("site_visitor_views/sign_up_page", {email_field_error: 'This username already exists. Try a new username.'});
                 }
 
@@ -137,7 +137,7 @@ const checkUserId= function(userid){
     return new Promise((resolve, reject) => { 
          checkUserIdInDB(userid,function(results){
             //console.log("userid in checkUserId: "+userid);
-            console.log("WHY get wrong res: "+results);
+            //console.log("WHY get wrong res: "+results);
             if(results==="this value is already in database")
             {
                 

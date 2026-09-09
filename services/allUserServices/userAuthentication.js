@@ -19,7 +19,7 @@ const authenticate= function(res,user_credentials,typed_password){
         if(user_credentials==="this value is not in database")
         {
           //for testing purpose only
-          res.status(500).json("This email id does not exist");
+          //res.status(500).json("This email id does not exist");
           //res.render("site_visitor_views/sign_in_page", {errors: result.array(),email_field_error:'This email id does not exist', });
         }
         else{
@@ -42,7 +42,7 @@ const authenticate= function(res,user_credentials,typed_password){
             else 
             { 
                //for testing purpose only
-               res.status(500).json("incorrect email/password");
+               //res.status(500).json("incorrect email/password");
 
                res.render("site_visitor_views/sign_in_page", {password_field_error:'incorrect email/password', });
                   //res.render("site_visitor_views/sign_in_page", {errors: result.array(),password_field_error:'incorrect password', });

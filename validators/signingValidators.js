@@ -79,7 +79,7 @@ const validatePassword=function(field_name,value,isLogin=false){
 
 //function to validate confirm password field
 //field_name: name of confirm password-field
-//pwd: value in confirm password field
+//pwd: value in password field
 //value: value in confirm password field
 //return: true if confirm password & password matches or throw error if error occurs
 const validateConfirmPassword=function(pwd,value,field_name){

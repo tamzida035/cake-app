@@ -157,9 +157,10 @@ exports.signIn=[
         //authenticate the user
         const user_data=await  getUserDataByEmail(res,email,false);
         let is_user_authenticated=await authenticate(res,user_data,pwd);
-        console.log("awaiting return");
+        console.log("awaiting return "+ is_user_authenticated);
         let id=user_data.userId;
         printObject("req: "+req.session.data);
+        printObject("id: "+user_data.userId);
         if(is_user_authenticated) // to do: if req.session.data===undefined
         {
             if(req.session.data===undefined)
@@ -171,7 +172,7 @@ exports.signIn=[
 
             }
             //for testing purpose only
-            res.status(500).json("successfully logged in");
+            //res.status(500).json("successfully logged in");
 
             //load user profile home page
             res.redirect("/users/profile/"+id);
@@ -286,7 +287,7 @@ exports.signUp = [
                   if(msg=="new user has been successfully added to database after sending email")
                   {
                      //for testing purpose only
-                     res.status(500).json(msg);
+                     //res.status(500).json(msg);
                      res.render("site_visitor_views/sign_up_page", {registration_error:'verification email sent to your email address. Please check it.'});
 
                   }
@@ -334,14 +335,14 @@ exports.verifyNewUser=asyncHandler(async (req, res, next) => {
 
     console.log("reslt of verUser: "+r);//successful data update
     //for testing purpose only
-    res.status(500).json(r);
+    //res.status(500).json(r);
     //render page
     res.render("site_visitor_views/user_account_activation_page", {msg:'Email address successfully verified'});
     
   } catch (error) {
     //for testing purpose only
     //res.status(500).json(error);
-    res.status(500).json("TokenExpiredError: jwt expired");
+    //res.status(500).json("TokenExpiredError: jwt expired");
     //console.log("ERRR: "+error);
     res.render("site_visitor_views/user_account_activation_page", {msg:error});
   }
@@ -353,7 +354,7 @@ exports.resendVerficationEmailPage=asyncHandler(async (req, res, next) => {
   res.render("site_visitor_views/resend_verification_email", {});
 });
 
-//process resend-verification-email form
+//process resend-verification-email form (update archi)
 exports.resendVerficationEmail=[
   // Validate and sanitize the email address. (server side form validation)
   body("email_address")

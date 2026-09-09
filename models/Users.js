@@ -71,7 +71,7 @@ const insertNewUserInDB= function(userid,username,email,hashedPassword,is_verifi
 const getUserDataInDB= function(email,cb){
  const query='SELECT * FROM Users WHERE email=(?)';
   //performs query in database table
- getRecord(query,[email],cb);
+ getRecord(query,[email],cb);//original
 }
 
 //function to update user verification token of a given email id

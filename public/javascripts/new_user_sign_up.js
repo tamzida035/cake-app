@@ -137,7 +137,7 @@ function validateText()
      let f=isInputLengthValid(input,MIN_DISPLAY_NAME_LENGTH);
 
      //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression must start with 4 alphabets,then followed by alphabets,numbers,_ and contain whitespaces as intermediate characters 
-     let condition = /^[a-zA-Z]{4}[_a-zA-Z0-9 ]*$/;
+     let condition = /^[a-zA-Z]{4}[_a-zA-Z0-9]{2,}$/;
      let h=isInputValid(input,condition,"display name",f,error_field_name);
      return h;
 
@@ -160,8 +160,6 @@ function validateEmail()
   { 
      let f=true;
      //case 2: check that email id format is ok
-     //let condition=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/; //(another email regex)(not verified)(does not work)
-     //const condition = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/,"gm");
      let condition = /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+\.[a-zA-Z]{2,}$/;
      let h=isInputValid(input.value.trim(),condition,"Email address",f,error_field_name);
      return h;
@@ -185,8 +183,8 @@ function validateAndMatchPasswords()
      //check if input length is less than min value set for this field
      let f=isInputLengthValid(pwd,MIN_PASSWORD_LENGTH);
 
-     //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression contains at least 2 alphabets and at least one number, underscore, or ‘?’
-     let condition = /[a-zA-Z]{2,}[_0-9?]+|[_0-9?]+[a-zA-Z]{2,}$/;
+     //Regular expression contains at least 1 one uppercase English letter,At least one lowercase English letter,At least one special character and At least one digit.
+     let condition = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
      h=isInputValid(pwd,condition,"Password",f,pwd_error_field_name);
      //return h;
   }

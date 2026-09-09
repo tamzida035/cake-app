@@ -1,0 +1,132 @@
+extends user_base
+block content
+ //breadcrumb
+ section(id="breadcrumb" class="center_o bg-light pt-3 pb-3")
+  div(class="container-xl")
+   div(class="row center_o1")
+    div(class="col-md-12")
+     h6(class="mb-0 col_green")
+      a(href="/users/profile/:id/") Home
+      span(class="me-2 ms-2")
+       i(class="bi bi-caret-right-fill align-middle text-muted") 
+       Add Add recipe by Voice
+ //form
+ div(class="container" id="ingred_form_container")
+  div(class="row justify-content-center")
+   div(class="col-md-10")
+    div(class="contact_1r shadow p-4")
+      div(class="contact_1ri row")
+       div(class="col-md-12")
+        //initially hidden modal
+        //button(type="button" data-bs-toggle="modal" data-bs-target="#confirm_modal" id="press_modal" name="press_modal") Launch GFG modal
+        div(class="modal" id="confirm_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" name="confirm_modal")
+         div(class="modal-dialog")
+          div(class="modal-content")
+            div(class="modal-header" id="modal_header")
+             h1(class="modal-title" id="modal_title" name="modal_title") You have said:
+             button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+            div(class="modal-body" name="modal_msg" id="modal_msg")
+            div(class="modal-footer" )
+             div(class="w-100")
+              div(class="row justify-content-evenly")
+               div(class="font_12 note_font_weight note_color" id="modal_footer_note")
+               div(class="col-md-3")
+                h6(class="mb-0 mt-5 text-center")
+                 a(href="#" type="button" class="button b d-block rounded-0 confirm_button_color button_medium_size" name="confirm_btn" id="confirm_btn" data-bs-dismiss="modal") Yes, Confirm
+               div(class="col-md-2")
+                h6(class="mb-0 mt-5 text-center")
+                 button(type="button" class="button b d-block rounded-0 cancel_button_color button_medium_size" data-bs-dismiss="modal"  name="close_btn" id="close_btn") No, discard
+        div(class="form-group")
+         label(for="recipe_step") 
+          h5 INSTRUCTIONS FOR ADDING RECIPE
+          //add empty lines
+          div(class="row mb-3")
+          //add red symbol for 1st instruction
+          div(class="work_1 row")
+           div(class="col-md-1")
+            div(class="work_i position-relative")
+             div(class="work_i2 text-center clearfix position-absolute w-100")
+              span(class="d-inline-block bg_red text-white")
+               1
+          //add empty lines
+          div(class="row mb-3")
+          div(class="row mb-3")
+          p Grant permission to access microphone when prompted
+          //add red symbol for 2nd instruction
+          div(class="work_1 row")
+           div(class="col-md-1")
+            div(class="work_i position-relative")
+             div(class="work_i2 text-center clearfix position-absolute w-100")
+              span(class="d-inline-block bg_red text-white")
+               2
+          //add empty lines
+          div(class="row mb-3")
+          div(class="row mb-3")
+          p Say 'last step' after finish saying current step to mark end of recipe.(not needed)
+          //add red symbol for 5th instruction
+          div(class="work_1 row")
+           div(class="col-md-1")
+            div(class="work_i position-relative")
+             div(class="work_i2 text-center clearfix position-absolute w-100")
+              span(class="d-inline-block bg_red text-white")
+               3
+          //add empty lines
+          div(class="row mb-3")
+          div(class="row mb-3")
+          p To mark beginning of a section of recipe, begin sentence with 'steps for' [section_name] then say 'first' [recipe_step]
+          //add red symbol for 6th instruction
+          div(class="work_1 row")
+           div(class="col-md-1")
+            div(class="work_i position-relative")
+             div(class="work_i2 text-center clearfix position-absolute w-100")
+              span(class="d-inline-block bg_red text-white")
+               4
+          //add empty lines
+          div(class="row mb-3")
+          div(class="row mb-3")
+          p say first recipe step as 'first' [recipe_step] (if there is no section_name)
+          //add red symbol for 7th instruction
+          div(class="work_1 row")
+           div(class="col-md-1")
+            div(class="work_i position-relative")
+             div(class="work_i2 text-center clearfix position-absolute w-100")
+              span(class="d-inline-block bg_red text-white")
+               5
+          //add empty lines
+          div(class="row mb-3")
+          div(class="row mb-3")
+          p say each subsequent recipe step as 'next' [recipe_step]
+          //add red symbol for 8th instruction
+          div(class="work_1 row")
+           div(class="col-md-1")
+            div(class="work_i position-relative")
+             div(class="work_i2 text-center clearfix position-absolute w-100")
+              span(class="d-inline-block bg_red text-white")
+               6
+          //add empty lines
+          div(class="row mb-3")
+          div(class="row mb-3")
+          p Minimize background noise(turn off music, TV).
+          //add red symbol for 9th instruction
+          div(class="work_1 row")
+           div(class="col-md-1")
+            div(class="work_i position-relative")
+             div(class="work_i2 text-center clearfix position-absolute w-100")
+              span(class="d-inline-block bg_red text-white")
+               7
+          //add empty lines
+          div(class="row mb-3")
+          div(class="row mb-3")
+          p Ensure good internet connectivity.
+   div(class="col-md-10")
+    div(class="contact_1r shadow p-4")
+      div(class="contact_1ri row")
+       div(class="row mb-3 justify-content-center")
+        div(class="col-md-1")
+         button(class="btn btn-success" data-bs-toggle="button" id="start_btn" name="start_btn") Start
+        div(class="col-md-1")
+         p(id="status" name="status" class="lead mt-3" style="display: none; color: green;") 
+ //tested and found refernce is correct
+ //defer
+ script(src="/javascripts/add_voice_recipe.js")
+ //script(data-main="scripts/main" src="scripts/require.js")

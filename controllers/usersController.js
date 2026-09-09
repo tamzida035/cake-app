@@ -12,9 +12,10 @@ const {
 }=require("../services/userServices/userLogOut");
 
 const { body, check, validationResult } = require("express-validator");
+
 // load user personal profile page
 exports.profile = asyncHandler(async (req, res,next) => {
- //if session varible for admin is 
+  //if session does not exist
   if (req.session.data===undefined){
   	res.render("error_views/unauthorized_access", {error_msg:'login to access this page!'});
 
@@ -28,21 +29,30 @@ exports.profile = asyncHandler(async (req, res,next) => {
   		}
   		else
   		{
-  			if(req.session.data.status=='ready-to-login') req.session.data.status='logged-in';
+  			if(req.session.data.status=='ready-to-login')
+        {
+          req.session.data.status='logged-in';
+          res.render("user_views/user_home", {welcome_msg:'show login success alert',user:req.session.data.firstname,});
+        }
+        else res.render("user_views/user_home",{welcome_msg:'',});
   		}
 
   	}
   	else res.render("error_views/unauthorized_access", {error_msg:'only verified user is allowed access !'});
   }
-  //console.log("already logged in");
-  //res.render("user_views/user_home", {});
-
-  res.render("user_views/user_home", {welcome_msg:'show login success alert',user:req.session.data.firstname,});
-
- //next();
+  /*if (req.session.data!==undefined)
+  {
+    if(req.session.data.status=='ready-to-login')
+    {
+      req.session.data.status='logged-in';
+      res.render("user_views/user_home", {welcome_msg:'show login success alert',user:req.session.data.firstname,});
+    }
+    else res.render("user_views/user_home",{welcome_msg:'',});
+  }*/
+  
 });
 
-//user sign out function
+//user sign out
 exports.signOut = asyncHandler(async (req, res, next) => {
     logOut(req,res,session_name);
     //original code
@@ -56,3 +66,23 @@ exports.signOut = asyncHandler(async (req, res, next) => {
     }
 })*/
 });
+
+//load add new recipe by voice page
+exports.addNewVoiceRecipePage = asyncHandler(async (req, res,next) => {
+ 
+  console.log("I arrived");
+  res.render("user_views/add_new_voice_recipe", {});
+  //res.render("user_views/user_home", {welcome_msg:'',});
+
+});
+
+
+//process new voice recipe 
+exports.processNewVoiceRecipe = asyncHandler(async (req, res,next) => {
+ 
+  console.log("process recipe");
+  res.render("user_views/add_new_voice_recipe", {});
+  //res.render("user_views/user_home", {welcome_msg:'',});
+
+});
+

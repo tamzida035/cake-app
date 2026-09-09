@@ -1,3 +1,6 @@
+
+
+
 const isVerifiedUser = async(req,res,next) => {
   if (req.session.data===undefined){
   	res.render("error_views/unauthorized_access", {error_msg:'login to access this page!'});
@@ -14,7 +17,7 @@ const isVerifiedUser = async(req,res,next) => {
   	}
   	else res.render("error_views/unauthorized_access", {error_msg:'only verified user is allowed access !'});
   }
-  next();
+  //next();
 }
 
 module.exports={
