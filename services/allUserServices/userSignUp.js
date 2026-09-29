@@ -1,5 +1,5 @@
 const {
-    checkTableExistsInDB,
+    checkUserTableExistsInDB,
     checkUsernameInDB,
     checkUserEmailInDB,
     insertNewUserInDB,
@@ -10,11 +10,11 @@ const {
 }=require("../../models/Users");
 
 //function checks that user table already exists.If not, create the table
-const doesUserTableExist= function(){
+const checkUserTableExists= function(){
 	return new Promise((resolve, reject) => {
-	 checkTableExistsInDB(function(results){
+	 checkUserTableExistsInDB(function(results){
           //console.log("results: "+results);
-          if(results=="table exists"){
+          if(results==="table exists"){
           	resolve("user table exists");
 
           }
@@ -240,7 +240,7 @@ const verifyNewUser=function(res,userid){
 
 module.exports={
     checkUsername,
-    doesUserTableExist,
+    checkUserTableExists,
     checkUserEmail,
     registerNewUser,
     getUserDataByEmail,

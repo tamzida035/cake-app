@@ -12,8 +12,9 @@ block content
        Add Add recipe by Voice
  //form
  div(class="container" id="ingred_form_container")
-  div(class="row justify-content-center")
-   div(class="col-md-10")
+  //div(class="row justify-content-center")
+  div(class="row justify-content-start")
+   div(class="col-md-6")
     div(class="contact_1r shadow p-4")
       div(class="contact_1ri row")
        div(class="col-md-12")
@@ -37,7 +38,7 @@ block content
                 h6(class="mb-0 mt-5 text-center")
                  button(type="button" class="button b d-block rounded-0 cancel_button_color button_medium_size" data-bs-dismiss="modal"  name="close_btn" id="close_btn") No, discard
         div(class="form-group")
-         label(for="recipe_step") 
+         label(for="recipe_instructions") 
           h5 INSTRUCTIONS FOR ADDING RECIPE
           //add empty lines
           div(class="row mb-3")
@@ -118,14 +119,28 @@ block content
           div(class="row mb-3")
           div(class="row mb-3")
           p Ensure good internet connectivity.
-   div(class="col-md-10")
-    div(class="contact_1r shadow p-4")
-      div(class="contact_1ri row")
-       div(class="row mb-3 justify-content-center")
-        div(class="col-md-1")
-         button(class="btn btn-success" data-bs-toggle="button" id="start_btn" name="start_btn") Start
-        div(class="col-md-1")
-         p(id="status" name="status" class="lead mt-3" style="display: none; color: green;") 
+          //stop/start toggle button
+          div(class="row justify-content-evenly")
+           div(class="col-md-4")
+            button(class="btn btn-success" data-bs-toggle="button" id="start_btn" name="start_btn") Start
+            p(id="status" name="status" class="lead mt-3 status_font_size" style="display: none; color: green;")
+           div(class="col-md-4")
+            button(class="btn btn-secondary" data-bs-toggle="button" id="reset_recipe" disabled) Reset
+            p(id="status2" class="lead mt-3 status_font_size" style="color: grey;") *from beginning
+
+   //display ingredients extracted from recipe
+   div(class="col-md form-group" style="background: #D2B48C;")
+    label(for="identified_ingred" id="identified_ingred") 
+      h4(style="color: #FF4500;") INGREDIENTS IDENTIFIED SO FAR
+      //div(class="row mb-3")
+      //to do: do this in code
+      //section_name (if any)
+      //div(class="row mb-3")
+      //h5(style="color: #FF00FF;" id="section_title") section_name
+      //ingredients
+      //div(class="row mb-3")
+       //p(style="color: #FDF5E6;") Grant permission to access microphone when prompted
+  
  //tested and found refernce is correct
  //defer
  script(src="/javascripts/add_voice_recipe.js")

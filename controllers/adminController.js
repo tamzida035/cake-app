@@ -38,7 +38,7 @@ const{
 
 const{
     organizeAltIngredients,
-    getAltIngredient
+    getAltIngredients,
 }=require("../utils/OrganizeIngredients");
 
 const {

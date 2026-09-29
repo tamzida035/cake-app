@@ -20,7 +20,7 @@ const{
 
 const {
     checkUsername,
-    doesUserTableExist,
+    checkUserTableExists,
     checkUserEmail,
     registerNewUser,
     getUserDataByEmail,
@@ -248,7 +248,7 @@ exports.signUp = [
           let username=req.body.name_field.trim();
           let email=req.body.email_field.trim();
           
-          const result1=await doesUserTableExist();
+          const result1=await checkUserTableExists();
           
           if(result1=="user table exists")
           {

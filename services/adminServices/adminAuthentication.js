@@ -18,7 +18,7 @@ const authenticate= function(res,typed_password){
  return new Promise((resolve, reject) => {
         //check that admin password table already exists
         checkAdminPasswordTableExists(function(results){
-          if(results=="ER_CANT_CREATE_TABLE")
+          if(results instanceof Error)
           {
                 //table("Ingredient has been successfully added to database.");
                 //resolve(results);

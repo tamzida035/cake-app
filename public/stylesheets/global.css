@@ -69,6 +69,11 @@ a:focus{
 }
 
 /* my addition*/
+.status_font_size{
+	font-size: 12px;
+}
+
+/* my addition*/
 .confirm_button_color{
 	background:#FF4500;
 }

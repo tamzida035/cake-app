@@ -4,7 +4,8 @@
 const{
     checkAdminPasswordExists,
     insertRecord,
-    createTable
+    createTable,
+    getAllRecords,
 }=require("../utils/sql_functions");
 
 
@@ -70,6 +71,15 @@ const insertIngredientInDB= function(name,status,alt_ingred_list,cb){
 
 }
 
+//this function retrieves all ingredients from 'Ingredients' table of database.
+//cb: callback function
+const getIngredientsFromDB= function(cb){
+ //already created 'Ingredients' table by executing the following statement through command line Interface
+ //CREATE TABLE Ingredients (name VARCHAR(255), status ENUM("Halal","Haram","Mushbooh"), alternative_ingredients JSON);// name column is primary key
+ const select_statement='SELECT * FROM Ingredients';
+ getAllRecords(select_statement,cb);
+}
+
 const trialFunc= function(){
  return new Promise((resolve, reject) => {
  	//const insert_statement='INSERT INTO Ingredients (name,status,alternative_ingredients) VALUES (?,?,?)';
@@ -82,4 +92,5 @@ const trialFunc= function(){
 module.exports={
 	insertIngredientInDB,
     checkIngredientTableExists,
+    getIngredientsFromDB,
 };

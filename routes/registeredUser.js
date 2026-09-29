@@ -12,9 +12,14 @@ const user_controller = require("../controllers/usersController");
 //add new recipe page load
 router.get("/add_new_recipe_by_voice",user_controller.addNewVoiceRecipePage);
 
-//process newly added voice recipe
-//add new recipe page load
+//route where client sends request to server to get ingredients list from database
+router.get("/get_all_ingredients",user_controller.getIngredients);
+//router.get("/get_ingredients",user_controller.getIng);
+
+//process newly added voice recipe(TO DO)
 router.post("/add_new_recipe_by_voice",user_controller.processNewVoiceRecipe);
+
+
 
 //load add new recipe page load
 //router.gett("/add_new_recipe_by_voice",user_controller.addNewRecipeByVoice);
@@ -28,6 +33,8 @@ router.get("/profile/:id/logout",user_controller.signOut);
 
 //add new recipe page load
 //router.get("/add_new_recipe_by_voice",user_controller.addNewRecipePage);
+
+
 
 
 //router.post("/example",user_controller.addNewRecipeByVoice);

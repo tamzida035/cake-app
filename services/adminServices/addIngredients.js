@@ -13,7 +13,7 @@ const addIngredients= function(main_ingredient,main_ingred_status,alt_list){
     return new Promise((resolve, reject) => {
         //check that ingredient table already exists
         checkIngredientTableExists(function(results){
-          if(results=="ER_CANT_CREATE_TABLE")
+          if(results instanceof Error)
           {
                 //table("Ingredient has been successfully added to database.");
                 //resolve(results);
@@ -22,12 +22,12 @@ const addIngredients= function(main_ingredient,main_ingred_status,alt_list){
           }
         });
         insertIngredientInDB(main_ingredient,main_ingred_status,alt_list,function(results){
-            if(results=='successful data insertion')
+            if(results==='successful data insertion')
             {
                 resolve("Ingredient has been successfully added to database.");
 
             }
-            else if(results=="ER_DUP_ENTRY")
+            else if(results==="ER_DUP_ENTRY")
             {
                 reject("main ingredient already exists in database.");
             }
@@ -40,5 +40,5 @@ const addIngredients= function(main_ingredient,main_ingred_status,alt_list){
 };
 
 module.exports={
-    addIngredients
+    addIngredients,
 };

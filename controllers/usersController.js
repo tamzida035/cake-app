@@ -2,7 +2,7 @@
 const asyncHandler = require("express-async-handler");
 
 //importing dotenv package to share contents of .env file
-var dotenv=require("dotenv").config();
+let dotenv=require("dotenv").config();
 
 const session_name=process.env.SESSIONCOOKIENAME;
 
@@ -10,6 +10,10 @@ const session_name=process.env.SESSIONCOOKIENAME;
 const {
     logOut,
 }=require("../services/userServices/userLogOut");
+
+const {
+    getAllIngredients,
+}=require("../services/userServices/getIngredients");
 
 const { body, check, validationResult } = require("express-validator");
 
@@ -67,17 +71,18 @@ exports.signOut = asyncHandler(async (req, res, next) => {
 })*/
 });
 
-//load add new recipe by voice page
+//load add new recipe by voice page (GET)
 exports.addNewVoiceRecipePage = asyncHandler(async (req, res,next) => {
  
   console.log("I arrived");
+  //const ingredients=await getAllIngredients();
+  //console.log("show ingred list "+ingredients);
   res.render("user_views/add_new_voice_recipe", {});
-  //res.render("user_views/user_home", {welcome_msg:'',});
 
 });
 
 
-//process new voice recipe 
+//process new voice recipe (POST)
 exports.processNewVoiceRecipe = asyncHandler(async (req, res,next) => {
  
   console.log("process recipe");
@@ -85,4 +90,31 @@ exports.processNewVoiceRecipe = asyncHandler(async (req, res,next) => {
   //res.render("user_views/user_home", {welcome_msg:'',});
 
 });
+
+//send ingredients list to client when it sends request to server(GET)
+exports.getIngredients=asyncHandler(async (req, res,next) => {
+  console.log("not getting called");
+  let ingredients=await getAllIngredients();
+  if(ingredients==='database is empty')
+  {
+    res.json({msg: 'Ingredients database is empty.  Please try again letter'});
+  }
+  else if(ingredients instanceof Error)
+  {
+    //test only
+    let err_msg=ingredients.message+". Please try again letter";
+    //res.json({msg: e.message});
+    res.json({msg: err_msg});
+  }
+  else{
+    /*let e=new Error("how");
+    let err_msg=e.message+". Please try again letter";*/
+    //res.json({msg: 'Ingredients database is empty. please try again letter'});
+    res.json(ingredients);
+  }
+  
+});
+
+
+
 
