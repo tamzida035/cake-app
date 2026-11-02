@@ -294,9 +294,9 @@ exports.validate_Ingredients = [
         const main_ingredient =sanitized_main_ingred;
         const main_ingred_status=req.body.options;
         
-        let alt_ingred_1=getAltIngredient(req.body.dynamicField1,sanitized_dyn_field1);
-        let alt_ingred_2=getAltIngredient(req.body.dynamicField2,sanitized_dyn_field2);
-        let alt_ingred_3=getAltIngredient(req.body.dynamicField3,sanitized_dyn_field3);;
+        let alt_ingred_1=getAltIngredients(req.body.dynamicField1,sanitized_dyn_field1);
+        let alt_ingred_2=getAltIngredients(req.body.dynamicField2,sanitized_dyn_field2);
+        let alt_ingred_3=getAltIngredients(req.body.dynamicField3,sanitized_dyn_field3);;
         
         //check if alternative ingredients are given and even if so, the order may be random eg dynamicfield3 has valid input but other dynfields have been deleted
         //in that case convert the valid alternative const alt_ingred_1=ingredients into json object in correct order

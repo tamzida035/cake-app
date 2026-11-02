@@ -85,11 +85,13 @@ function find_second_free_dyn_field()
 
 
 
-var yet_dyn_field_removed=false;
+let yet_dyn_field_removed=false;
+let MAX_ALT_INGRED_FIELD_ALLOWED=3;
 document.addEventListener('DOMContentLoaded', function() {
   
   document.getElementById('add_dynamic_field').addEventListener('click', function() {
     field_count++;
+     //addDynamicInputField(field_count,MAX_ALT_INGRED_FIELD_ALLOWED);
     //document.getElementById('message').innerHTML=field_count;
     if(field_count<=3){
       
@@ -268,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //check if character 'code' is alphabet
 //returns true if so 
-function isAlpha(code){
+function isAlpha(code){// to be deleted
  
  return ((code >= 65 && code <= 90) || (code >= 97 && code <= 122));
 }

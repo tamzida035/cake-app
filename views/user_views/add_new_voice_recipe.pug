@@ -10,138 +10,307 @@ block content
       span(class="me-2 ms-2")
        i(class="bi bi-caret-right-fill align-middle text-muted") 
        Add Add recipe by Voice
- //form
- div(class="container" id="ingred_form_container")
-  //div(class="row justify-content-center")
-  div(class="row justify-content-start")
-   div(class="col-md-6")
-    div(class="contact_1r shadow p-4")
-      div(class="contact_1ri row")
-       div(class="col-md-12")
-        //initially hidden modal
-        //button(type="button" data-bs-toggle="modal" data-bs-target="#confirm_modal" id="press_modal" name="press_modal") Launch GFG modal
-        div(class="modal" id="confirm_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" name="confirm_modal")
+ //container containing modals and add recipe UI (TO DO: start a section here)
+ section(id="modals")
+  div(class="container-xl" id="ingred_form_container")
+   div(class="row justify-content-start")
+    div(class="col-md-6")
+     
+        //initially hidden modals
+        div(class="modal" id="confirm_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" name="confirm_modal" aria-hidden="true")
          div(class="modal-dialog")
           div(class="modal-content")
-            div(class="modal-header" id="modal_header")
-             h1(class="modal-title" id="modal_title" name="modal_title") You have said:
-             button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
-            div(class="modal-body" name="modal_msg" id="modal_msg")
-            div(class="modal-footer" )
-             div(class="w-100")
-              div(class="row justify-content-evenly")
-               div(class="font_12 note_font_weight note_color" id="modal_footer_note")
-               div(class="col-md-3")
-                h6(class="mb-0 mt-5 text-center")
-                 a(href="#" type="button" class="button b d-block rounded-0 confirm_button_color button_medium_size" name="confirm_btn" id="confirm_btn" data-bs-dismiss="modal") Yes, Confirm
-               div(class="col-md-2")
-                h6(class="mb-0 mt-5 text-center")
-                 button(type="button" class="button b d-block rounded-0 cancel_button_color button_medium_size" data-bs-dismiss="modal"  name="close_btn" id="close_btn") No, discard
-        div(class="form-group")
-         label(for="recipe_instructions") 
-          h5 INSTRUCTIONS FOR ADDING RECIPE
-          //add empty lines
-          div(class="row mb-3")
-          //add red symbol for 1st instruction
-          div(class="work_1 row")
-           div(class="col-md-1")
-            div(class="work_i position-relative")
-             div(class="work_i2 text-center clearfix position-absolute w-100")
-              span(class="d-inline-block bg_red text-white")
-               1
-          //add empty lines
-          div(class="row mb-3")
-          div(class="row mb-3")
-          p Grant permission to access microphone when prompted
-          //add red symbol for 2nd instruction
-          div(class="work_1 row")
-           div(class="col-md-1")
-            div(class="work_i position-relative")
-             div(class="work_i2 text-center clearfix position-absolute w-100")
-              span(class="d-inline-block bg_red text-white")
-               2
-          //add empty lines
-          div(class="row mb-3")
-          div(class="row mb-3")
-          p Say 'last step' after finish saying current step to mark end of recipe.(not needed)
-          //add red symbol for 5th instruction
-          div(class="work_1 row")
-           div(class="col-md-1")
-            div(class="work_i position-relative")
-             div(class="work_i2 text-center clearfix position-absolute w-100")
-              span(class="d-inline-block bg_red text-white")
-               3
-          //add empty lines
-          div(class="row mb-3")
-          div(class="row mb-3")
-          p To mark beginning of a section of recipe, begin sentence with 'steps for' [section_name] then say 'first' [recipe_step]
-          //add red symbol for 6th instruction
-          div(class="work_1 row")
-           div(class="col-md-1")
-            div(class="work_i position-relative")
-             div(class="work_i2 text-center clearfix position-absolute w-100")
-              span(class="d-inline-block bg_red text-white")
-               4
-          //add empty lines
-          div(class="row mb-3")
-          div(class="row mb-3")
-          p say first recipe step as 'first' [recipe_step] (if there is no section_name)
-          //add red symbol for 7th instruction
-          div(class="work_1 row")
-           div(class="col-md-1")
-            div(class="work_i position-relative")
-             div(class="work_i2 text-center clearfix position-absolute w-100")
-              span(class="d-inline-block bg_red text-white")
-               5
-          //add empty lines
-          div(class="row mb-3")
-          div(class="row mb-3")
-          p say each subsequent recipe step as 'next' [recipe_step]
-          //add red symbol for 8th instruction
-          div(class="work_1 row")
-           div(class="col-md-1")
-            div(class="work_i position-relative")
-             div(class="work_i2 text-center clearfix position-absolute w-100")
-              span(class="d-inline-block bg_red text-white")
-               6
-          //add empty lines
-          div(class="row mb-3")
-          div(class="row mb-3")
-          p Minimize background noise(turn off music, TV).
-          //add red symbol for 9th instruction
-          div(class="work_1 row")
-           div(class="col-md-1")
-            div(class="work_i position-relative")
-             div(class="work_i2 text-center clearfix position-absolute w-100")
-              span(class="d-inline-block bg_red text-white")
-               7
-          //add empty lines
-          div(class="row mb-3")
-          div(class="row mb-3")
-          p Ensure good internet connectivity.
-          //stop/start toggle button
-          div(class="row justify-content-evenly")
-           div(class="col-md-4")
-            button(class="btn btn-success" data-bs-toggle="button" id="start_btn" name="start_btn") Start
-            p(id="status" name="status" class="lead mt-3 status_font_size" style="display: none; color: green;")
-           div(class="col-md-4")
-            button(class="btn btn-secondary" data-bs-toggle="button" id="reset_recipe" disabled) Reset
-            p(id="status2" class="lead mt-3 status_font_size" style="color: grey;") *from beginning
+           div(class="modal-header" id="modal_header")
+            h1(class="modal-title" id="modal_title" name="modal_title") You have said:
+            button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+           div(class="modal-body" name="modal_msg" id="modal_msg")
+           div(class="modal-footer")
+            div(class="w-100")
+             div(class="row justify-content-evenly")
+              div(class="font_12 note_font_weight note_color" id="modal_footer_note")
+              div(class="col-md-3")
+               h6(class="mb-0 mt-5 text-center")
+                button(type="button" class="button b d-block rounded-0 confirm_btn_color button_medium_size" name="confirm_btn" id="confirm_btn" data-bs-dismiss="modal") Yes, Confirm
+              div(class="col-md-2")
+               h6(class="mb-0 mt-5 text-center")
+                button(type="button" class="button b d-block rounded-0 cancel_btn_col button_medium_size" data-bs-dismiss="modal"  name="close_btn" id="close_btn") No, discard
+        //finish recipe modal
+        div(class="modal" id="finish_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true")
+         div(class="modal-dialog modal-xl")
+          div(class="modal-content")
+           div(class="modal-header col_green" id="modal_header")
+            h1(class="modal-title" id="modal_title" name="modal_title") Recipe details:
+            button(type="button" class="btn-close" id="close_recipe_detail_btn" data-bs-dismiss="modal" aria-label="Close")
+           div(class="modal-body" id="finish_modal_form")
+            form(action="/users/add_new_recipe_by_voice" method="post" id="RecipeDetailsForm")
+             div(class="contact_1r shadow p-4")
+              div(class="contact_1ri")
+               div(class="form-group" id="recipe_form")
 
-   //display ingredients extracted from recipe
-   div(class="col-md form-group" style="background: #D2B48C;")
-    label(for="identified_ingred" id="identified_ingred") 
-      h4(style="color: #FF4500;") INGREDIENTS IDENTIFIED SO FAR
-      //div(class="row mb-3")
-      //to do: do this in code
-      //section_name (if any)
-      //div(class="row mb-3")
-      //h5(style="color: #FF00FF;" id="section_title") section_name
-      //ingredients
-      //div(class="row mb-3")
-       //p(style="color: #FDF5E6;") Grant permission to access microphone when prompted
+                //display recipe name field and error field
+                div(class="row")
+                 div(class="col-md-3")
+                  span(class="text-start") RECIPE NAME
+                  p(class="note_color" style="font-size: x-small;") *must contain 3-25 characters which are alphabets and spaces only
+                 div(class="col-md-6")
+                   div(class="contact_1ril")
+                    div(class="border_light")
+                     input(type="text" class="form-control border-0" placeholder="newyork style cheesecake" id="recipe_name_field" pattern="[a-zA-Z ]{3,25}" required)
+                   //to do:client side validation
+                 div(class="col" id="recipe_name_format")
+                  //recipe name error field
+                  p(class="col_green" id="recipe_name_field_error_msg" name="recipe_name_field_error_msg") #{recipe_name_field_error}
+                //line breaks
+                div(class="row mb-3")
+                div(class="row mb-3")
+
+                //PHOTO UPLOAD
+                div(class="row")
+                 div(class="col-md-3")
+                  span(class="text-start") UPLOAD A PHOTO
+                  p(class="note_color" style="font-size: x-small;") preferred dimension: 1900 x 940 pixels
+                 div(class="col-md-6" id="photo_section")
+                  input(type="file" id="photos" accept=".png, .jpg, .jpeg")
+                 div(class="col" id="recipe_name_error")
+                  span(class="col_green" id="photos_field_error_msg") #{photos_field_error}
+              //line breaks
+              div(class="row mb-3")
+              div(class="row mb-3")
+
+              //SERVES
+              div(class="row")
+               div(class="col-md-3")
+                span(class="text-start") NO OF SERVINGS PER PERSON
+               div(class="col-sm-2")
+                div(class="contact_1ril")
+                 div(class="border_light")
+                  input(type="number" class="form-control border-0" placeholder="2" id="serve_field" min="1" required)
+               div(class="col")
+                p(class="col_green" id="serve_field_error_msg" name="serve_field_error_msg") #{serve_field_error}
+              //line breaks
+              div(class="row mb-3")
+              div(class="row mb-3")
+
+              //PREPARATION TIME
+              div(class="row")
+               div(class="col-md-3")
+                span(class="text-start") PREPARATION TIME
+                p(class="note_color" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
+               div(class="col-md-2")
+                div(class="contact_1ril")
+                 div(class="border_light")
+                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="prep_time_field" required)
+               div(class="col-md")
+                p(class="col_green" id="prep_time_field_error_msg" name="prep_time_field_error_msg") #{prep_time_field_error}
+              //line breaks
+              div(class="row mb-3")
+              div(class="row mb-3")
+
+              //COOKING TIME
+              div(class="row")
+               div(class="col-md-3")
+                span(class="text-start") COOKING TIME
+                p(class="note_color" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
+                //label(for="prep_time")
+                // b COOKING TIME*
+               div(class="col-md-2")
+                div(class="contact_1ril")
+                 div(class="border_light")
+                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="cook_time_field" required)
+                //div(class="col-md")
+                 //p(class="col_green" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
+               div(class="col-md")
+                p(class="col_green" id="cook_time_field_error_msg" name="cook_time_field_error_msg") #{cook_time_field_error}
+              //line breaks
+              div(class="row mb-3")
+              div(class="row mb-3")
+
+              //TOTAL TIME
+              div(class="row")
+               div(class="col-md-3")
+                span(class="text-start") TOTAL TIME
+                p(class="note_color" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
+               div(class="col-md-2")
+                div(class="contact_1ril")
+                 div(class="border_light")
+                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="total_time_field" required)
+               div(class="col-md")
+                p(class="col_green" id="total_time_field_error_msg" name="total_time_field_error_msg") #{total_time_field_error}
+              //line breaks
+              div(class="row mb-3")
+              div(class="row mb-3")
+
+              //EQUIPMENT LIST
+              div(class="row")
+               div(class="col-md-3")
+                span(class="text-start") EQUIPMENT
+               div(class="col-md-3")
+                button(type="button" class="button b d-block rounded-0 button_medium_size" id="add_equip_field") + add
+              //line break
+              div(class="row mb-3")
+              div(id="equip_list")
+              div(class="row")
+               div(class="col-md-3")
+                p(class="col_green" id="equip_field_limit_error_msg" name="equip_field_limit_error_msg") #{equip_field_limit_error}
+
+              //INGREDIENTS LIST
+              div(class="row")
+               div(class="col-md-3")
+                h5(class="text-start") INGREDIENT(S)
+               div(class="col-md")
+                span(class="mushbooh_col" style="font-size: x-small;") Mushbooh ingredients highlighted in orange.
+                span(class="haram_col" style="font-size: x-small;") Mushbooh ingredients highlighted in red.
+                br
+                a(href="/" class="note_color" style="font-size: x-small;") what is halal, haram and mushbooh?
+              //line break
+              div(class="row mb-3")
+              div(id="ingred_list" class="special_area1")
+
+              //line break
+              div(class="row mb-3")
+
+              //FULL RECIPE
+              div(class="row")
+               div(class="col-md-3")
+                h5(class="text-start") RECIPE
+              //line break
+              div(class="row mb-3")
+              div(id="complete_recipe" class="special_area1")
+
+               //line break
+              div(class="row mb-3")
+              div(class="row mb-3")
+
+              //NOTES
+              div(class="row")
+               div(class="col-md-3")
+                span(class="text-start") NOTES
+               div(class="col-md-8")
+                div(class="contact_1ril")
+                 div(class="border_light")
+                  textarea(class="form-control border-0" placeholder="E.g. allow the cake to cool before serving" id="note_field" rows="40" cols="80")
+
+              //line break
+              div(class="row mb-3")
+              div(class="row mb-3")
+              //buttons
+              div(class="row justify-content-end")
+               div(class="col-md-2")
+                //button(type="button" class="btn d-md-block cancel_btn_col" id="cancel_recipe_btn" data-bs-dismiss="modal") Cancel
+                button(type="button" class="button b d-block rounded-0 cancel_btn_col button_medium_size" id="cancel_recipe_btn" data-bs-dismiss="modal") Cancel
+               div(class="col-md-2")
+                button(type="submit" class="button b d-block rounded-0 save_btn_col button_medium_size" id="save_recipe_btn") Save
+               div(class="col-md-2")
+                button(class="button b d-block rounded-0 publish_btn_col  button_medium_size" id="publish_recipe_btn") Publish
+
+ //Instructions
+ section(id="user_instructions")
+  div(class="container-xl form-group" id="user_instructions")
+   div(class="row mb-3")
+    div(class="col-md-6" style="background: #EFCEC8;")
+     //h5 INSTRUCTIONS FOR ADDING RECIPE
+     h5 INSTRUCTIONS FOR ADDING RECIPE
+     //add empty line
+     div(class="row mb-3")
+     //add red symbol for 1st instruction
+     div(class="work_1 row")
+      div(class="col-md-1")
+       div(class="work_i position-relative")
+        div(class="work_i2 text-center clearfix position-absolute w-100")
+         span(class="d-inline-block bg_red text-white")
+          1
+      //add empty lines
+      div(class="row mb-3")
+      div(class="row mb-3")
+      p Grant permission to access microphone when prompted
+      //add red symbol for 2nd instruction
+      div(class="work_1 row")
+       div(class="col-md-1")
+        div(class="work_i position-relative")
+         div(class="work_i2 text-center clearfix position-absolute w-100")
+          span(class="d-inline-block bg_red text-white")
+           2
+      //add empty lines
+      div(class="row mb-3")
+      div(class="row mb-3")
+      p Always say main section(this section can be without title) of recipe before sections (with titles)
+      //add red symbol for 3rd instruction
+      div(class="work_1 row")
+       div(class="col-md-1")
+        div(class="work_i position-relative")
+         div(class="work_i2 text-center clearfix position-absolute w-100")
+          span(class="d-inline-block bg_red text-white")
+           3
+      //add empty lines
+      div(class="row mb-3")
+      div(class="row mb-3")
+      p To mark beginning of a section of recipe, begin sentence with 'steps for' [section_name] then say 'first' [recipe_step]
+      //add red symbol for 4th instruction
+      div(class="work_1 row")
+       div(class="col-md-1")
+        div(class="work_i position-relative")
+         div(class="work_i2 text-center clearfix position-absolute w-100")
+          span(class="d-inline-block bg_red text-white")
+           4
+      //add empty lines
+      div(class="row mb-3")
+      div(class="row mb-3")
+      p say first recipe step as 'first' [recipe_step] (if there is no section_name)
+      //add red symbol for 5th instruction
+      div(class="work_1 row")
+       div(class="col-md-1")
+        div(class="work_i position-relative")
+         div(class="work_i2 text-center clearfix position-absolute w-100")
+          span(class="d-inline-block bg_red text-white")
+           5
+      //add empty lines
+      div(class="row mb-3")
+      div(class="row mb-3")
+      p say each subsequent recipe step as 'next' [recipe_step]
+      //add red symbol for 6th instruction
+      div(class="work_1 row")
+       div(class="col-md-1")
+        div(class="work_i position-relative")
+         div(class="work_i2 text-center clearfix position-absolute w-100")
+          span(class="d-inline-block bg_red text-white")
+           6
+      //add empty lines
+      div(class="row mb-3")
+      div(class="row mb-3")
+      p Minimize background noise(turn off music, TV).
+      //add red symbol for 7th instruction
+      div(class="work_1 row")
+       div(class="col-md-1")
+        div(class="work_i position-relative")
+         div(class="work_i2 text-center clearfix position-absolute w-100")
+          span(class="d-inline-block bg_red text-white")
+           7
+      //add empty lines
+      div(class="row mb-3")
+      div(class="row mb-3")
+      p Ensure good internet connectivity.
+      //stop/start toggle button
+      div(class="row justify-content-evenly")
+       div(class="col-md-4")
+        button(class="btn btn-success d-md-block" data-bs-toggle="button" id="start_btn" name="start_btn") START
+        p(id="start_btn_status" class="lead mt-3 status_font_size" style="display: none; color: green;")
+       div(class="col-md-4")
+        button(class="btn cancel_btn_col d-md-block" id="reset_recipe_btn" disabled) RESET
+        p(id="reset_btn_status" class="lead mt-3 status_font_size" style="color: grey;") *from beginning
+       div(class="col-md-4")
+        button(class="btn save_btn_col d-md-block" id="finish_recipe_btn" data-bs-toggle="modal" data-bs-target="#finish_modal" disabled) FINISH RECIPE!
+        p(id="finish_btn_status" class="lead mt-3 status_font_size" style="color: blue;") *Recipe must contain minimum 1 ingredient!
+   
+    //display ingredients extracted from recipe
+    div(class="col-md-6 form-group overflow-auto" id="display_ingred_area")
+     div(class="row mb-3")
+      h4(style="color: #FF4500;" id="identified_ingred") INGREDIENTS IDENTIFIED SO FAR
   
  //tested and found refernce is correct
  //defer
  script(src="/javascripts/add_voice_recipe.js")
+ script(src="/javascripts/recipe_details.js")
+ script(src="/javascripts/common_functions.js")
+ script(src="/javascripts/display_recipe_functions.js")
+ //script(src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous')
  //script(data-main="scripts/main" src="scripts/require.js")

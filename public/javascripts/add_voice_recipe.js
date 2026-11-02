@@ -21,7 +21,8 @@ let identified_ingredients=new Array();//identify the ingredients from user tran
 let map_ingre=new Map();//map of identified ingredients under the current section title
 let map_section_title=new Map();//map of section titles already stated by user
 let confirm_btn=document.getElementById("confirm_btn");// confirm button to confirm user speech 
-let reset_btn=document.getElementById("reset_recipe");//reset button 
+let reset_btn=document.getElementById("reset_recipe_btn");//reset button 
+let finish_btn=document.getElementById("finish_recipe_btn");
 let full_recipe=new Array();//contains full recipe in json
 let temp_recipe,temp_text,temp_section_title,temp_ingre;
 //let msg=document.getElementById('modal_msg');
@@ -34,8 +35,11 @@ function commonReset()
   temp_text=temp_section_title=temp_ingre=undefined;
 }
 
+//clears ingredients and total no of steps shown in display area
 function clearDisplayArea()
 {
+  /*let parent_of_display_ingred=document.getElementById("identified_ingred");
+  parent_of_display_ingred.textContent="";*/
   for (let i in full_recipe) 
   {
     console.log("removed "+i);
@@ -52,6 +56,11 @@ function clearDisplayArea()
     if(child4!==null) child4.remove();
 
   }
+  /*if(is_reset)
+  {
+    let status=document.getElementById("display_ingred_area_title");
+    status
+  }*/
 }
 //discard recipe uttered so far and reset to original settings
 function resetRecipeToInitialState()
@@ -63,6 +72,7 @@ function resetRecipeToInitialState()
   full_recipe=[];
   overall_step_no=current_section_step_no=0;
   reset_btn.disabled=true;
+  finish_btn.disabled=true;
 
 }
 
@@ -122,7 +132,7 @@ function beforeEachRecipeStep()
   if(current_section_title!=="")
   {
     //case 1a: prev section has no title
-    if(prev_section_title==="")
+    if(prev_section_title==="") //overallfirst step of recipe
     {
       //start of new section
       current_section_step_no=1;
@@ -147,16 +157,20 @@ function beforeEachRecipeStep()
   }
   else//case 2:current section has no title
   {
+    
     if(isFirstEverStep())//new section starts
     {
       current_section_step_no=1;
       is_new_section=true;
+      current_section_title="Main";
+      //prev_section_title="none";
        
     }
     else{
       //same section continues;
       current_section_step_no++;
       is_new_section=false;
+      current_section_title=prev_section_title;// not sure
 
     }
 
@@ -179,7 +193,7 @@ function beforeEachRecipeStep()
   {
     map_ingre.clear();//reset map of ingredients
     identified_ingredients=[];//clear the list of identified ingredients under previous section title
-    temp_recipe=undefined;// not sure
+    temp_recipe={};// not sure
 
   }
   clearDisplayArea();
@@ -192,6 +206,7 @@ function beforeEachRecipeStep()
 function afterEachRecipeStep()
 {
   prev_section_title=current_section_title;
+  console.log("prev recipe title after each step: "+prev_section_title);
   commonReset();
 }
 
@@ -252,29 +267,22 @@ function extractIngredientsFromSpeech(ingre)
 
 //store recipe(section title,step no, step,ingredients) and ingredients identified so far
 //is_new_section:true if this is a new section(with or without title)
+//to do: "first add sugar" "next add water" does not add water to ingre list and 2nd step (CHECK)
 function storeRecipeData(is_new_section)
 {
   if(is_new_section)
   {
-    //if current section has no title, write 'none' in section-title of json object
-    if(current_section_title==="")
+    //if current section has no title, write 'main' in section-title of json object
+    //store section_title only once in json object
+    if(!map_section_title.has(current_section_title))
     {
-        temp_recipe={
-               'section_title': 'none',
-        };
-    }
-    else //store section_title only once in json object
-    {
-      if(!map_section_title.has(current_section_title))
-      {
         map_section_title.set(current_section_title,1);
         temp_recipe={
           'section_title': current_section_title,
         };
                 
-      }
-
     }
+
     let text={
     'text': recipe_text,
     };
@@ -289,6 +297,7 @@ function storeRecipeData(is_new_section)
   {
     //add recipe text to 'steps' of prev section
     cur_sec_title=prev_section_title;
+    console.log("current sec title inside storage: "+cur_sec_title);
     for (let i in full_recipe) 
     {
       let element1=full_recipe[i];
@@ -297,7 +306,6 @@ function storeRecipeData(is_new_section)
       for (let key in element1)
       {
         //console.log("key: "+key);
-
         let value = element1[key];
         if(key==='section_title'){
 
@@ -315,7 +323,6 @@ function storeRecipeData(is_new_section)
             let text={'text': recipe_text,};
             value.push(text);
             //console.log("pushed text");
-
           }
 
         }
@@ -336,8 +343,8 @@ function storeRecipeData(is_new_section)
     }
   }
   
-  //console.log("temp_recipe");
-  //console.log(temp_recipe);
+  console.log("temp_recipe");
+  console.log(temp_recipe);
   console.log("full_recipe");
   console.log(full_recipe);
   //print full_recipe
@@ -369,8 +376,13 @@ function storeRecipeData(is_new_section)
           if(value.hasOwnProperty(key2))
           {
              let value2 = value[key2];
-             console.log("object 3: "+value2.name+" "+value2.status);
-           }
+             console.log("object 3: "+value2.name+" "+value2.status+" "+value2.alternative_ingredients);
+             for(let key3 in value2.alternative_ingredients)
+             {
+              let value3=value2.alternative_ingredients[key3];
+              console.log("alternative ingred: "+value3);
+             }
+          }
 
         }
 
@@ -389,15 +401,15 @@ function storeRecipeData(is_new_section)
 function resetButton() {
     recognizing = false;
     //document.getElementById("status").style.display = "none";
-    document.getElementById("status").innerHTML="Stopped listening";
-    document.getElementById('start_btn').innerHTML ="Start";
+    document.getElementById("start_btn_status").innerHTML="Stopped listening";
+    document.getElementById('start_btn').innerHTML ="START";
     
   }
 //reset between steps of a recipe
 function intermediateReset() {
     recognizing = false;
     //document.getElementById("status").style.display = "none";
-    document.getElementById('start_btn').innerHTML ="Start";
+    document.getElementById('start_btn').innerHTML ="START";
     //document.getElementById("status").innerHTML="Stopped listening";
     
   }
@@ -405,21 +417,21 @@ function intermediateReset() {
 //note: write down supporting browser for all the speech recog event function
 //called by recog.start function
 speech_recog.onstart = () => {
-    document.getElementById("status").style.display = "block";
-    document.getElementById("status").innerHTML="started listening";
+    document.getElementById("start_btn_status").style.display = "block";
+    document.getElementById("start_btn_status").innerHTML="started listening";
 };
 
 //fired when speech recognition error occurs
 speech_recog.onerror = (event) => {
     //document.getElementById("status").style.display = "block";
-    document.getElementById("status").innerHTML= event.error;
+    document.getElementById("start_btn_status").innerHTML= event.error;
 
 };
 
 //called by recog.stop func
 speech_recog.onend = () => {
     //document.getElementById("status").style.display = "block";
-    document.getElementById("status").innerHTML="Stopped listening";
+    document.getElementById("start_btn_status").innerHTML="Stopped listening";
     intermediateReset();
  };
 
@@ -430,6 +442,8 @@ speech_recog.onend = () => {
 //return 3: if there is invalid section title(INVALID FORMAT)
 //return 4: if first step is wrongfully uttered as 'next' step (INVALID FORMAT)
 //return 5: if next step is wrongfully uttered as 'first' step (INVALID FORMAT)
+//return 6: if current section title already exists
+//return 7: if user has uttered preserved section title MAIN as new section title
 function processUserSpeech()
 {
   //check if there is section title
@@ -459,6 +473,8 @@ function processUserSpeech()
           //invalid recipe step format
           return 1;
         }
+        else if(current_section_title==="main") return 7;
+        else if(map_section_title.has(current_section_title)) return 6;
         return 2;
 
       }
@@ -560,21 +576,20 @@ speech_recog.onresult =(event) => {
         if(num===2) 
         {
           msg.innerHTML=final_transcript;
-          span1 = document.createElement('span');
-          span1.className='col_green';
-          span1.innerHTML='--VALID FORMAT';
+          span1=createHtmlElement('span','col_green',"","",'--VALID FORMAT');
           msg.appendChild(span1);
         }
         else
         {
           msg.innerHTML=final_transcript;
-          //msg.style.color='red';
-          span1 = document.createElement('span');
-          span1.className='col_red';
-          if(num===1) span1.innerHTML='--INVALID RECIPE STEP FORMAT';
-          else if(num===3) span1.innerHTML='--INVALID SECTION TITLE FORMAT';
-          else if(num===4)  span1.innerHTML='--FIRST STEP MUST BEGIN WITH FIRST KEYWORD';
-          else if(num===5)  span1.innerHTML='--SUBSEQUENT STEP MUST BEGIN WITH NEXT KEYWORD';
+          let err_msg;
+          if(num===1) err_msg='--INVALID RECIPE STEP FORMAT';
+          else if(num===3) err_msg='--INVALID SECTION TITLE FORMAT';
+          else if(num===4)  err_msg='--FIRST STEP MUST BEGIN WITH FIRST KEYWORD';
+          else if(num===5)  err_msg='--SUBSEQUENT STEP MUST BEGIN WITH NEXT KEYWORD';
+          else if(num==6) err_msg='--THIS SECTION ALREADY EXISTS';
+          else if(num==7) err_msg='--MAIN REFERS TO DEFAULT SECTION TITLE.THIS WORD IS PRESERVED';
+          span1=createHtmlElement('span','col_red',"","",err_msg);
           msg.appendChild(span1);
 
           //to do: confirm cannot be disabled as intented (correct it)
@@ -590,9 +605,10 @@ speech_recog.onresult =(event) => {
 
 //display the ingredients with section title(if any)
 let parent_of_display_ingred=document.getElementById("identified_ingred");
+let at_least_one_ingre=false;
 //let child1,child2,child3;
 // case 1: if user has confirmed the speech
-if(!confirm_btn.disabled)
+if(confirm_btn!==null && !confirm_btn.disabled)
 {
     confirm_btn.addEventListener("click", function () 
     {
@@ -605,7 +621,10 @@ if(!confirm_btn.disabled)
       {    
         //set variables before a recipe step
         let is_new_section=beforeEachRecipeStep();
-        if(overall_step_no!==0) reset_btn.disabled=false;
+        if(overall_step_no!==0)
+        {
+          reset_btn.disabled=false;
+        }
         //identify the ingredients from user transcript
         //access the ingredients list
         ingredients_list.then((ingre)=>{
@@ -624,75 +643,12 @@ if(!confirm_btn.disabled)
           //store recipe data collected so far
           storeRecipeData(is_new_section);
 
-          //display the ingredients with section title(if any)
-          for (let i in full_recipe) 
-          {
-            console.log("iteration no: "+i);
-            let child1=document.createElement("div");
-            child1.className="row mb-3";
-            child1.id="space1"+i;
-            //add space
-            parent_of_display_ingred.appendChild(child1);
-            let element1=full_recipe[i];
-            for (let key in element1)
-            {
-              //console.log("key: "+key);
-              let value = element1[key];
-              if(key==='section_title'){
-                //console.log("value: "+value);
-                //display section_title(if any)
-                let child2=document.createElement("h5");
-                child2.style.color='#FF00FF';
-                child2.id="section_title"+i;
-                let msg="Recipe section name:";
-                child2.innerHTML+=(msg+" "+value);
-                parent_of_display_ingred.appendChild(child2);
-              } 
-              else if(key==="ingredients"){
-                let combine_ingre;
-                let j=0;
-                for (let key2 in value)
-                {
-                 //console.log("object 1: "+key2);
-                 if(value.hasOwnProperty(key2))
-                 {
-                   let value2 = value[key2];
-                   j++;
-                   if(j===1) combine_ingre=value2.name;
-                   else combine_ingre+=(", "+value2.name);
-                   //console.log("object 3: "+value2.name+" "+value2.status);
-                 }
-                }
-                let child3=document.createElement("p");
-                child3.style.color='#FDF5E6';
-                child3.id="recipe_ingredients"+i;
-                if(message1===undefined)
-                {
-                  //display recipe ingredients
-                  child3.innerHTML=combine_ingre;
-                  child1.id="space2"+i;
-                  parent_of_display_ingred.appendChild(child1).appendChild(child3);
-                }
-                else{
-                  child3.innerHTML=message1;
-                  parent_of_display_ingred.appendChild(child1).appendChild(child3);
-
-                }
-
-               }
-      
-            }
-      
-          }
-
-          //display total no of recipe steps so far
-          let child2=document.createElement("p");
-          child2.className="status_font_size";
-          child2.style.color='#006400';
-          child2.id="total_steps";
-          child2.innerHTML="total no of steps in recipe: "+overall_step_no;
-          parent_of_display_ingred.appendChild(child2);
+          //display the ingredients with section title(if any)(TO DO: put this in a function)
+          [parent_of_display_ingred,at_least_one_ingre]=writeOnDisplayArea(parent_of_display_ingred,at_least_one_ingre,message1);//imported from display_recipe_functions.js
           
+          //if recipe contains at least 1 ingredient, user can save the recipe
+          if(at_least_one_ingre) finish_btn.disabled=false;
+          console.log("at least 1 ingred: "+at_least_one_ingre);
           //update variables after each recipe step
           afterEachRecipeStep();
         });
@@ -704,18 +660,34 @@ if(!confirm_btn.disabled)
         
 //case 2: user has discarded step
 let close_btn=document.getElementById("close_btn");
-close_btn.addEventListener("click", function () {
+if(close_btn!==null)
+{
+  close_btn.addEventListener("click", function () {
   modal.style.display = "none";
   //msg.removeChild(span1);
   if(footer!==null) footer.innerHTML="";
   resetRecipeStep();
-});
+  });
 
+}
+
+
+//reset recipe to initial state
 reset_btn.addEventListener("click", function () {
   resetRecipeToInitialState();
+  let status=document.getElementById("reset_btn_status");
+  status.innerHTML='recipe cleared!';
 });
 
 
+//displayrecipe details in a form when finish button is clicked
+finish_btn.addEventListener("click", function () {
+  //display ingredient list(this function is in recipe_details.js module)
+  displayIngredientsList();
+  //display full recipe 
+  displayFullRecipe();
+  
+});
 
 
 //fired when end of speech is detected(feature not available in all browers) (DOES NOT WORK)
@@ -747,8 +719,7 @@ reset_btn.addEventListener("click", function () {
 };*/
 
 
-
-//code to use
+//button to start recording recipe
 document.addEventListener('DOMContentLoaded', function(event) {
 	console.log("DOM fully loaded and parsed"); 
 	document.getElementById('start_btn').addEventListener('click', function() {
@@ -757,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   	{
   		recognizing=true;
   		speech_recog.start();
-      document.getElementById('start_btn').innerHTML="Stop";
+      document.getElementById('start_btn').innerHTML="STOP";
   		console.log("started button");
   	}
     else// stop conversion
@@ -770,10 +741,5 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
 
   });
-
-  /*document.getElementById('clear_btn').addEventListener('click', function() {
-  	document.getElementById('textarea_field').innerHTML= "";
-    reset_recipe_step();
-  });*/
 
 });

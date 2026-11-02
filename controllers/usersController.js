@@ -86,8 +86,8 @@ exports.addNewVoiceRecipePage = asyncHandler(async (req, res,next) => {
 exports.processNewVoiceRecipe = asyncHandler(async (req, res,next) => {
  
   console.log("process recipe");
-  res.render("user_views/add_new_voice_recipe", {});
-  //res.render("user_views/user_home", {welcome_msg:'',});
+  //res.render("user_views/add_new_voice_recipe", {});
+  
 
 });
 

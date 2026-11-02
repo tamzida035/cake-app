@@ -32,7 +32,7 @@ h6{
  }
 a{
 	color: var(--bs-gray-900);
-	text-decoration:none;
+	text-decoration:underline;
 }
 a:hover{
 	text-decoration:none;
@@ -63,6 +63,17 @@ a:focus{
 	text-transform:uppercase;
 }
 
+/*.cancel_button{
+	transition: 0.3s;
+	padding: 15px 35px 15px 35px;
+	display: inline-block;
+	color:var(--bs-white);
+	background:#808080;
+	border-radius: 50rem;
+	font-weight:500;
+	text-transform:uppercase;
+}*/
+
 /* my addition*/
 .note_font_weight{
 	font-weight: 800;
@@ -74,13 +85,15 @@ a:focus{
 }
 
 /* my addition*/
-.confirm_button_color{
+.confirm_btn_color{
 	background:#FF4500;
 }
 
 /* my addition*/
-.cancel_button_color{
-	background:var(--black_light);
+.cancel_btn_col{
+	/*background:var(--black_light);*/
+	color: white;
+	background:#808080;
 }
 
 /* my addition*/
@@ -89,12 +102,29 @@ a:focus{
 
 /* my addition*/
 #modal_header{
-	background-color: #00FF7F;
+	/*background-color: #C8D813;*/
+	background-color:#65C26D;
+
 }
+
+#display_ingred_area{
+	max-width: 600px;
+    max-height:800px;
+    background: #D2B48C;
+}
+/*#modal_msg{
+	background-color: #C8D813;
+}
+
+#modal_footer{
+	background-color: #D9EDAD;
+	
+}*/
 
 /* my addition*/
 #modal_title{
 	font-size: 22px;
+	color:black;
 }
 
 #confirm_modal{
@@ -134,6 +164,18 @@ a:focus{
 	background:var(--red);
 	color:var(--bs-white);
 }
+/*my addition*/
+.publish_btn_col{
+	color: white;
+	background:orange;
+}
+
+/*my addition*/
+.save_btn_col{
+	color: white;
+	background:red;
+}
+
 
 .bg_light{
 	background: var(--bg_light)!important;
@@ -148,9 +190,38 @@ a:focus{
 .col_red{
    color: var(--red)!important;
  }
+
+.mushbooh_col{
+   color: orange;
+ }
+
+ .haram_col{
+ 	color: red;
+ }
+
+ .section_title_col{
+ 	color: #FE20F3;
+ 	font-weight: 500;
+ }
+
+.special_area1{
+	background: #EBE6E6;
+}
+
+.special_area2{
+	background: #E3AEA3;
+
+}
+
 .col_green{
    color: var(--green)!important;
  }
+ .alternative_ingred_col{
+ 	/*color: lavender;*/
+ 	/*color: #C954C3;*/
+ 	color: #F58002;
+ }
+
 .bg_back {
     background: var(--bg_back)!important;
 }
@@ -561,6 +632,10 @@ p{
 
 @media screen and (max-width : 767px){
 
+.button_medium_size {
+	font-size: 10px;
+}
+
 .center_sm{
 	text-align:center!important; 
 }
@@ -677,7 +752,7 @@ p{
 }
 @media (min-width:768px) and (max-width:991px) {
 
-
+.button_medium_size {font-size: 10px;}
 .dropdown-fullwidth .d-none{
 	display:block!important; 
 }

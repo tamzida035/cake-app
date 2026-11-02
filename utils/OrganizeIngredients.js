@@ -79,7 +79,7 @@ const organizeAltIngredients= function(alt_ingred_1,alt_ingred_2,alt_ingred_3){
 //this function returns sanitized form of ingredient(if valid) else returns undefined
 //res_field: field value returned as request
 //value: sanitized field value
-const getAltIngredient=function(res_field,value){
+const getAltIngredients=function(res_field,value){
 	if(res_field!=undefined)
     {
           return value;
@@ -90,5 +90,5 @@ const getAltIngredient=function(res_field,value){
 
 module.exports={
     organizeAltIngredients,
-    getAltIngredient
+    getAltIngredients,
 };
