@@ -12,7 +12,7 @@ let MIN_PASSWORD_LENGTH=8;// MINM length of password
 //field_name: name of name-field
 //value: value in name field
 //return: true if name is correct or throw error if error occurs
-const validateName= function(field_name,value){
+const validateName= function(field_name,value){// to do: replace this by validateText func given in commonValidator.js
 	//case 1: check that input field is non-empty
 	let is_input_not_empty=isInputNonEmpty(value,field_name);
 	//if input is non-empty

@@ -23,6 +23,7 @@
     "https": "^1.0.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "~1.9.1",
+    "multer": "^2.5.0",
     "mysql2": "^3.14.1",
     "nodemailer": "^8.0.2",
     "pug": "2.0.0-beta11",

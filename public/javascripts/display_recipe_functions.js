@@ -108,7 +108,7 @@ function displaySectionTitleInRecipeDetail(parent_node,id,value,is_ingre_list)
 function displayIngredientsList()
 {
   let par_ingre_list=document.getElementById("ingred_list");
-  let div_id;
+  let id_value;
   for (let i in full_recipe) 
   {
     let element1=full_recipe[i];
@@ -138,15 +138,16 @@ function displayIngredientsList()
             let child_level1,child_level2,child_level3,child_level4,child_name;
 
             //display ingredient name(OK)
-            div_id="ingre_name_root"+j;
-            child_level1=createHtmlElement('div',"row",div_id);// remove it when closing the modal
+            div_value="ingre_name_root"+j;
+            child_level1=createHtmlElement('div',"row",div_value);// remove it when closing the modal
             child_level2=createHtmlElement('div',"col-md-3");
             //highlight the mushbooh and haram ingredients
             let col="";
             if(ingred.status==='Haram') col="haram_col";
             else if(ingred.status==='Mushbooh') col="mushbooh_col";
+            div_value=id+"ingre_name"+j;
             let ingre_name=j+". "+ingred.name;
-            let ingre_name_field=createSpecialHtmlElement("b",col,id,ingre_name);
+            let ingre_name_field=createSpecialHtmlElement("b",col,div_value,ingre_name);
             child_level1.appendChild(child_level2).appendChild(ingre_name_field);
 
             //display alternative ingredients(if any)
@@ -182,22 +183,42 @@ function displayIngredientsList()
             par_ingre_list.appendChild(child_level1);
 
             //display input for ingredient amount
-            div_id="ingre_amount_top"+j;
-            child_level1=createHtmlElement('div',"col-md-2",div_id);
+            div_value="ingre_amount_top"+j;
+            child_level1=createHtmlElement('div',"col-md-2",div_value);
             child_level2=createHtmlElement('div',"contact_1ril");
             child_level3=createHtmlElement('div',"border_light");
-            div_id=id+"ingre_amount_input"+j;
-            //let pl_holder="1 tsp(melted)";
-            let input=createSpecialHtmlElement('input',"form-control border-0",div_id,"","","1 tsp(melted)","20");
-            child_level1.appendChild(child_level2).appendChild(child_level3).appendChild(input);
+            
+            div_value=id+"ingre_amount_input"+j;
+            let ingre_amount_field=createSpecialHtmlElement('input',"form-control border-0",div_value,"","","1 tsp (melted)","20");//orggi
+            child_level1.appendChild(child_level2).appendChild(child_level3).appendChild(ingre_amount_field);//original
+
+            //pass ingrgedient name for later usage
+            /*div_value=id+"ingre_name"+j;
+            let p_ingre_name=createHtmlElement('p',"col-md",div_value,"font-size: x-small;",ingre_name);
+            child_level1.appendChild(p_ingre_name);*/
+          
 
             //display error for ingredient amount input field
             child_level4=createHtmlElement('div',"");
-            div_id=id+"ingre_field_error_msg"+j;
+            div_value=id+"ingre_field_error_msg"+j;
             //let err_field=createHtmlElement("p","col-md-2 col_green",div_id,"font-size: x-small;","");
-            let err_field=createHtmlElement("p","col-md col_green",div_id,"font-size: x-small;","");
+            let err_field=createHtmlElement("p","col-md col_green",div_value,"","");
             child_level1.appendChild(child_level4).appendChild(err_field);
-            par_ingre_list.appendChild(child_level1);
+            par_ingre_list.appendChild(child_level1); 
+
+            //add eventlistener to input field
+            let ingre_amount_field_id=id+"ingre_amount_input"+j;
+            let err_field_id=id+"ingre_field_error_msg"+j;
+            let ingre_name_field_id=id+"ingre_name"+j;
+            ingre_amount_field=document.getElementById(ingre_amount_field_id);
+            err_field=document.getElementById(err_field_id);
+            ingre_name_field=document.getElementById(ingre_name_field_id);
+
+            ingre_amount_field.addEventListener("change",(event) => {
+              //console.log("ingre amount")
+              isIngredientAmountValid(ingre_amount_field,err_field,ingre_name_field.textContent);//func in recipe_details.js
+            });
+            
 
         }
       }
@@ -205,7 +226,7 @@ function displayIngredientsList()
     } 
     }
   }
-  checkIngredientAmounts();
+  //ingredientAmountsFieldEeventListener();
 }
 
 //function to display full recipe

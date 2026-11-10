@@ -280,6 +280,7 @@ function isAlpha(code){// to be deleted
 //output: returns true if input matches the regular expression
 function validateRegExp(text){
   //var condition = /^[a-zA-Z][a-zA-Z' ]*[a-zA-Z ]$/; //CORRECTED
+  ////to do: put this checking part in common_funcstions.js
   let condition = /^[a-zA-Z]+['|\-]?[a-zA-Z]{1,}$/; //ok. because valid user input may have whitepaces in the end
   if (!text.match(condition)) {
     return false;
@@ -326,7 +327,7 @@ function validateRegExp(text){
 //msg: error msg
 //input:input field selected by query selector
 //error_type: 1 if empty input; 2 if length  of input too short 3:if invalid input;0 if no error; 4 if input is too short and invalid
-function printErrorMsg(isDynField,x,msg,input,error_type)
+function printErrorMsg(isDynField,x,msg,input,error_type)//to do: put this func in common_funcstions.js
 {
    //document.getElementById('message').innerHTML="outside err 2: "+isDynField+" "+x+" "+msg+" "+input+" "+error_type;
    let error_field_name="";
@@ -363,7 +364,7 @@ function printErrorMsg(isDynField,x,msg,input,error_type)
 //input:input field selected by query selector(TO BE DELETED)
 //isDynField: true if this input field is dynamically created.else, false
 //return: true if this input field is empty 
-function checkEmptyInput(input,isDynField)
+function checkEmptyInput(input,isDynField)//to do: put this func in common_funcstions.js
 {
    let isValid=true;
   // document.getElementById('message').innerHTML="is input bvalid "+isValid;
@@ -409,7 +410,7 @@ function checkEmptyInput(input,isDynField)
 
 //input: input field selected by query selector
 //return: true if this input is greater than minimum length set for thie field
-function checkValidInputLength(input)
+function checkValidInputLength(input)//to do: put this func in common_funcstions.js
 {
   var isValid=true;
   let trimmed_length=input.value.trim();
@@ -423,7 +424,7 @@ function checkValidInputLength(input)
 //isDynField: true if this input field is dynamically created.
 //isValidLength: if this input has valid length
 //return: true if this input is valid 
-function checkValidInput(input,isDynField,isValidLength)
+function checkValidInput(input,isDynField,isValidLength)//to do: put this func in common_funcstions.js
 {
   var isValid=true;
   //document.getElementById('message').innerHTML="value of reg exp: "+validateRegExp(input.value);
@@ -494,7 +495,7 @@ function checkValidInput(input,isDynField,isValidLength)
 
 //func validating the non dynamically generated field (ingredient field)
 //return true if input in this field is valid 
-function validateNonDynamicField()
+function validateNonDynamicField()//to do: put this func in common_funcstions.js
 {
    //document.getElementById('message').innerHTML="validaenOnDyn "+g;
    let input = document.querySelector('#dynamicForm input[name="ingred_field"]');
@@ -573,7 +574,7 @@ async function sendData() {
   //construct a formdata object for the form
     const fd = new FormData(form1);
     try {
-    const response = await fetch(`https://localhost/admin/add_ingredients`, {
+    const response = await fetch('https://localhost/admin/add_ingredients', {
       method: "POST",
       headers: {
             'Content-Type': 'application/json'

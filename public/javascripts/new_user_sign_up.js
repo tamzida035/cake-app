@@ -9,7 +9,7 @@
 //error_field_name: name of span field in html/pug where error message related to this input field will be displayed
 //color_name: text color
 //return: none
-function printErrorMsg(msg,input,error_field_name,color_name="red")
+function printErrorMsg(msg,input,error_field_name,color_name="red") // to do: use func given in common_funcrions.js
 {
    let error_msg=document.getElementById(error_field_name);
    error_msg.style.color=color_name;
@@ -33,7 +33,7 @@ function printErrorMsg(msg,input,error_field_name,color_name="red")
 //error_field_name: name of span field in html/pug where error message related to this input field will be displayed
 //input_field_name: name of the input field
 //return: true if this input field is empty 
-function isInputNonEmpty(input,error_field_name,input_field_name)
+function isInputNonEmpty(input,error_field_name,input_field_name)// to do: use func given in common_funcrions.js
 {
    let isValid=true;
    //if input field is empty
@@ -56,7 +56,7 @@ function isInputNonEmpty(input,error_field_name,input_field_name)
 //input: input field selected by query selector
 //minm_length: minimum length for this input field
 //return: true if this input length is greater than the minimum length set for this field
-function isInputLengthValid(input,minm_length)
+function isInputLengthValid(input,minm_length)//to do: use func given in common_funcstions.js
 {
   let isValid=true;
   let trimmed_length=input.value.trim();
@@ -71,7 +71,7 @@ function isInputLengthValid(input,minm_length)
 //text: input string
 //format: regular expression for this input
 //output: returns true if input matches the regular expression
-function validateRegExp(text,format){
+function validateRegExp(text,format){//to do: use func given in common_funcstions.js
   //var condition = /^[a-zA-Z][a-zA-Z' ]*[a-zA-Z ]$/; //CORRECTED
   //let condition = /^[_a-zA-Z0-9]+[]*[a-zA-Z0-9]*$/;
   if (!text.match(format)) {
@@ -86,7 +86,7 @@ function validateRegExp(text,format){
 //input_field_name: name of the input field
 //error_field_name: name of span field in html/pug where error message related to this input field will be displayed
 //return: true if this input is valid 
-function isInputValid(input,format,input_field_name,isValidLength,error_field_name)
+function isInputValid(input,format,input_field_name,isValidLength,error_field_name)//to do: use func given in common_funcstions.js
 {
   let isValid=true;
   //document.getElementById('message').innerHTML="value of reg exp: "+validateRegExp(input.value);
@@ -122,7 +122,7 @@ function isInputValid(input,format,input_field_name,isValidLength,error_field_na
 
 //func validating text field
 //return true if display name is valid 
-function validateText()
+function validateText()//to do: use func given in common_funcstions.js
 {
   let MIN_DISPLAY_NAME_LENGTH=6;// MINM length of displayed name
 	let input = document.querySelector('#UserRegisForm input[name="name_field"]');

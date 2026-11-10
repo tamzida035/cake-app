@@ -2,43 +2,15 @@
 //***********recipe name code***************
 //let recipe_name=document.querySelector('#RecipeDetailsForm input[name="recipe_name_field"]');
 let recipe_name=document.getElementById("recipe_name_field");
-let recipe_name_err_msg=document.getElementById("recipe_name_field_error_msg");
+//let recipe_name_err_msg=document.getElementById("recipe_name_field_error_msg");
 
 //to do: on server side validation, remove extra whitespaces from name before saving it
 //check if recipe name is valid
-//return true if valid else false
+//return true if valid else return false
 function isRecipeNameValid()
 {
-  let is_err=false;
-
-   if (recipe_name.validity.valid) 
-   {
-    //valid recipe name
-    recipe_name_err_msg.textContent = ""; // Remove the message content
-  
-  }
-  else if (recipe_name.validity.valueMissing) {
-    // If empty
-    is_err=true;
-    recipe_name_err_msg.textContent = "name cannot be empty";
-  } 
-  else if (recipe_name.validity.patternMismatch) {
-    // If format is invalid
-    is_err=true;
-    recipe_name_err_msg.textContent = "incorrect format";
-  }
-  else if (recipe_name.validity.tooShort) {
-    // If the value is too short,
-    is_err=true;
-    recipe_name_err_msg.textContent = "name too short";
-  }
-  else if (recipe_name.validity.tooLong) {
-    // If the value is too long,
-    is_err=true;
-    recipe_name_err_msg.textContent = "name too long";
-  }
-  highlightErrField(is_err,recipe_name);
-  return is_err;
+  let condition = /^[a-zA-Z ]{3,25}$/;
+  return validateText(recipe_name,"Recipe name","recipe_name_field_error_msg",condition);//common_functions.js
 }
 
 if(recipe_name!==null)
@@ -49,9 +21,8 @@ if(recipe_name!==null)
 
 }
 
-
-
 //*************photo uploader code*************
+//this file contains fields to validate non-text fields on the client side
 //function to calculate uploaded photo file size in kB, mb
 function calculateFileSize(number) {
   let ans;
@@ -101,7 +72,7 @@ photo_file.addEventListener("change",function(){
 
       }
       
-      if(photo_size<MAX_FILE_SIZE)
+      if(photo_size<=MAX_FILE_SIZE)
       {
         photo_status.innerHTML=calculateFileSize(photo_size);
       } 
@@ -128,264 +99,66 @@ photo_file.addEventListener("change",function(){
 //************servings code*************
 //let recipe_name=document.querySelector('#RecipeDetailsForm input[name="recipe_name_field"]');
 let serve=document.getElementById("serve_field");
-let serve_err_msg=document.getElementById("serve_field_error_msg");
-
+//let serve_err_msg=document.getElementById("serve_field_error_msg");
 //to do: on server side validation, throw error if user enters '0';
 //check if no of servings is valid
-//return true if valid else false
-function isServingsValid()
+//return true if valid else return false
+function isServingValid()
 {
-  let is_err=false;
-
-   if (serve.validity.valid) 
-   {
-    //valid value
-    serve_err_msg.textContent = ""; // Remove the message content
-  }
-  else if (serve.validity.valueMissing) {
-    // If empty
-    is_err=true;
-    serve_err_msg.textContent = "must enter a number";
-  } 
-  else if (serve.validity.rangeUnderflow) {
-    // If format is invalid
-    is_err=true;
-    serve_err_msg.textContent ="invalid number";
-  }
-  highlightErrField(is_err,serve);
-  return is_err;
+  return validateNumber(serve,"","serve_field_error_msg");//common_functions.js
 }
 
-serve.addEventListener("input", (event) => {
-  isServingsValid();
-});
+if(serve!==null)
+{
+  serve.addEventListener("input", (event) => {
+   isServingValid();
+  });
+
+}
 
 
 //********preparation, cooking and total time code*********
 
-//check whether a string contains 'min'
-//str: tokenized string
-//return true if valid else false
-function isStringMin(str)
-{
-  return (str==="min");
-}
 
-//check whether a string contains 'min'
-//str: tokenized string
-//return true if valid else false
-function isStringHr(str)
-{
-  return (str==="hr");
-}
-
-//check whether number beside 'hr' or 'min' is withing valid range
-//str: tokenized string
-//no:the integer to compare
-//return true if valid else false
-function isRangeValid(str,no)
-{
-  if(str==="hr")
-  {
-    //valid hr: 0-99
-    if(no>=0 && no<=99) return true;
-    return false;
-  }
-  else if(str==="min")
-  {
-    //valid min: 0-59
-    if(no>=0 && no<=59) return true;
-    return false;
-
-  }
-  return false;
-
-}
-
-
-//check if time duration entered by user in prep/cooking time is valid
-//input:input field
-//return true if valid else false
-function isDurationFormatValid(input)// 0 min/hr, 0 hr 0 min should not be allowed
-{
-  //discard any non-alphanumeric characters
-  let RegEx = /^[a-z0-9 ]+$/i;
-  let val = input.trim(); 
-  //console.log("trimmed value: "+val);
-  let is_input_alphanumeric = RegEx.test(val);
-  //console.log("value of reg test: "+is_input_alphanumeric);
-  if(!is_input_alphanumeric) return false;
-  else{
-    //tokenize input
-    let token_array=input.split(" ");
-    //console.log("token length: "+token_array.length);
-    //valid no of tokens should be 2 or 4
-    if(token_array.length===2)
-    {
-      //valid input format: a number followed by either of hr/min but not both eg 1 min or 1 hr
-      //check for no
-      let no=parseInt(token_array[0]);
-      //no is not a number->"invalid format"
-      if(no===NaN) return false;
-
-      // check for min/hr
-      let find_min=isStringMin(token_array[1]);
-      let find_hr=isStringHr(token_array[1]);
-      //0 min and 0 hr are not allowed
-      if(no===0 && (find_min||find_hr)) return false;
-
-      //if last token is "min", determine if no belongs to its range
-      if(find_min) return isRangeValid("min",no);
-      else{
-         //if last token is "hr", determine if no belongs to its range
-        if(find_hr) return isRangeValid("hr",no);
-        return false; // since no is neither followed by 'min' nor by 'hr'->"invalid format"
-      }
-
-    }
-    else if(token_array.length==4)
-    {
-      //valid input format: [0-99] hr [0-59] min
-
-      //check for first no
-      let no1=parseInt(token_array[0]);
-      //no1 is not a number->"invalid format"
-      if(no1===NaN) return false;
-
-      //check for hr 
-      let find_hr=isStringHr(token_array[1]);
-      if(find_hr)
-      {
-        //determine if no1 belongs to valid range of hr
-        if(!isRangeValid("hr",no1)) return false;
-        else{// no1 belongs to valid  range of hr
-          //check for second no
-          let no2=parseInt(token_array[2]);
-          //no2 is not a number->"invalid format"
-          if(no2===NaN) return false;
-
-          //check for min
-          let find_min=isStringMin(token_array[3]);
-          if(find_min)
-          {
-            //determine if no2 belongs to valid range of min
-            if(!isRangeValid("min",no2)) return false;
-            else{
-              //0 hr 0 min is not allowed
-              if(no1===0 && no2===0) return false;
-              return true;
-            }
-          }
-          return false;//could not find min 
-        }
-
-      }
-      return false;//could not find hr 
-      
-    }
-    else return false;//no of tokens is neither 2 nor 4
-  }
-}
-//let recipe_name=document.querySelector('#RecipeDetailsForm input[name="recipe_name_field"]');
-
-//check if prep time/cooking time is valid
-//return true if valid else false
-//my_time:input id
-//my_time_err_msg: id of error field of my_time
-function isTimeValid(my_time,my_time_err_msg)
-{
-  let is_err=false;
-  if (my_time.validity.valueMissing) {
-    // If empty
-    is_err=true;
-    my_time_err_msg.textContent = "must enter time duration";
-  }
-  else{
-    //let exp="((\d+(\.\d+)?)\s*(h|hr|hrs|hours))?(\s*(\d+)\s*(m|min|mins|minutes))?";
-    console.log("orig value: "+my_time.value);
-    //console.log("typeof: "+typeof(my_time.value));
-    if(!isDurationFormatValid(my_time.value)){
-      is_err=true;
-      my_time_err_msg.textContent ="invalid format";
-    }
-    else{
-      //console.log("enter here 1");
-      my_time_err_msg.textContent = ""; 
-    }
-
-  }
-  highlightErrField(is_err,my_time);
-  return is_err;
-}
 //preparation time variables
 let prep_time=document.getElementById("prep_time_field");
-let prep_time_err_msg=document.getElementById("prep_time_field_error_msg");
+//let prep_time_err_msg=document.getElementById("prep_time_field_error_msg");
 
 prep_time.addEventListener("input", (event) => {
-  console.log("listener called");
-  //let input=prep_time.textContent;
-  isTimeValid(prep_time,prep_time_err_msg);
+  //isTimeValid(prep_time,prep_time_err_msg);
+  isTimeValid(prep_time,"prep_time_field_error_msg");//common_functions.js
 });
 
 //cooking time variables
 let cook_time=document.getElementById("cook_time_field");
-let cook_time_err_msg=document.getElementById("cook_time_field_error_msg");
+//let cook_time_err_msg=document.getElementById("cook_time_field_error_msg");
 
 cook_time.addEventListener("input", (event) => {
-  console.log("listener called");
-  //let input=prep_time.textContent;
-  isTimeValid(cook_time,cook_time_err_msg);
+  //isTimeValid(cook_time,cook_time_err_msg);
+  isTimeValid(cook_time,"cook_time_field_error_msg");//common_functions.js
 });
 
 // total time variables
 let total_time=document.getElementById("total_time_field");
-let total_time_err_msg=document.getElementById("total_time_field_error_msg");
+//let total_time_err_msg=document.getElementById("total_time_field_error_msg");
 
 //total time variables
 total_time.addEventListener("input", (event) => {
-  console.log("listener called");
-  //let input=prep_time.textContent;
-  isTimeValid(total_time,total_time_err_msg);
+  
+  //isTimeValid(total_time,total_time_err_msg);
+  isTimeValid(total_time,"total_time_field_error_msg");//common_functions.js
 });
 
 //**********************EQUIPMENT CODE (user added field)**************
 
 //check if an equipment field is valid
-//input_field:input field id
+//input_field:input field element
+//input_field_name: name of the input field
 //err_msg_field: id of error msg field of input_field
-//return true if valid else false
-function isEquipmentFieldValid(input_field,err_msg_field)
+//return false if valid else true
+function isEquipmentFieldValid(input_field,input_field_name)
 {
-  let is_err=false;
-  if(input_field.validity.valid) 
-  {
-    //valid value
-    err_msg_field.textContent = ""; // Remove the message content
-  }
-  else if (input_field.validity.valueMissing) 
-  {
-    //If empty
-    is_err=true;
-    err_msg_field.textContent = "field cannot be empty";
-  } 
-  else if(input_field.validity.tooShort)
-  {
-    //input length too short
-    is_err=true;
-    err_msg_field.textContent = "not enough characters entered";
-  }
-  else if(input_field.validity.tooLong)
-  {
-    //input length too long
-    is_err=true;
-    err_msg_field.textContent = "character limit exceeded";
-  }
-  
-  console.log("highlight isEquipmentFieldValid ");
-  highlightErrField(is_err,input_field);
-
-  return is_err;
-
+  return validateText(input_field,"",input_field_name);//common_functions.js
 }
 
 // check if all the equipment input fields are valid, before submitting the form
@@ -394,18 +167,15 @@ function isEquipmentFieldValid(input_field,err_msg_field)
 function areUserAddedEquipmentFieldsValid()
 {
    let inputs = document.querySelectorAll('#RecipeDetailsForm input[id^="equipment"]');
+   let count=0;
    inputs.forEach(function(input) {
      let id_no=getNoFromId(input.id);
-     //console.log("id_no of err field"+id_no);
      let err_msg_field_id="error_equipment"+id_no;
      let err_msg_field=document.getElementById(err_msg_field_id);
-     console.log("call isEquipmentFieldValid ");
-     let isValid=isEquipmentFieldValid(input,err_msg_field);
-     if(!isValid) return false;
-
+     if(isEquipmentFieldValid(input,err_msg_field_id)) count++;
    });
-   return true;
-
+   if(count===inputs.length) return true;
+   return false;
 }
 
 let MAX_EQUIP_ALLOWED=5;
@@ -469,7 +239,7 @@ add_eqp_btn.addEventListener('click', function() {
     //add error message field
     child_level1=createHtmlElement('div',"col-md-2");// parameterize?-=
     let err_id="error_equipment"+id_no;
-    let err_msg_field=createHtmlElement("p","col_green",err_id,"font-size: x-small;",id_no);
+    let err_msg_field=createHtmlElement("p","col_green",err_id,"",id_no);
     top_level.appendChild(child_level1).appendChild(err_msg_field);
 
     //add everything to topmost level
@@ -494,31 +264,7 @@ add_eqp_btn.addEventListener('click', function() {
 
     //if equipment input field is empty/too long/too short, show error msg
     input_field.addEventListener('input', function() {
-      isEquipmentFieldValid(input_field,err_msg_field);
-     /*let is_err=false;
-     if(input_field.validity.valid) 
-     {
-       //valid value
-       err_msg_field.textContent = ""; // Remove the message content
-     }
-     else if (input_field.validity.valueMissing) {
-      // If empty
-      is_err=true;
-      err_msg_field.textContent = "field cannot be empty";
-     } 
-     else if(input_field.validity.tooShort)
-     {
-      //input length too short
-      is_err=true;
-      err_msg_field.textContent = "not enough characters entered";
-     }
-     else if(input_field.validity.tooLong)
-     {
-      //input length too short
-      is_err=true;
-      err_msg_field.textContent = "character limit exceeded";
-     }
-     highlightErrField(is_err,input_field);*/
+      isEquipmentFieldValid(input_field,err_id);
 
     });
     
@@ -534,288 +280,77 @@ add_eqp_btn.addEventListener('click', function() {
 });
 
 
-
-//**********************CODE TO DISPLAY RECIPE STEP AND INGREDIENTS**************
-//get section title with no
-//n: the nth section title
-//return: a id generated for the nth section title
-function getSectionTitleId(n)
-{
-   let name="sec_title"+n;
-   return name;
-}
-
-//function to add extra features to dynamically added fields in recipe details form(move to common__functions.js?)
-//e_name: name of element to be created ('e.g. div','input','p','span','h1')
-//e_class_name: name of class of e_name; 
-//id:id of the section title
-//type_of_node: name of element to be created ('e.g. div','input','p','span','h1')
-//j: the jth ingre of a section title
-//text:textcontent to write in e
-//is_err: true if there is error in ingredient field amount else false
-//pla_hold: place holder of element created
-//sty: style of element
-//maxlen: maximum length of value in created input field
-//minlen: minimum length of value in created input field
-//return: modified element e
-/*function createSpecialHtmlElement(e_name,e_class_name,id="",text="",sty="",pla_hold="",maxlen=" ",minlen="")
-{ 
-  let e=createHtmlElement(e_name,e_class_name,id,sty,text);
-  if(e_name==='i')
-  {
-      e.title="Alternative ingredient to "+text;
-  }
-  else if(e_name==='input')//write amount of ingredient
-  {
-      //e=createHtmlElement(e_name,e_class_name,id,sty);
-      //console.log("equip field inside specialElem: "+e);
-      e.setAttribute("type","text");
-      //e.placeholder="1 tsp(melted)";
-      e.placeholder=pla_hold;
-      e.required=true;
-      e.name=id;
-      //e.maxLength="20";
-      e.maxLength=maxlen;
-      e.minLength=minlen;
-  }
-  else if(e_name==="button")
-  {
-    e.setAttribute("type","button");
-    e.required=true;
-    e.name=id;
-  }
-  //else e=createHtmlElement(e_name,e_class_name,id,sty,text);
-  return e;
-}*/
-
-
-//check that no of ingredient specified is in correct format
-//err_msg: id of the paragraph field that display error message
-//str: string containing the number (whole or fractional)
-//return true if valid else reeturn false
-function isNumberOfIngredientValid(str,err_msg)
-{
-  let no_err=true;
-  //check that the first token is a str in number format: contains only numbers and '/'
-  let is_valid_string =areCharactersValid(str,false,true,['/']);// common_functions.js
-  if(is_valid_string===false)
-  {
-    //err_msg.textContent = "[a-zA-Z0-9],whitespaces,/,comma and +";
-    err_msg.textContent="write whole or fractional number";
-    no_err=false;
-  }
-  else{//0/2
-    let fractional_no=str.split("/");
-    //console.log("fractional array length: "+fractional_no.length);
-    if(fractional_no.length===2)// fraction have  a numerator and  a denominators
-    {
-          let parsed_numerator=Number.parseInt(fractional_no[0]);
-          let parsed_denominator=Number.parseInt(fractional_no[1]);
-          //console.log("numer: "+fractional_no[0]);
-          //console.log("fractional numera a number? : "+Number.isInteger(fractional_no[0]));
-          //console.log("deno: "+fractional_no[1]);
-          //console.log("fractional deno a number? : "+Number.isInteger(fractional_no[1]));
-          if(parsed_numerator===NaN || parsed_denominator===NaN)
-          {
-            err_msg.textContent="invalid number format";
-            no_err=false;
-
-          }
-          else if(parsed_numerator===0 || parsed_denominator===0)
-          {
-            err_msg.textContent="please enter non-zero value";
-            no_err=false;
-
-          }
-     }
-    else{
-      //console.log("str length: "+str.length);
-      if(fractional_no[0]===str)// whole number
-      {
-        let no=Number.parseInt(str);
-        if(no===0)// 0 is invalid amount to enter
-        {
-          err_msg.textContent="please enter non-zero value";
-          no_err=false;
-        }
-        else console.log("should return true");
-      }
-      else{
-        err_msg.textContent="invalid number format";
-        no_err=false;
-      }
-    }
-        
-  }
-  //console.log(" return no+err: "+no_err);
-  return no_err;
-
-}
-
-//check that unit of ingredient specified is in correct format
-//err_msg: id of the paragraph field that display error message
-//str: string containing the measuring unit
-//ingred: json obbject containing {ingred_name,status, alternative ingred list}
+//check if amounts of ingredients entered are valid
 //return true if valid else return false
-function isUnitOfIngredientValid(str, err_msg,ingred)
+function areIngredientFieldsValid()
 {
-  //let found=false;
-  //special case: for eggs/eeggs: unit is L/M/S
-  if(ingred.name=="egg" || ingred.name==="eggs")
-  {
-    let valid_units=['S','s','M','m','L','l'];
-    for(let i=0;i<valid_units.length;i++)
-    {
-      if(str===valid_units[i]) return true;
-    
-    }
-  }
-  else{
-   let valid_units=['oz','cup','cups','tsp','tbsp','ml','pt','gal','lb','pound'];
-   for(let i=0;i<valid_units.length;i++)
-   {
-     if(str===valid_units[i]) return true;
-   }
-  }
-  err_msg.textContent = "must enter an allowed measuring unit";
-  return false;
-}
-
-
-//check that additional info about ingredient specified is in correct format
-//err_msg: id of the paragraph field that display error message
-//str: string containing the additional info
-//return true if valid else return false
-function isOptionalInfoValid(str, err_msg)
-{
-  let len=str.length;
-  // valid format: (....) or ""
-  if(str.trim()==="") return true;
-
-  if(str==="()")
-  {
-    err_msg.textContent = "additional info: empty bracket";
-    return false;
-  }
-  if(str[0]!=='(' || str[len-1]!==')')
-  {
-    err_msg.textContent = "additional info: missing bracket";
-    return false;
-  }
-  return true;
-
-}
-
-//check if ingredient amount mentioned is valid
-//err_msg: id of the paragraph field that display error message
-//element_id; id of the input field that takes ingredient amount as input
-//ingred: json obbject containing {ingred_name,status, alternative ingred list}
-function isIngredientAmountValid(element_id,err_msg,ingred){
-  let is_err=false;
-  let input=element_id.value;
-  if(input.trim()==="")
-  {
-    err_msg.textContent = "must enter an amount";
-    is_err=true;
-  }
-  else{
-    //format: 1 tsp (melted, at room temperature)
-    //format: 1/3 cup
-    //format: 1 M/L/S (only for eggs)
-    //amount field format: can contain alphabets,numbers, whitespaces,'/','+' and ','
-    //discard if input contains invalid characters
-    //if input contains any invalid characters, reject it
- 
-    //let is_valid_string =validateRegExp(val,RegEx);
-    let valid_char_set=['/',',','(',')'];
-    let is_valid_string =areCharactersValid(input,true,true,valid_char_set);// function given in common_functions.js module
-    //console.log("is str valid: "+is_valid_string);
-    if(is_valid_string===false)
-    {
-      //err_msg.textContent = "[a-zA-Z0-9],whitespaces,/,comma and +";
-      err_msg.textContent="invalid character(s)";
-      is_err=true;
-    }
-    else{
-     //tokenize input
-     let token_array=input.split(" ");
-     /*console.log("token length: "+token_array.length);
-
-     for(let i=0;i<token_array.length;i++)
-     {
-       console.log("token: "+token_array[i]);
-     }*/
-     //check if amount entered is valid number
-     is_err=!isNumberOfIngredientValid(token_array[0],err_msg);
-     if(!is_err)// number of ingred is valid
-     {
-       if(token_array.length>1)//check unit of ingredient
-       {
-        is_err=!isUnitOfIngredientValid(token_array[1],err_msg,ingred);
-
-       }
-       else// unit is missing
-       {
-        err_msg.textContent="specify measuring unit";
-        is_err=true;
-
-       }
-     }
-
-    if(!is_err)// unit specified by user is valid
-    {
-      //console.log("token array: "+token_array);
-      if(token_array.length>2)// check if optional info is added by user
-      {
-        is_err=!isOptionalInfoValid(token_array[2],err_msg);
-
-      }
-    }
-    //no error found
-    if(!is_err) err_msg.textContent="";
-      
-   }
-
-  }
-  //console.log("before highlighting is_err: "+is_err);
-  highlightErrField(is_err,element_id);
-  return is_err;
-
-}
-
-//add eventListener to all input fields of ingredient amounts
-//error field id format: sec_title01ingre_field_error_msg1
-//input field id format: id+"ingre"+j
-function checkIngredientAmounts()
-{
-  for (let i in full_recipe) 
+  let is_valid=true;
+  for (let i in full_recipe)
   {
     let element1=full_recipe[i];
     let id=getSectionTitleId(i+1);
+    let j=0;
     //console.log("object 1 inside recipe_detail: "+full_recipe[i]);
-    for (let key in element1)//for each section_titlee
+    for (let key in element1)//for each recipe section
     {
-      let j=0;
+      j++;
       let value = element1[key];
-      for (let key2 in value)//for each ingredient
-      {
-        j++;
-        let name_field=id+"ingre_amount_input"+j;
-        let err_field_name=id+"ingre_field_error_msg"+j;
-        let element_id=document.getElementById(name_field);
-        let err_id=document.getElementById(err_field_name);
+      //if(Array.isArray(value)) continue;
+      let ingre_amount_field_id=id+"ingre_amount_input"+j;
+      let err_field_id=id+"ingre_field_error_msg"+j;
+      let ingre_name_field_id=id+"ingre_name"+j;
+      let ingre_amount_field=document.getElementById(ingre_amount_field_id);
+      let err_field=document.getElementById(err_field_id);
+      let ingre_name_field=document.getElementById(ingre_name_field_id);
 
-        let ingred = value[key2];// collect the ingred name also because for eggs,conventional specified units cannot be used
-        //console.log("object 3: "+value2.name+" "+value2.status);
-        if(element_id!==null){
-          element_id.addEventListener("change",(event) => {
-            isIngredientAmountValid(element_id,err_id,ingred);
-          });
-          //isIngredientAmountValid(element_id,err_id);
+      if(ingre_amount_field!==null){
+        if(isIngredientAmountValid(ingre_amount_field,err_field,ingre_name_field.textContent))//returns true if invalid(common_functions.js)
+        {
+          if(is_valid) is_valid=false;
 
-        }
-
+        } 
+         
       }
+    
+    }
+  }
+  return is_valid;
+}
+
+//add ingredient name with corresponding amount in input field 
+function addIngredientNameAndAmount()
+{
+  for (let i in full_recipe)//for each section_titlee
+  {
+    let element1=full_recipe[i];
+    let id=getSectionTitleId(i+1);
+    let j=0;
+    for (let key in element1)//for each section of recipe
+    {
+      //let j=0;
+      j++;
+      let value = element1[key];
+      //if(Array.isArray(value)) continue;
+      console.log("recipe section "+element1[key]);
+      const jsonString = JSON.stringify(value);
+      console.log("json body: "+jsonString);
+      let ingre_amount_field_id=id+"ingre_amount_input"+j;
+      let ingre_name_field_id=id+"ingre_name"+j;
+      let ingre_amount_field=document.getElementById(ingre_amount_field_id);
+      let ingre_name_field=document.getElementById(ingre_name_field_id);
+      if(ingre_amount_field!==null)
+      {
+        let temp=ingre_amount_field.value;
+        ingre_amount_field.value=ingre_name_field.textContent+", "+temp;
+        console.log("final value: "+ingre_amount_field.value);
+      }
+      /*for (let key2 in value)//for each ingredient
+      {
+        
+        let value2 = value[key2];
+        console.log("secret "+value2);
+
+      }*/
 
     }
   }
@@ -863,54 +398,79 @@ cancel_recipe_detail_btn.addEventListener("click", function () {
 
 
 
-//do not submit form if the following condition occurs (might not be needed)
-/*function isRecipeFormValid(){
-    if(photo_status!==undefined)
-    {
-      if(photo_status.textContent==="File size exceeds 2 MB.Please upload another file") return false;
-    }
+//do not submit form if the following condition occurs
+//return true if all fields in recipe form is valid else return false
+function isRecipeFormValid(){
     console.log("inside isRecipeFormValid");
-    //if(!isRecipeNameValid()|| !isServingsValid()|| !isTimeValid(prep_time,prep_time_err_msg)|| !isTimeValid(cook_time,cook_time_err_msg)|| !isTimeValid(total_time,total_time_err_msg)) return false;
-    if(!areUserAddedEquipmentFieldsValid()) return false;
-    return true;
-}*/
+    let valid_name_field=isRecipeNameValid();
+    let valid_serve_field=isServingValid();
+    //let valid_photo_field=(photo_size!==undefined && photo_size>MAX_FILE_SIZE);
+    let valid_prep_field=isTimeValid(prep_time,"prep_time_field_error_msg");
+    let valid_cook_field=isTimeValid(cook_time,"cook_time_field_error_msg");
+    let valid_total_field=isTimeValid(total_time,"total_time_field_error_msg");
+    let valid_equip_fields=areUserAddedEquipmentFieldsValid();
+    let valid_ingred_amount_fields=areIngredientFieldsValid();
+    console.log("valid_name_field: "+valid_name_field+" valid_serve_field: "+valid_serve_field+" valid_prep_field: "+valid_prep_field);
+    console.log("valid_cook_field: "+valid_cook_field+" valid_total_field: "+valid_total_field+" valid_equip_fields: "+valid_equip_fields);
+    console.log("valid_ingred_amount_fields: "+valid_ingred_amount_fields);
+    if(valid_name_field && valid_serve_field && valid_prep_field && valid_cook_field && valid_total_field && valid_equip_fields && valid_ingred_amount_fields) return true;
+    return false;
+    /*let a=!isRecipeNameValid()||!isServingsValid()|| !isTimeValid(prep_time,prep_time_err_msg)|| !isTimeValid(cook_time,cook_time_err_msg)|| !isTimeValid(total_time,total_time_err_msg)|| !areUserAddedEquipmentFieldsValid()||areIngredientFieldsValid();
+    return a;*/
+    /*if(!isRecipeNameValid()) return false;
+    //these fields return false if valid and vice versa
+    if(isServingsValid()|| isTimeValid(prep_time,prep_time_err_msg)|| isTimeValid(cook_time,cook_time_err_msg)|| isTimeValid(total_time,total_time_err_msg)|| !areUserAddedEquipmentFieldsValid()) return false;
+    return areIngredientFieldsValid();*/
+}
 
 //isRecipeFormValid();
 
-/*const form_client = document.getElementById('RecipeDetailsForm');// works with client side validation only
+const form_client = document.getElementById('RecipeDetailsForm');// works with client side validation only
 const form_server = document.querySelector("#RecipeDetailsForm");//  works with server side validation only
 //submit form to server
 async function sendData() {
   //construct a formdata object for the form
-    const fd = new FormData(form_server);
-    try {
-    const response = await fetch('https://localhost/users/add_new_recipe_by_voice', {
-      method: "POST",
-      headers: {
-            'Content-Type': 'application/json'
-          },
-      // Set the FormData instance as the request body
-      body: fd,
-    });
-    console.log(await response.json());
-  } catch (e) {
-    console.error(e);
+  //add ingredient name with corresponding amount in input field 
+  addIngredientNameAndAmount();
+  const fd = new FormData(form_server);
+  fd.append("full_recipe",full_recipe);
+  for (let [key, value] of fd.entries()) {
+      console.log(`${key}:`, value);
   }
-}*/
+  fetch('https://localhost/users/add_new_recipe_by_voice', {
+      method: "POST",
+      body: fd,
+  }).then(response => console.log(response))
+  .catch(error => console.error('Error:', error));
+}
 //form submission on clicking submit button 'save'
-//document.addEventListener('DOMContentLoaded', function() {
+let final_error_field=document.getElementById("final_error_msg");
+document.addEventListener('DOMContentLoaded', function() {
   //works (server side?)
-  /*form_server.addEventListener('submit', function(event) {
+  form_server.addEventListener('submit', function(event) {
     event.preventDefault();
-    console.log("trying to submit form");
+    console.log("submit button clicked");
     //if any of the inputs are invalid, do not submit the form
-    sendData();
-  });*/
+    if(isRecipeFormValid())
+    {
+      sendData();
+      //event.preventDefault();
+    } 
+    else
+    {
+      //event.preventDefault();
+      final_error_field.textContent="Please fill-in the required fields(*) in the correct formats";
+      //console.log("prevented submit form");
+      return;
+    } 
+    //event.preventDefault();
+    
+  });
   //trial (works only for client side)
   /*form_client.addEventListener('submit', function(event) {
-    event.preventDefault();
-    console.log("trying to submit form");
-   
+    
+    //console.log("trying to submit form");
     sendData();
+    event.preventDefault();
   });*/
-//});
+});

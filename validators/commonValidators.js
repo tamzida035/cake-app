@@ -3,9 +3,8 @@
 //checks if a given input matches valid regular expression 
 //text: input string
 //format: regular expression for this input
-//flag: if true, perform regex match in reverse order
 //output: returns true if input matches the regular expression
-function validateRegExp(text,format,flag){
+function validateRegExp(text,format){
   let is_matched;
   is_matched=text.match(format);//works
   //is_matched=format.match(text);// does not work
@@ -42,7 +41,7 @@ function errorType(num,field_name,value="")
   throw new Error(input);
 }
 
-//checks if input field is nonempty
+//checks if text in a input field is nonempty
 //value:value in input field 
 //field_name: name of name-field
 //return: true if this input field is empty 
@@ -50,30 +49,35 @@ function isInputNonEmpty(value,field_name)
 {
    let isValid=true;
    //if input field is empty
-   if(value.trim() === '')
+   if(value===undefined || (value!==undefined && value.trim() === ''))
+   {
+    isValid=false;
+    errorType(1,field_name);
+   }
+   /*if(value!==undefined && value.trim() === '')
    {
      isValid=false;
      errorType(1,field_name);
      
-   }
+   }*/
    return isValid;
 }
 
-//checks if input has valid length
+//checks if text in a input field has valid length
 //value: value in input field 
 //minm_length: minimum length for this input field
+//maxm_length: maximum length of the text
 //return: true if this input length is greater than the minimum length set for this field
-function isInputLengthValid(value,minm_length)
+function isInputLengthValid(value,minm_length=0,maxm_length="")
 {
-  let isValid=true;
   let trimmed_length=value.trim();
-  if(trimmed_length.length<minm_length){
-    isValid=false;
+  if((trimmed_length.length<minm_length) ||(maxm_length!=="" && trimmed_length.length>maxm_length)){
+    return false;
   }
-  return isValid;
+  return true;
 }
 
-//checks if input field is valid 
+//checks if text in a input field is valid 
 //value: value in input field
 //format: regular expression for this input
 //isValidLength: if this input has valid length
@@ -114,8 +118,34 @@ function isInputValid(value,format,field_name,isValidLength)
   return isValid;
 }
 
+//function to validate a text in a given input field
+//field_name: name of name-field
+//value: value in name field
+//min_length: minimum length of the text
+//max_length: maximum length of the text
+//condition: reg exp to be satisfiefd by input field
+//return: true if name is correct or throw error if error occurs
+const validateText= function(field_name,value,min_length=0,max_length="",condition=""){// to do: replace this by validateText func given in commonValidator.js
+  //case 1: check that input field is non-empty
+  let is_input_not_empty=isInputNonEmpty(value,field_name);
+  //if input is non-empty
+  let h;
+  if(is_input_not_empty)
+  {
+    //check if input length is less than min value set for this field
+    let f=isInputLengthValid(value,min_length,max_length);
+    //case 2-4 and case 0:check non-empty input textfields for conforming to regular expression and adhere to minimum length constraint.Regular expression must start with 4 alphabets,then followed by alphabets,numbers,_   
+    //let condition = /^[a-zA-Z]{4}[_a-zA-Z0-9]{2,}$/;
+    h=isInputValid(value,condition,field_name,f);
+  }
+  else return is_input_not_empty;
+  return h;
+
+}
+
 module.exports={
     isInputNonEmpty,
     isInputLengthValid,
-    isInputValid
+    isInputValid,
+    validateText
 };

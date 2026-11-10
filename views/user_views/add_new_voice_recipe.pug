@@ -42,7 +42,7 @@ block content
             h1(class="modal-title" id="modal_title" name="modal_title") Recipe details:
             button(type="button" class="btn-close" id="close_recipe_detail_btn" data-bs-dismiss="modal" aria-label="Close")
            div(class="modal-body" id="finish_modal_form")
-            form(action="/users/add_new_recipe_by_voice" method="post" id="RecipeDetailsForm")
+            form(action="/users/add_new_recipe_by_voice" method="post" id="RecipeDetailsForm" name="RecipeDetailsForm" enctype="multipart/form-data")
              div(class="contact_1r shadow p-4")
               div(class="contact_1ri")
                div(class="form-group" id="recipe_form")
@@ -55,7 +55,9 @@ block content
                  div(class="col-md-6")
                    div(class="contact_1ril")
                     div(class="border_light")
-                     input(type="text" class="form-control border-0" placeholder="newyork style cheesecake" id="recipe_name_field" pattern="[a-zA-Z ]{3,25}" required)
+                     input(type="text" class="form-control border-0" placeholder="newyork style cheesecake" id="recipe_name_field" name="recipe_name_field" pattern="[a-zA-Z ]{3,25}" minLength="3" maxLength="25")
+                     
+                     //input(type="text" class="form-control border-0" placeholder="newyork style cheesecake" id="recipe_name_field" name="recipe_name_field")
                    //to do:client side validation
                  div(class="col" id="recipe_name_format")
                   //recipe name error field
@@ -70,7 +72,8 @@ block content
                   span(class="text-start") UPLOAD A PHOTO
                   p(class="note_color" style="font-size: x-small;") preferred dimension: 1900 x 940 pixels
                  div(class="col-md-6" id="photo_section")
-                  input(type="file" id="photos" accept=".png, .jpg, .jpeg")
+                  //to do: make photo upload mandatory
+                  input(type="file" id="photos" name="photos" accept=".png, .jpg, .jpeg")
                  div(class="col" id="recipe_name_error")
                   span(class="col_green" id="photos_field_error_msg") #{photos_field_error}
               //line breaks
@@ -84,7 +87,9 @@ block content
                div(class="col-sm-2")
                 div(class="contact_1ril")
                  div(class="border_light")
-                  input(type="number" class="form-control border-0" placeholder="2" id="serve_field" min="1" required)
+                  input(type="number" class="form-control border-0" placeholder="2" id="serve_field" name="serve_field" min="1")
+
+                  //input(type="number" class="form-control border-0" placeholder="2" id="serve_field" name="serve_field")
                div(class="col")
                 p(class="col_green" id="serve_field_error_msg" name="serve_field_error_msg") #{serve_field_error}
               //line breaks
@@ -99,7 +104,7 @@ block content
                div(class="col-md-2")
                 div(class="contact_1ril")
                  div(class="border_light")
-                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="prep_time_field" required)
+                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="prep_time_field" name="prep_time_field")
                div(class="col-md")
                 p(class="col_green" id="prep_time_field_error_msg" name="prep_time_field_error_msg") #{prep_time_field_error}
               //line breaks
@@ -116,7 +121,7 @@ block content
                div(class="col-md-2")
                 div(class="contact_1ril")
                  div(class="border_light")
-                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="cook_time_field" required)
+                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="cook_time_field" name="cook_time_field")
                 //div(class="col-md")
                  //p(class="col_green" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
                div(class="col-md")
@@ -133,7 +138,7 @@ block content
                div(class="col-md-2")
                 div(class="contact_1ril")
                  div(class="border_light")
-                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="total_time_field" required)
+                  input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="total_time_field" name="total_time_field")
                div(class="col-md")
                 p(class="col_green" id="total_time_field_error_msg" name="total_time_field_error_msg") #{total_time_field_error}
               //line breaks
@@ -193,6 +198,23 @@ block content
               //line break
               div(class="row mb-3")
               div(class="row mb-3")
+
+              //client side errors
+              div(class="row")
+               div(class="col-md-6")
+                p(class="col_green" id="final_error_msg" name="final_error_msg") 
+
+              //server side errors
+              div(class="row")
+               div(class="col-md-3")
+                if errors
+                 for e in errors
+                  p(class="col_green")!=e.msg
+
+              //line break
+              div(class="row mb-3")
+              div(class="row mb-3")
+
               //buttons
               div(class="row justify-content-end")
                div(class="col-md-2")
@@ -285,6 +307,13 @@ block content
          div(class="work_i2 text-center clearfix position-absolute w-100")
           span(class="d-inline-block bg_red text-white")
            7
+      //server side errors
+      div(class="work_1 row")
+       div(class="col-md-1")
+        if errors2
+         for e in errors2
+          p(class="col_green")!=e.msg
+
       //add empty lines
       div(class="row mb-3")
       div(class="row mb-3")
@@ -299,7 +328,7 @@ block content
         p(id="reset_btn_status" class="lead mt-3 status_font_size" style="color: grey;") *from beginning
        div(class="col-md-4")
         button(class="btn save_btn_col d-md-block" id="finish_recipe_btn" data-bs-toggle="modal" data-bs-target="#finish_modal" disabled) FINISH RECIPE!
-        p(id="finish_btn_status" class="lead mt-3 status_font_size" style="color: blue;") *Recipe must contain minimum 1 ingredient!
+        p(id="finish_btn_status" class="lead mt-3 status_font_size" style="color: red;") *Recipe must contain minimum 1 ingredient!
    
     //display ingredients extracted from recipe
     div(class="col-md-6 form-group overflow-auto" id="display_ingred_area")
@@ -311,6 +340,7 @@ block content
  script(src="/javascripts/add_voice_recipe.js")
  script(src="/javascripts/recipe_details.js")
  script(src="/javascripts/common_functions.js")
+ //script(src="/javascripts/non_text_field_functions.js")
  script(src="/javascripts/display_recipe_functions.js")
  //script(src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous')
  //script(data-main="scripts/main" src="scripts/require.js")

@@ -5,21 +5,24 @@ const{
     isVerifiedUser,
 }=require('../middleware/userMiddleware');
 
+const{
+    imageUploaded,
+}=require("../middleware/uploadMiddleware");
 
 // Require registered user controller (not sure if need to modify this)
 const user_controller = require("../controllers/usersController");
 
 //add new recipe page load
-router.get("/add_new_recipe_by_voice",user_controller.addNewVoiceRecipePage);
+router.get("/add_new_recipe_by_voice",user_controller.addNewVoiceRecipePage);// to do: add userid here?
 
 //route where client sends request to server to get ingredients list from database
 router.get("/get_all_ingredients",user_controller.getIngredients);
 //router.get("/get_ingredients",user_controller.getIng);
 
 //process newly added voice recipe(TO DO)
-router.post("/add_new_recipe_by_voice",user_controller.processNewVoiceRecipe);
+//router.post("/add_new_recipe_by_voice",upload.single('photos'),user_controller.processNewVoiceRecipe);//works
 
-
+router.post("/add_new_recipe_by_voice",imageUploaded,user_controller.processNewVoiceRecipe);
 
 //load add new recipe page load
 //router.gett("/add_new_recipe_by_voice",user_controller.addNewRecipeByVoice);

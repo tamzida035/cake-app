@@ -16,7 +16,7 @@ const { v4: uuidv4 } = require('uuid'); // uuid, To call: uuidv4();
 // database connection
 var connectDB=require("./config/database");
 // middleware that parses user input and makes it available through the req.body property.
-const bodyParser = require('body-parser'); 
+const bodyParser = require('body-parser'); //This does not handle multipart bodies ie forms containing non-textual fields
 
 // These modules/files contain code for handling particular sets of related "routes" (URL paths)
 // user home page logic script
@@ -67,7 +67,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //When working with forms, we use the urlencoded parser because by default, forms send data in URL encoded format.
 app.use(bodyParser.urlencoded({ extended: false }));// set to false, means it uses the QueryString library to parse URL encoded data
-
+//app.use(bodyParser.json());
 //After these libraries we also use the express.static middleware, which makes Express serve all the static files in the /public directory in the project root.
 app.use(express.static(path.join(__dirname, 'public')));
 
