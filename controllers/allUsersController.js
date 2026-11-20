@@ -43,7 +43,7 @@ const{
 // loads website home page
 exports.home_ui = asyncHandler(async (req, res, next) => {
  //if session varible for admin is 
- if (req.session.data!=undefined){
+ /*if (req.session.data!=undefined){
     if(req.session.data.role=='admin')// if admin has previously logged-in and the session had been saved
     {
        res.redirect("/admin/home");
@@ -60,38 +60,16 @@ exports.home_ui = asyncHandler(async (req, res, next) => {
     //default website home page
     res.render("index", {});
 
- }
+ }*/
+ //default website home page
+ res.render("index", {});
 
 });
 
 // users sign-in page
 exports.signInPage=asyncHandler(async (req, res, next) => {
-   // if prev user session is saved
-   if (req.session.data!=undefined){
-      if(req.session.data.role=='user')// redirect user to his profile
-      {
-        //if(req.session.data.status=='ready-to-login') // registered user logging in (session saved) do it later
-        {
-            req.session.data.status='logged-in';
-            //let m='welcome back,'+req.session.data.firstname+'!';
-            //res.render("", {welcome_msg:m});
-            let id=req.session.data.userid;
-            res.redirect("/users/profile/"+id);
-
-        }
-      }
-      else if(req.session.data.role=='admin')// new user first ever login
-      {
-            /*req.session.data.status='logged-in';
-            let m='welcome to your new account, '+req.session.data.firstname+'!';
-            res.render("", {msg: m});*/
-
-      }
-   }
-   else{
-      //default sign-in page
-      res.render("site_visitor_views/sign_in_page", {});
-   }
+   //default sign-in page
+   res.render("site_visitor_views/sign_in_page", {});
     
 });
 
@@ -130,7 +108,7 @@ exports.signIn=[
     if (!result.isEmpty()) {
             
       //for testing purpose only
-      res.status(500).json(errors2);
+      //res.status(500).json(errors2);
       
       let errors=result.array();
       let e1,e2;

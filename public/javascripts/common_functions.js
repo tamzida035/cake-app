@@ -3,7 +3,7 @@
 //function to highlight a error if occurred 
 //is_err: true if err occurred elsee false
 //inputId: id of the input element
-function highlightErrField(is_err,inputId)//let this func stay
+function highlightErrField(is_err,inputId)// to do: replace it by highlightErrField2
 {
   if(is_err)
   {
@@ -16,6 +16,30 @@ function highlightErrField(is_err,inputId)//let this func stay
       inputId.classList.remove('highlight-textfield');
   }
 }
+//function to highlight a error if occurred 
+//is_err: true if err occurred elsee false
+//input_field: id of the input element
+function highlightErrField2(is_err,input_field)//let this func stay
+{
+  if(is_err)
+  {
+    if(!input_field.classList.contains('is-invalid'))
+     {
+      if(input_field.classList.contains('is-valid')) input_field.classList.remove('is-valid');
+      input_field.classList.add('is-invalid');
+     }
+
+  } //recipe_name.classList.add("highlight-textfield");
+  else{
+    if(input_field.classList.contains('is-invalid'))
+    {
+      input_field.classList.remove('is-invalid');
+      if(!input_field.classList.contains('is-valid')) input_field.classList.add('is-valid');
+
+    }
+  }
+}
+
 //check if character 'code' is alphabet
 //returns true if so 
 function isAlpha(code){// copied from admin_dynamic_fields.js 
@@ -107,28 +131,30 @@ function createHtmlElement(e_name,e_class_name,id="",sty="",text="")
 //maxlen: maximum length of value in created input field
 //minlen: minimum length of value in created input field
 //return: modified element e
-function createSpecialHtmlElement(e_name,e_class_name,id="",text="",sty="",pla_hold="",maxlen=" ",minlen="")
+function createSpecialHtmlElement(e_name,e_class_name,id="",text="",sty="",pla_hold="",maxlen=" ",minlen="",pattern="")
 { 
   let e=createHtmlElement(e_name,e_class_name,id,sty,text);
-  /*if(e_name==='b')
-  {
-    let t=document.createTextNode(text);
-    e.appendChild(t);
-  }*/
+  console.log(e_name+" "+e_class_name+" "+id+" "+maxlen+" "+minlen+" "+pattern);
   if(e_name==='i')
   {
       e.title="Alternative ingredient to "+text;
   }
   else if(e_name==='input')//write amount of ingredient
   {
-      
-      e.setAttribute("type","text");
-      e.placeholder=pla_hold;
-      //e.required=true;
-      e.name=id;
-      //e.maxLength="20";
-      e.maxLength=maxlen;
-      e.minLength=minlen;
+    e.setAttribute("type","text");
+    e.placeholder=pla_hold;
+    //e.required=true;
+    e.name=id;
+    
+    if(pattern!=="")
+    {
+      e.pattern=pattern;
+      console.log("PATTERN assigned: "+e.pattern);
+    }
+    //else e.pattern=undefined;
+    e.maxLength=maxlen;
+    e.minLength=minlen;
+    //console.log("e PATT: "+e.pattern);
   }
   else if(e_name==="button")
   {
@@ -136,7 +162,6 @@ function createSpecialHtmlElement(e_name,e_class_name,id="",text="",sty="",pla_h
     e.required=true;
     e.name=id;
   }
-  //else e=createHtmlElement(e_name,e_class_name,id,sty,text);
   return e;
 }
 
@@ -188,7 +213,7 @@ function getNoFromId(id)
 //error_field_name: name of span field in html/pug where error message related to this input field will be displayed
 //color_name: text color
 //return: none
-function printErrorMsg(msg,input_field,error_field_name,col_name="") // to do: add in common_funcrions.js
+function printErrorMsg(msg,input_field,error_field_name,col_name="") // to do: replace it by printErrorMsg2
 {
    let error_msg=document.getElementById(error_field_name);
    error_msg.innerHTML=msg;
@@ -202,8 +227,64 @@ function printErrorMsg(msg,input_field,error_field_name,col_name="") // to do: a
     if(input_field.classList.contains('highlight-textfield'))
       input_field.classList.remove('highlight-textfield');
    } 
+}
+
+//prints error message 
+//msg: error msg
+//input_field:input field selected by query selector
+//error_field_name: name of span field in html/pug where error message related to this input field will be displayed
+//color_name: text color
+//return: none
+function printErrorMsg2(msg,input_field,error_field_name,col_name="") // to do: add in common_funcrions.js
+{
+   let error_msg=document.getElementById(error_field_name);
+   error_msg.textContent=msg;
+   if(col_name!=="") error_msg.style.color=col_name;
+  
+    if(msg!=="")//there is error
+    {
+      if(!input_field.classList.contains('is-invalid'))
+      {
+       if(input_field.classList.contains('is-valid')) input_field.classList.remove('is-valid');
+       input_field.classList.add('is-invalid');
+      }
+    }
+    else//no error
+    {
+      if(input_field.classList.contains('is-invalid'))
+      {
+       input_field.classList.remove('is-invalid');
+       if(!input_field.classList.contains('is-valid')) input_field.classList.add('is-valid');
+
+      }
+    } 
+   
+}
+//prints error message for photo field
+//msg: error msg
+//photo_status_field:element showing error status of photo field
+//no_err: true, if there is no error, otherwise false
+function printErrorMsgForPhotoField(msg,photo_status_field,no_err)
+{
+  photo_status_field.textContent=msg;
+  if(!no_err)//error
+  {
+    if(!photo_status_field.classList.contains('col_red'))
+    {
+       if(photo_status_field.classList.contains("col_green")) photo_status_field.classList.remove("col_green");
+       photo_status_field.classList.add('col_red');
+    }
+  }
+  else{//error
+    if(!photo_status_field.classList.contains("col_green"))
+    {
+       if(photo_status_field.classList.contains("col_red")) photo_status_field.classList.remove("col_red");
+       photo_status_field.classList.add("col_green");
+    }
+  }
 
 }
+
 
 //checks if input field is nonempty
 //input_field:input field selected by query selector
@@ -218,12 +299,12 @@ function isInputNonEmpty(input_field,error_field_name,input_field_name="")// to 
    {
      isValid=false;
      let msg=input_field_name+" cannot be empty";
-     printErrorMsg(msg,input_field,error_field_name);
+     printErrorMsg2(msg,input_field,error_field_name);
      
    }
    else{
       //set error msg field to empty
-      printErrorMsg("",input_field,error_field_name); 
+      printErrorMsg2("",input_field,error_field_name); 
    }
    return isValid;
 }
@@ -234,7 +315,6 @@ function isInputNonEmpty(input_field,error_field_name,input_field_name="")// to 
 function isInputLengthValid(input_field)
 {
   let trimmed_length=input_field.value.trim().length;
-  //default minlength,maxlength=-1
   if((trimmed_length<input_field.minLength) ||(trimmed_length>input_field.maxLength)){
     console.log("length is: false");
     return false;
@@ -244,53 +324,53 @@ function isInputLengthValid(input_field)
 }
 
 //checks if a given input matches valid regular expression 
-//text: input string
-//format: regular expression for this input
-//output: returns true if input matches the regular expression
-function validateRegExp(text,format){
-  let is_matched;
-  is_matched=text.match(format);//works
-  //is_matched=format.match(text);// does not work
-  return is_matched;
+//input_field: input field selected by query selector
+//output: returns array if input value matches the regular expression else returns null
+function validateRegExp(input_field){
+  console.log("value: "+input_field.value+" pattern: "+input_field.pattern);
+  console.log("match: "+input_field.value.match(input_field.pattern));
+  return input_field.value.match(input_field.pattern);//works
+  
 }
 
 //checks if text in a given input field is valid 
 //input_field: input field selected by query selector
-//format: regular expression for this input
 //isValidLength: if this input has valid length
 //input_field_name: name of the input field
-//error_field_name: name of span field in html/pug where error message related to this input field will be displayed
+//error_field_name: id of span field in html/pug where error message related to this input field will be displayed
+//show_remaining_char: true if u want to display remaining characters in a input field
 //return: true if this input is valid 
-function isInputTextValid(input_field,format,input_field_name,isValidLength,error_field_name)
+function isInputTextValid(input_field,input_field_name,isValidLength,error_field_name,show_remaining_char=false)
 {
   let isValid=true;
-  //document.getElementById('message').innerHTML="value of reg exp: "+validateRegExp(input.value);
-  if(format!==" ")
+  console.log("INPUT PATTERN in textvalid: "+input_field.pattern);
+  if(input_field.pattern!==undefined)
   {
-    if(!validateRegExp(input_field.value,format))
+    //console.log("I should not enter here");
+    if(validateRegExp(input_field)===null)
     {
       isValid=false;
       if(isValidLength){
        let msg=input_field_name+" has invalid format";
-       printErrorMsg(msg,input_field,error_field_name);// case 3: invalid input(does not meet regular expression)
+       printErrorMsg2(msg,input_field,error_field_name);// case 3: invalid input(does not meet regular expression)
       }
       else {
       let msg=input_field_name+" has invalid format and incorrect length";
-      printErrorMsg(msg,input_field,error_field_name); //case 4: input invalid and length too short
+      printErrorMsg2(msg,input_field,error_field_name); //case 4: input invalid and length too short
       }
     }
     else{
       if(isValidLength)// case 0: no error
       {
         //set error msg field to empty
-        printErrorMsg("",input_field,error_field_name);
+        printErrorMsg2("",input_field,error_field_name);
       
       }
       else{
        // only input length is incorrect
        isValid=false;
-       let msg=input_field_name+" length is incorrect";
-       printErrorMsg(msg,input_field,error_field_name);//case 2: input too short 
+       let msg=input_field_name+" length not within limit";
+       printErrorMsg2(msg,input_field,error_field_name);//case 2: input too short 
       }
     }
 
@@ -298,19 +378,26 @@ function isInputTextValid(input_field,format,input_field_name,isValidLength,erro
   else{
     if(isValidLength)// case 0: no error
     {
-        //set error msg field to empty
-        printErrorMsg("",input_field,error_field_name);
+      console.log("equip should enter here");
+      if(show_remaining_char)// display remaining char for textarea
+      {
+          let remaining_char=parseInt(input_field.maxLength)-input_field.value.trim().length;
+          let msg="Characters remaining: "+remaining_char;
+          printErrorMsg2(msg,input_field,error_field_name);
+      } 
+      else printErrorMsg2("",input_field,error_field_name);   
       
     }
     else{
+      console.log("SEEMS equip should enter here");
        // only input length is incorrect
        isValid=false;
        let msg=input_field_name+" length is incorrect";
-       printErrorMsg(msg,input_field,error_field_name);//case 2: input too short 
+       printErrorMsg2(msg,input_field,error_field_name);//case 2: input too short 
     }
 
   }
-  
+  console.log("should return True");
   return isValid;
 }
 
@@ -318,22 +405,28 @@ function isInputTextValid(input_field,format,input_field_name,isValidLength,erro
 //function to validate a text in a given input field
 //input_field: input field element
 //input_field_name: name of the input field
-//error_field_name: name of the error field
-//condition: reg exp to be satisfiefd by input field
+//error_field_name: id of the error field
+//is_field_optional:true if this text field is optional else set false
+//show_remaining_char: true if u want to display remaining characters in a input field
 //return: true if field is valid else return false  
-const validateText= function(input_field,input_field_name,error_field_name,condition=""){// to do: replace this by validateText func given in commonValidator.js
+const validateText= function(input_field,input_field_name,error_field_id,is_field_optional=false,show_remaining_char=false){// to do: replace this by validateText func given in commonValidator.js
   //case 1: check that input field is non-empty
-  let is_input_not_empty=isInputNonEmpty(input_field,error_field_name,input_field_name);
-  let h;
-  if(is_input_not_empty)
+  let is_input_not_empty;
+  if(!is_field_optional) is_input_not_empty=isInputNonEmpty(input_field,error_field_id,input_field_name);
+  if(is_input_not_empty|| is_field_optional)
   {
     //check if input length is less than min value set for this field
     let f=isInputLengthValid(input_field);
-    h=isInputTextValid(input_field,condition,input_field_name,f,error_field_name);
+    return isInputTextValid(input_field,input_field_name,f,error_field_id,show_remaining_char);
   }
-  else return is_input_not_empty;
-  return h;
+  return is_input_not_empty;
 }
+
+
+//function to check if no in a given input field is valid
+//input_field: input field element
+//input_field_name: name of the input field
+//error_field_name: name of the error field
 
 const isInputNumberValid= function(input_field,input_field_name,error_field_name)
 {
@@ -343,11 +436,11 @@ const isInputNumberValid= function(input_field,input_field_name,error_field_name
   if((input_field.min!=="" && num<input_field.min) || (input_field.max!=="" && num>input_field.max))
   {
       msg=input_field_name+"invalid number";
-      printErrorMsg(msg,input_field,error_field_name);
+      printErrorMsg2(msg,input_field,error_field_name);
       return false;
   }
   else{
-      printErrorMsg("",input_field,error_field_name);
+      printErrorMsg2("",input_field,error_field_name);
       return true;
   }
   
@@ -493,7 +586,6 @@ function isDurationFormatValid(input)// 0 min/hr, 0 hr 0 min should not be allow
     else return false;//no of tokens is neither 2 nor 4
   }
 }
-//let recipe_name=document.querySelector('#RecipeDetailsForm input[name="recipe_name_field"]');
 
 //check if prep time/cooking time is valid
 //return true if valid else false
@@ -501,42 +593,20 @@ function isDurationFormatValid(input)// 0 min/hr, 0 hr 0 min should not be allow
 //my_time_err_field_name: name of error field of my_time
 function isTimeValid(my_time_field,my_time_err_field_name)
 {
-  /*let is_err=false;
-  if (my_time.validity.valueMissing) {
-    // If empty
-    is_err=true;
-    my_time_err_msg.textContent = "must enter time duration";
-  }
-  else{
-    console.log("orig value: "+my_time.value);
-    //console.log("typeof: "+typeof(my_time.value));
-    if(!isDurationFormatValid(my_time.value)){
-      is_err=true;
-      my_time_err_msg.textContent ="invalid format";
-    }
-    else{
-      //console.log("enter here 1");
-      my_time_err_msg.textContent = ""; 
-    }
-
-  }
-  highlightErrField(is_err,my_time);
-  return is_err;*/
-
   //case 1: check that input field is non-empty
   let is_input_not_empty=isInputNonEmpty(my_time_field,my_time_err_field_name);
   if(is_input_not_empty)
   {
     let is_valid=isDurationFormatValid(my_time_field.value);
-    if(is_valid) printErrorMsg("",my_time_field,my_time_err_field_name);
-    else printErrorMsg("invalid time format",my_time_field,my_time_err_field_name);
+    if(is_valid) printErrorMsg2("",my_time_field,my_time_err_field_name);
+    else printErrorMsg2("invalid time format",my_time_field,my_time_err_field_name);
     return is_valid;
   }
   else return is_input_not_empty;
  
 }
 
-//**********************CODE TO DISPLAY RECIPE STEP AND INGREDIENTS**************
+//**********************CODE FOR RECIPE STEP AND INGREDIENTS**************
 //get section title with no
 //n: the nth section title
 //return: a id generated for the nth section title
@@ -545,201 +615,4 @@ function getSectionTitleId(n)
    let name="sec_title"+n;
    return name;
 }
-
-//check that no of ingredient specified is in correct format
-//err_msg: id of the paragraph field that display error message
-//str: string containing the number (whole or fractional)
-//return true if valid else reeturn false
-function isNumberOfIngredientValid(str,err_msg)
-{
-  let no_err=true;
-  //check that the first token is a str in number format: contains only numbers and '/'
-  let is_valid_string =areCharactersValid(str,false,true,['/']);// common_functions.js
-  if(is_valid_string===false)
-  {
-    //err_msg.textContent = "[a-zA-Z0-9],whitespaces,/,comma and +";
-    err_msg.textContent="write whole or fractional number";
-    no_err=false;
-  }
-  else{//0/2
-    let fractional_no=str.split("/");
-    //console.log("fractional array length: "+fractional_no.length);
-    if(fractional_no.length===2)// fraction have  a numerator and  a denominators
-    {
-          let parsed_numerator=Number.parseInt(fractional_no[0]);
-          let parsed_denominator=Number.parseInt(fractional_no[1]);
-          //console.log("numer: "+fractional_no[0]);
-          //console.log("fractional numera a number? : "+Number.isInteger(fractional_no[0]));
-          //console.log("deno: "+fractional_no[1]);
-          //console.log("fractional deno a number? : "+Number.isInteger(fractional_no[1]));
-          if(parsed_numerator===NaN || parsed_denominator===NaN)
-          {
-            err_msg.textContent="invalid number format";
-            no_err=false;
-
-          }
-          else if(parsed_numerator===0 || parsed_denominator===0)
-          {
-            err_msg.textContent="please enter non-zero value";
-            no_err=false;
-
-          }
-     }
-    else{
-      //console.log("str length: "+str.length);
-      if(fractional_no[0]===str)// whole number
-      {
-        let no=Number.parseInt(str);
-        if(no===0)// 0 is invalid amount to enter
-        {
-          err_msg.textContent="please enter non-zero value";
-          no_err=false;
-        }
-        else console.log("should return true");
-      }
-      else{
-        err_msg.textContent="invalid number format";
-        no_err=false;
-      }
-    }
-        
-  }
-  //console.log(" return no+err: "+no_err);
-  return no_err;
-
-}
-
-//check that unit of ingredient specified is in correct format
-//err_msg: id of the paragraph field that display error message
-//str: string containing the measuring unit
-//ingred: json obbject containing {ingred_name,status, alternative ingred list}
-//return true if valid else return false
-function isUnitOfIngredientValid(str, err_msg,ingred)
-{
-  //let found=false;
-  //special case: for eggs/eeggs: unit is L/M/S
-  if(ingred.name=="egg" || ingred.name==="eggs")
-  {
-    let valid_units=['S','s','M','m','L','l'];
-    for(let i=0;i<valid_units.length;i++)
-    {
-      if(str===valid_units[i]) return true;
-    
-    }
-  }
-  else{
-   let valid_units=['oz','cup','cups','tsp','tbsp','ml','pt','gal','lb','pound'];//to do: create a webpage showing this and conversion between units
-   for(let i=0;i<valid_units.length;i++)
-   {
-     if(str===valid_units[i]) return true;
-   }
-  }
-  err_msg.textContent = "must enter an allowed measuring unit";
-  return false;
-}
-
-
-//check that additional info about ingredient specified is in correct format
-//err_msg: id of the paragraph field that display error message
-//str: string containing the additional info
-//return true if valid else return false
-function isOptionalInfoValid(str, err_msg)
-{
-  let len=str.length;
-  // valid format: (....) or ""
-  if(str.trim()==="") return true;
-
-  if(str==="()")
-  {
-    err_msg.textContent = "additional info: empty bracket";
-    return false;
-  }
-  if(str[0]!=='(' || str[len-1]!==')')
-  {
-    err_msg.textContent = "additional info: missing bracket";
-    return false;
-  }
-  return true;
-
-}
-
-//check if ingredient amount mentioned is valid
-//err_msg: id of the paragraph field that display error message
-//element_id; id of the input field that takes ingredient amount as input
-//ingred: json obbject containing {ingred_name,status, alternative ingred list}
-//return false if valid else return true
-function isIngredientAmountValid(element_id,err_msg,ingred){
-  let is_err=false;
-  //let is_valid=true;
-  let input=element_id.value;
-  if(input.trim()==="")
-  {
-    err_msg.textContent = "must enter an amount";
-    is_err=true;
-  }
-  else{
-    //format: 1 tsp (melted, at room temperature)
-    //format: 1/3 cup
-    //format: 1 M/L/S (only for eggs)
-    //amount field format: can contain alphabets,numbers, whitespaces,'/','+' and ','
-    //discard if input contains invalid characters
-    //if input contains any invalid characters, reject it
- 
-    //let is_valid_string =validateRegExp(val,RegEx);
-    let valid_char_set=['/',',','(',')'];
-    let is_valid_string =areCharactersValid(input,true,true,valid_char_set);// function given in common_functions.js module
-    //console.log("is str valid: "+is_valid_string);
-    if(is_valid_string===false)
-    {
-      //err_msg.textContent = "[a-zA-Z0-9],whitespaces,/,comma and +";
-      err_msg.textContent="invalid character(s)";
-      is_err=true;
-    }
-    else{
-     //tokenize input
-     let token_array=input.split(" ");
-     /*console.log("token length: "+token_array.length);
-
-     for(let i=0;i<token_array.length;i++)
-     {
-       console.log("token: "+token_array[i]);
-     }*/
-     //check if amount entered is valid number
-     is_err=!isNumberOfIngredientValid(token_array[0],err_msg);
-     if(!is_err)// number of ingred is valid
-     {
-       if(token_array.length>1)//check unit of ingredient
-       {
-        is_err=!isUnitOfIngredientValid(token_array[1],err_msg,ingred);
-
-       }
-       else// unit is missing
-       {
-        err_msg.textContent="specify measuring unit";
-        is_err=true;
-
-       }
-     }
-
-    if(!is_err)// unit specified by user is valid
-    {
-      //console.log("token array: "+token_array);
-      if(token_array.length>2)// check if optional info is added by user
-      {
-        is_err=!isOptionalInfoValid(token_array[2],err_msg);
-
-      }
-    }
-    //no error found
-    if(!is_err) err_msg.textContent="";
-      
-   }
-
-  }
-  //console.log("before highlighting is_err: "+is_err);
-  highlightErrField(is_err,element_id);
-  return is_err;
-
-}
-
 

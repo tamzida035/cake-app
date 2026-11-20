@@ -42,7 +42,7 @@ block content
             h1(class="modal-title" id="modal_title" name="modal_title") Recipe details:
             button(type="button" class="btn-close" id="close_recipe_detail_btn" data-bs-dismiss="modal" aria-label="Close")
            div(class="modal-body" id="finish_modal_form")
-            form(action="/users/add_new_recipe_by_voice" method="post" id="RecipeDetailsForm" name="RecipeDetailsForm" enctype="multipart/form-data")
+            form(action="/users/"+userid+"/add_new_recipe_by_voice" method="post" id="RecipeDetailsForm" name="RecipeDetailsForm" enctype="multipart/form-data")
              div(class="contact_1r shadow p-4")
               div(class="contact_1ri")
                div(class="form-group" id="recipe_form")
@@ -50,18 +50,18 @@ block content
                 //display recipe name field and error field
                 div(class="row")
                  div(class="col-md-3")
-                  span(class="text-start") RECIPE NAME
-                  p(class="note_color" style="font-size: x-small;") *must contain 3-25 characters which are alphabets and spaces only
+                  //span(class="text-start") RECIPE NAME
+                  label(for="recipe_name_field") RECIPE NAME
+                  p(class="note_color" style="font-size: x-small;") *limit: 3-25 characters which are alphabets and spaces only
                  div(class="col-md-6")
                    div(class="contact_1ril")
                     div(class="border_light")
                      input(type="text" class="form-control border-0" placeholder="newyork style cheesecake" id="recipe_name_field" name="recipe_name_field" pattern="[a-zA-Z ]{3,25}" minLength="3" maxLength="25")
                      
                      //input(type="text" class="form-control border-0" placeholder="newyork style cheesecake" id="recipe_name_field" name="recipe_name_field")
-                   //to do:client side validation
                  div(class="col" id="recipe_name_format")
                   //recipe name error field
-                  p(class="col_green" id="recipe_name_field_error_msg" name="recipe_name_field_error_msg") #{recipe_name_field_error}
+                  p(class="col_red" id="recipe_name_field_error_msg" name="recipe_name_field_error_msg")
                 //line breaks
                 div(class="row mb-3")
                 div(class="row mb-3")
@@ -69,13 +69,14 @@ block content
                 //PHOTO UPLOAD
                 div(class="row")
                  div(class="col-md-3")
-                  span(class="text-start") UPLOAD A PHOTO
+                  //span(class="text-start") UPLOAD A PHOTO
+                  label(for="photos") UPLOAD A PHOTO
                   p(class="note_color" style="font-size: x-small;") preferred dimension: 1900 x 940 pixels
                  div(class="col-md-6" id="photo_section")
                   //to do: make photo upload mandatory
                   input(type="file" id="photos" name="photos" accept=".png, .jpg, .jpeg")
-                 div(class="col" id="recipe_name_error")
-                  span(class="col_green" id="photos_field_error_msg") #{photos_field_error}
+                 div(class="col" id="photo_field_error")
+                  p(id="photos_field_error_msg" name="photos_field_error_msg")
               //line breaks
               div(class="row mb-3")
               div(class="row mb-3")
@@ -83,7 +84,8 @@ block content
               //SERVES
               div(class="row")
                div(class="col-md-3")
-                span(class="text-start") NO OF SERVINGS PER PERSON
+                //span(class="text-start") NO OF SERVINGS PER PERSON
+                label(for="serve_field") NO OF SERVINGS PER PERSON
                div(class="col-sm-2")
                 div(class="contact_1ril")
                  div(class="border_light")
@@ -91,7 +93,7 @@ block content
 
                   //input(type="number" class="form-control border-0" placeholder="2" id="serve_field" name="serve_field")
                div(class="col")
-                p(class="col_green" id="serve_field_error_msg" name="serve_field_error_msg") #{serve_field_error}
+                p(class="col_red" id="serve_field_error_msg" name="serve_field_error_msg") #{serve_field_error}
               //line breaks
               div(class="row mb-3")
               div(class="row mb-3")
@@ -99,14 +101,15 @@ block content
               //PREPARATION TIME
               div(class="row")
                div(class="col-md-3")
-                span(class="text-start") PREPARATION TIME
+                //span(class="text-start") PREPARATION TIME
+                label(for="prep_time_field") PREPARATION TIME
                 p(class="note_color" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
                div(class="col-md-2")
                 div(class="contact_1ril")
                  div(class="border_light")
                   input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="prep_time_field" name="prep_time_field")
                div(class="col-md")
-                p(class="col_green" id="prep_time_field_error_msg" name="prep_time_field_error_msg") #{prep_time_field_error}
+                p(class="col_red" id="prep_time_field_error_msg" name="prep_time_field_error_msg") #{prep_time_field_error}
               //line breaks
               div(class="row mb-3")
               div(class="row mb-3")
@@ -114,7 +117,8 @@ block content
               //COOKING TIME
               div(class="row")
                div(class="col-md-3")
-                span(class="text-start") COOKING TIME
+                //span(class="text-start") COOKING TIME
+                label(for="cook_time_field") COOKING TIME
                 p(class="note_color" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
                 //label(for="prep_time")
                 // b COOKING TIME*
@@ -125,7 +129,7 @@ block content
                 //div(class="col-md")
                  //p(class="col_green" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
                div(class="col-md")
-                p(class="col_green" id="cook_time_field_error_msg" name="cook_time_field_error_msg") #{cook_time_field_error}
+                p(class="col_red" id="cook_time_field_error_msg" name="cook_time_field_error_msg") #{cook_time_field_error}
               //line breaks
               div(class="row mb-3")
               div(class="row mb-3")
@@ -133,14 +137,15 @@ block content
               //TOTAL TIME
               div(class="row")
                div(class="col-md-3")
-                span(class="text-start") TOTAL TIME
+                //span(class="text-start") TOTAL TIME
+                label(for="total_time_field") TOTAL TIME
                 p(class="note_color" style="font-size: x-small;") * (0-99) hr and (0-59) min allowed. 0 time not allowed
                div(class="col-md-2")
                 div(class="contact_1ril")
                  div(class="border_light")
                   input(type="text" class="form-control border-0" placeholder="1 hr 25 min" id="total_time_field" name="total_time_field")
                div(class="col-md")
-                p(class="col_green" id="total_time_field_error_msg" name="total_time_field_error_msg") #{total_time_field_error}
+                p(class="col_red" id="total_time_field_error_msg" name="total_time_field_error_msg") #{total_time_field_error}
               //line breaks
               div(class="row mb-3")
               div(class="row mb-3")
@@ -149,19 +154,22 @@ block content
               div(class="row")
                div(class="col-md-3")
                 span(class="text-start") EQUIPMENT
+                p(class="note_color" style="font-size: x-small;") *each field limit: 3-30 characters
                div(class="col-md-3")
                 button(type="button" class="button b d-block rounded-0 button_medium_size" id="add_equip_field") + add
               //line break
               div(class="row mb-3")
               div(id="equip_list")
               div(class="row")
-               div(class="col-md-3")
-                p(class="col_green" id="equip_field_limit_error_msg" name="equip_field_limit_error_msg") #{equip_field_limit_error}
+               div(class="col-md")
+                p(class="col_red" id="equip_field_limit_error_msg" name="equip_field_limit_error_msg") #{equip_field_limit_error}
 
               //INGREDIENTS LIST
               div(class="row")
                div(class="col-md-3")
                 h5(class="text-start") INGREDIENT(S)
+                p(class="note_color" style="font-size: x-small;") *each field limit: 3-80 characters
+               div(class="col-md-3")
                div(class="col-md")
                 span(class="mushbooh_col" style="font-size: x-small;") Mushbooh ingredients highlighted in orange.
                 span(class="haram_col" style="font-size: x-small;") Mushbooh ingredients highlighted in red.
@@ -189,11 +197,16 @@ block content
               //NOTES
               div(class="row")
                div(class="col-md-3")
-                span(class="text-start") NOTES
+                //span(class="text-start") NOTES
+                label(for="note_field") NOTES
+                p(class="note_color" style="font-size: x-small;") limit: 2000 characters
                div(class="col-md-8")
                 div(class="contact_1ril")
                  div(class="border_light")
-                  textarea(class="form-control border-0" placeholder="E.g. allow the cake to cool before serving" id="note_field" rows="40" cols="80")
+                  textarea(class="form-control border-0" placeholder="E.g. allow the cake to cool before serving" id="note_field" name="note_field" rows="100" cols="80" maxLength="2000")
+                div(class="col-md")
+                 //note error field
+                 p(class="col_red" id="note_field_error_msg" name="note_field_error_msg")
 
               //line break
               div(class="row mb-3")
@@ -202,14 +215,7 @@ block content
               //client side errors
               div(class="row")
                div(class="col-md-6")
-                p(class="col_green" id="final_error_msg" name="final_error_msg") 
-
-              //server side errors
-              div(class="row")
-               div(class="col-md-3")
-                if errors
-                 for e in errors
-                  p(class="col_green")!=e.msg
+                p(class="col_red" id="final_error_msg" name="final_error_msg") 
 
               //line break
               div(class="row mb-3")

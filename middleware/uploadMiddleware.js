@@ -1,5 +1,6 @@
 //process multi-part forms
 const multer = require("multer");
+
 // Configure multer for file storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -14,14 +15,30 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage });
-/*const upload = multer({ dest: "../public/images/",limits:{
-    fileSize: 200000// 10 MB-> change it to 2 MB
-  }, });*/
+// File filter to allow only images
+const fileFiltered = (req, file, cb) => {
+  //|| file.mimetype.startsWith('image/png'
+  console.log("why never called: "+file.mimetype);
+  if (file.mimetype==='image/jpeg') {//valid image formats
+    console.log("NO photo err format");
+    cb(null, true);
+  } else {//invalid image formats
+    console.log("photo err format");
+    //cb('Photo only jpg, png files are allowed!');//works
+    //cb(null,false);//works
+    cb(new Error("allowed file formats: jpg, png"));//works with imageuploaded in controller
+  }
+};
 
-//not needed file
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFiltered,
+  limits: { fileSize: 2 * 1024 * 1024 } // 2MB limit
+});
+
 const imageUploaded = upload.single("photos");
   
 module.exports={
+  multer,
 	imageUploaded,
 };

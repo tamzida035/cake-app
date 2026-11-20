@@ -113,7 +113,7 @@ async function getIngredientsList()
 }
 
 ingredients_list=getIngredientsList();
-console.log("ing list: "+ingredients_list);
+//console.log("ing list: "+ingredients_list);
 
 resetRecipeToInitialState();
 //returns true if current step is first ever step else returns false
@@ -136,7 +136,7 @@ function beforeEachRecipeStep()
     {
       //start of new section
       current_section_step_no=1;
-      console.log("I am at correct place");
+      //console.log("I am at correct place");
       is_new_section=true;
     }
     else{//case 1b: prev section has title
@@ -236,33 +236,43 @@ function afterEachRecipeStep()
   });
 }*/
 
+let xn=0;
 //search for all ingredients in user transcript
+//ingre: ingredient list obtained from db
 function extractIngredientsFromSpeech(ingre)
 {
-    for (let key1 in ingre) 
+  xn++;
+  console.log("extract ingred: "+xn);
+  for (let key1 in ingre) 
+  {
+    if (ingre.hasOwnProperty(key1)) 
     {
-      if (ingre.hasOwnProperty(key1)) 
+      let value = ingre[key1];
+      let ingred_name=value.name.toLowerCase();
+      //let item=new RegExp(value.name, "i");
+      //console.log("Item: "+item);
+      //search the main ingredient in user speech
+      let found_ingredient=final_transcript.toLowerCase().search(ingred_name);
+      //console.log("ingredient: "+value.name);
+      if(found_ingredient!==-1)
       {
-          let value = ingre[key1];
-          let item=new RegExp(value.name, "i");
-          //search the main ingredient in user speech
-          let found_ingredient=final_transcript.search(item);
-          //console.log("ingredient: "+value.name);
-          if(found_ingredient!=-1)
-          {
-            console.log("Found match: "+value.name);
-            if(!map_ingre.has(item))
-            {
-              identified_ingredients.push(value);
-              //mark it in map
-              map_ingre.set(value.name,1);
+        
+        //console.log("Found match: "+ingre[key1].name+" "+ingre[key1].amount);
+        if(!map_ingre.has(ingred_name))
+        {
+          //console.log("value pushed");
+          value.name=ingred_name;
+          identified_ingredients.push(value);
+          //identified_ingredients.push({"name":value.name,"status":value.status,"alternative_ingredients":value.alternative_ingredients,"amount":xn});
+          //mark it in map
+          map_ingre.set(value.name,1);
 
-            }
-
-          }
+        }
 
       }
-    } 
+
+    }
+  } 
 }
 
 //store recipe(section title,step no, step,ingredients) and ingredients identified so far
@@ -290,8 +300,9 @@ function storeRecipeData(is_new_section)
     temp_recipe['steps']=[text];
     if(identified_ingredients.length===0) temp_recipe['ingredients']=[{'name':'none'}];
     else temp_recipe['ingredients']=identified_ingredients;
-
+    
     full_recipe.push(temp_recipe);
+    
   }
   else //if continuation of prev section
   {
@@ -364,7 +375,7 @@ function storeRecipeData(is_new_section)
         for (let j in value)
         {
           let element2=value[j];
-          console.log("obj.txt: "+element2.text);
+          //console.log("obj.txt: "+element2.text);
 
         }
 
@@ -372,15 +383,15 @@ function storeRecipeData(is_new_section)
       else{
         for (let key2 in value)
         {
-          console.log("object 1: "+key2);
+          //console.log("object 2: "+key2);
           if(value.hasOwnProperty(key2))
           {
              let value2 = value[key2];
-             console.log("object 3: "+value2.name+" "+value2.status+" "+value2.alternative_ingredients);
+             console.log("object 3: "+value2.name+" "+value2.status+" "+value2.amount+" "+value2.alternative_ingredients);
              for(let key3 in value2.alternative_ingredients)
              {
               let value3=value2.alternative_ingredients[key3];
-              console.log("alternative ingred: "+value3);
+              //console.log("alternative ingred: "+value3);
              }
           }
 
@@ -629,7 +640,7 @@ if(confirm_btn!==null && !confirm_btn.disabled)
         //access the ingredients list
         ingredients_list.then((ingre)=>{
           let message1;
-          let parent=document.getElementById("db_list");
+          //let parent=document.getElementById("db_list");
           //if ingredients db is empty or error occurred in ingredients db
           if(ingre.msg!==undefined){
               message1=ingre.msg;
@@ -652,7 +663,7 @@ if(confirm_btn!==null && !confirm_btn.disabled)
           //update variables after each recipe step
           afterEachRecipeStep();
         });
-            
+        console.log("NEVER REACH HERE"); 
       }
 
     });

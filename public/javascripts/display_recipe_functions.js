@@ -109,10 +109,22 @@ function displayIngredientsList()
 {
   let par_ingre_list=document.getElementById("ingred_list");
   let id_value;
+  
+  let ingred_desc_format;
+  try{
+   ingred_desc_format=".+";//works
+  }
+  catch(err)
+  {
+    console.log("some browsers give this error: "+err);
+  }
+  //let condition="[a-zA-Z0-9]+['|\-]?[a-zA-Z0-9]{3,20}";
+  //let condition=/^[0-9,-]*$/;
   for (let i in full_recipe) 
   {
     let element1=full_recipe[i];
-    let id=getSectionTitleId(i+1);
+    //let m=i+1;
+    let id=getSectionTitleId(i);
     //console.log("object 1 inside recipe_detail: "+full_recipe[i]);
     for (let key in element1)
     {
@@ -172,7 +184,7 @@ function displayIngredientsList()
             if(no_alt_ingre) alt_ingre_name_field=createHtmlElement("span",col);
             else
             {
-              console.log("Alt ingre are: "+alt_ingred_name);
+              //console.log("Alt ingre are: "+alt_ingred_name);
               //<i class="bi bi-arrow-right-square-fill"></i>
               let icon=createSpecialHtmlElement("i","bi bi-arrow-right-square-fill alternative_ingred_col","",ingred.name,'font-size:20px;');
               child_level3.appendChild(icon);
@@ -189,20 +201,15 @@ function displayIngredientsList()
             child_level3=createHtmlElement('div',"border_light");
             
             div_value=id+"ingre_amount_input"+j;
-            let ingre_amount_field=createSpecialHtmlElement('input',"form-control border-0",div_value,"","","1 tsp (melted)","20");//orggi
+            //console.log("I have not called ingre amount ");
+            let ingre_amount_field=createSpecialHtmlElement('input',"form-control border-0",div_value,"","","1 tsp (melted)","80","3",ingred_desc_format);//orggi
             child_level1.appendChild(child_level2).appendChild(child_level3).appendChild(ingre_amount_field);//original
-
-            //pass ingrgedient name for later usage
-            /*div_value=id+"ingre_name"+j;
-            let p_ingre_name=createHtmlElement('p',"col-md",div_value,"font-size: x-small;",ingre_name);
-            child_level1.appendChild(p_ingre_name);*/
           
-
             //display error for ingredient amount input field
             child_level4=createHtmlElement('div',"");
             div_value=id+"ingre_field_error_msg"+j;
             //let err_field=createHtmlElement("p","col-md-2 col_green",div_id,"font-size: x-small;","");
-            let err_field=createHtmlElement("p","col-md col_green",div_value,"","");
+            let err_field=createHtmlElement("p","col-md col_red",div_value,"","");
             child_level1.appendChild(child_level4).appendChild(err_field);
             par_ingre_list.appendChild(child_level1); 
 
@@ -215,8 +222,9 @@ function displayIngredientsList()
             ingre_name_field=document.getElementById(ingre_name_field_id);
 
             ingre_amount_field.addEventListener("change",(event) => {
-              //console.log("ingre amount")
-              isIngredientAmountValid(ingre_amount_field,err_field,ingre_name_field.textContent);//func in recipe_details.js
+              console.log("entered TSP field");
+              validateText(ingre_amount_field,"",err_field_id);// common_functions.js
+              
             });
             
 
@@ -226,7 +234,6 @@ function displayIngredientsList()
     } 
     }
   }
-  //ingredientAmountsFieldEeventListener();
 }
 
 //function to display full recipe
@@ -239,7 +246,8 @@ function displayFullRecipe()
   for (let i in full_recipe) 
   {
     let element1=full_recipe[i];
-    let id=getSectionTitleId(i+1);
+    //let m=i+1;
+    let id=getSectionTitleId(i);
     //console.log("object 1 inside recipe_detail: "+full_recipe[i]);
     for (let key in element1)
     {

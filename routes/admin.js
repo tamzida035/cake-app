@@ -4,6 +4,7 @@ var router = express.Router();
 // Require admin controller
 const admin_controller = require("../controllers/adminController");
 
+//to do: add relevant middlewares
 // admin login page load
 router.get("/login", admin_controller.signIn_ui);
 

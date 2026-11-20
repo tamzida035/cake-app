@@ -1,5 +1,9 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
+
+const{
+    redirectHome,
+}=require('../middleware/redirectMiddleware');
 
 // this file contains all endpoints accessible by site visitors
 
@@ -7,7 +11,7 @@ var router = express.Router();
 const site_visitor_controller = require("../controllers/allUsersController");
 
 // home page load
-router.get("/", site_visitor_controller.home_ui);//--->Important : update architecture diagam about this route (homepage), controller(homeController)
+router.get("/",redirectHome,site_visitor_controller.home_ui);//--->Important : update architecture diagam about this route (homepage), controller(homeController)
 
 //user sign up page load
 router.get("/user_sign_up", site_visitor_controller.signUpPage); // update archi diagram

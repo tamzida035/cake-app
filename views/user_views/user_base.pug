@@ -31,27 +31,27 @@ body
    section(id="header")
      nav(class="navbar navbar-expand-lg navbar-light w-100 pt-2 pb-2")
        div(class="container-xl")
-        a(href="/users/profile/:id/")
+        a(href="/users/profile/"+userid)
             //website logo
             b(class="fs-1  family_2") Delicious cakes
         div(class="offcanvas offcanvas-start offcanvas-nav" style="width: 20rem")
             // menu bar
             div(class="offcanvas-body pt-0 align-items-center")
               ul(class="navbar-nav align-items-lg-center ms-auto")
-                //li(class="nav-item")
-                  //a(class="nav-link dropdown-toggle" href="about.html" title="Visit home page") Add a recipe
+                li(class="nav-item")
+                  a(class="nav-link dropdown-toggle" href="about.html" title="Visit home page") Search
                 li(class="nav-item dropdown drop_border")
                   a(class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Add a recipe
                     img(src="/images/icons-svg/chevron-down.svg" width="15" height="15" alt="Submenu open/close icon")
                   ul(class="dropdown-menu drop_1 shadow" aria-labelledby="navbarDropdown")
                     li
-                      a(class="dropdown-item" href="/users/add_new_recipe_by_voice") By voice
+                      a(class="dropdown-item" href="/users/"+userid+"/add_new_recipe_by_voice") By voice
                       //a(class="dropdown-item" href="example") By voice
                     li
                       a(class="dropdown-item border-0" href="recipe_detail.html") My personal recipes
               ul(class="navbar-nav align-items-lg-center ms-auto nav_right")
                 // log out button symbol here
                 li(class="nav-item")
-                  a(class="nav-link fs-5" href="/users/profile/:id/logout" id="logoutButton" role="button" aria-expanded="false")
+                  a(class="nav-link fs-5" href="/users/profile/"+userid+"/logout" id="logoutButton" role="button" aria-expanded="false")
                     i(class="bi bi-box-arrow-right" data-toggle="tooltip" data-placement="top" title="sign out")
      block content
